@@ -1,38 +1,45 @@
 import Compositor from './Compositor';
-import { createBackgroundLayer } from './layers';
+import { createMario } from './entities';
+import KeyboardState from './KeyboardStates';
+
+import { createBackgroundLayer, createSpriteLayer } from './layers';
 import { loadLevel } from './loaders';
-import { loadBackgroundSprites, loadMarioSprite } from './sprites';
-import SpriteSheet from './SpriteSheet';
-import { LayerFunction, Position } from './types';
+import { loadBackgroundSprites } from './sprites';
+import Timer from './Timer';
 
 const canvas = document.getElementById('screen') as HTMLCanvasElement;
 const context = canvas.getContext('2d')!;
 
-// high order function that returns a function that will be responsible to draw a buffered canvas on which a sprite is drawn
-function createSpriteLayer(sprite: SpriteSheet, pos: Position): LayerFunction {
-  return function drawSpriteLayer(context) {
-    sprite.draw('idle', context, pos.x, pos.y);
-  };
-}
-
 // we run our three promises in parallel
-Promise.all([loadMarioSprite(), loadBackgroundSprites(), loadLevel('1-1')]).then(([marioSprite, backgroundSprites, level]) => {
+Promise.all([createMario(), loadBackgroundSprites(), loadLevel('1-1')]).then(([mario, backgroundSprites, level]) => {
   const comp = new Compositor();
   comp.layers.push(createBackgroundLayer(level.backgrounds, backgroundSprites));
 
-  const pos = {
-    x: 64,
-    y: 64,
+  const gravity = 2000;
+  mario.pos.set(64, 180);
+
+  const input = new KeyboardState();
+  input.addMapping('Space', (keyState) => {
+    if (keyState) {
+      mario.jump.start();
+    } else {
+      mario.jump.cancel();
+    }
+  });
+  input.listenTo(window);
+
+  const marioSpriteLayer = createSpriteLayer(mario);
+  comp.layers.push(marioSpriteLayer);
+  const timer = new Timer(1 / 60);
+
+  timer.update = function update(deltaTime) {
+    mario.update(deltaTime);
+    comp.draw(context);
+
+    mario.vel.y += gravity * deltaTime;
   };
 
-  comp.layers.push(createSpriteLayer(marioSprite, pos));
-
-  function update() {
-    comp.draw(context);
-    pos.x += 2;
-    pos.y += 1;
-    requestAnimationFrame(update);
-  }
-
-  update();
+  timer.start();
 });
+
+// taking into account how much real time was actually passed between each frame

@@ -1,3 +1,4 @@
+import { Entity } from './Entity';
 import { raise } from './raise';
 import SpriteSheet from './SpriteSheet';
 import { LayerFunction, LevelBackgroundData } from './types';
@@ -27,5 +28,12 @@ export function createBackgroundLayer(backgrounds: LevelBackgroundData[], sprite
 
   return function drawBackgroundLayer(context: CanvasRenderingContext2D) {
     context.drawImage(buffer, 0, 0);
+  };
+}
+
+// high order function that returns a function that will be responsible to draw a buffered canvas on which a sprite is drawn
+export function createSpriteLayer(entity: Entity): LayerFunction {
+  return function drawSpriteLayer(context) {
+    entity.draw(context);
   };
 }
