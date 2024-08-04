@@ -1,31 +1,38 @@
-import { loadImage, loadLevel } from './loaders';
+import Compositor from './Compositor';
+import { createBackgroundLayer } from './layers';
+import { loadLevel } from './loaders';
+import { loadBackgroundSprites, loadMarioSprite } from './sprites';
 import SpriteSheet from './SpriteSheet';
-import { LevelBackgroundData } from './types';
-
-function drawBackground(background: LevelBackgroundData, context: CanvasRenderingContext2D, sprites: SpriteSheet) {
-  // on the background we loop over all ranges
-  background.ranges.forEach(([x1, x2, y1, y2]: number[]) => {
-    for (let x = x1; x < x2; ++x) {
-      for (let y = y1; y < y2; ++y) {
-        sprites.drawTile(background.tile, context, x, y);
-      }
-    }
-  });
-}
+import { LayerFunction, Position } from './types';
 
 const canvas = document.getElementById('screen') as HTMLCanvasElement;
 const context = canvas.getContext('2d')!;
 
-loadImage('/img/tiles.png').then((image) => {
-  const sprites = new SpriteSheet(image, 16, 16);
-  sprites.define('ground', 0, 0);
-  sprites.define('sky', 3, 23);
+// high order function that returns a function that will be responsible to draw a buffered canvas on which a sprite is drawn
+function createSpriteLayer(sprite: SpriteSheet, pos: Position): LayerFunction {
+  return function drawSpriteLayer(context) {
+    sprite.draw('idle', context, pos.x, pos.y);
+  };
+}
 
-  // load level after we laoded the sprites
-  loadLevel('1-1').then((level) => {
-    // drawing the backgrounds
-    level.backgrounds.forEach((bg) => {
-      drawBackground(bg, context, sprites);
-    });
-  });
+// we run our three promises in parallel
+Promise.all([loadMarioSprite(), loadBackgroundSprites(), loadLevel('1-1')]).then(([marioSprite, backgroundSprites, level]) => {
+  const comp = new Compositor();
+  comp.layers.push(createBackgroundLayer(level.backgrounds, backgroundSprites));
+
+  const pos = {
+    x: 64,
+    y: 64,
+  };
+
+  comp.layers.push(createSpriteLayer(marioSprite, pos));
+
+  function update() {
+    comp.draw(context);
+    pos.x += 2;
+    pos.y += 1;
+    requestAnimationFrame(update);
+  }
+
+  update();
 });

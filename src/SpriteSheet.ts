@@ -2,21 +2,25 @@ export default class SpriteSheet {
   tiles = new Map<string, HTMLCanvasElement>();
   constructor(public image: HTMLImageElement, public width: number, public height: number) {}
 
-  define(name: string, x: number, y: number): void {
+  define(name: string, x: number, y: number, width: number, height: number): void {
     // we want to save the subset of the image to a buffer
     // for that we first create the buffer
     // the buffer is to be differentiated to the main canvas element selected by id. Here we create it programatically, whereas main canvas is created by browser on initial page load
     const buffer = document.createElement('canvas') as HTMLCanvasElement;
 
     // we want to set the width and height of this canvas buffer
-    buffer.width = this.width;
-    buffer.height = this.height;
+    buffer.width = width;
+    buffer.height = height;
 
     // next we draw the subset of the image on this buffer
-    buffer.getContext('2d')?.drawImage(this.image, x * this.width, y * this.height, this.width, this.height, 0, 0, this.width, this.height);
+    buffer.getContext('2d')?.drawImage(this.image, x, y, width, height, 0, 0, width, height);
 
     // once we have drawn the image on this buffer we want to save this buffer in a Map
     this.tiles.set(name, buffer);
+  }
+
+  defineTile(name: string, x: number, y: number) {
+    this.define(name, x * this.width, y * this.height, this.width, this.height);
   }
 
   // draw a buffer
