@@ -1,8 +1,8 @@
 import { Matrix } from './math';
-import { TileSpec } from './types';
+import { LevelSpecTile } from './types';
 
 export type TileResolverMatch = {
-  tile: TileSpec;
+  tile: LevelSpecTile;
   x1: number;
   x2: number;
   y1: number;
@@ -11,7 +11,7 @@ export type TileResolverMatch = {
 
 // the tile resolver job is to convert world positions to tile indexes
 export class TileResolver {
-  constructor(public matrix: Matrix<TileSpec>, public tileSize = 16) {}
+  constructor(public matrix: Matrix<LevelSpecTile>, public tileSize = 16) {}
 
   // take a position and returns the index of that position
   toIndex(pos: number) {

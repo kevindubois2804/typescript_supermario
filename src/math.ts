@@ -14,7 +14,7 @@ export class Vec2 {
 export class Matrix<T> {
   // TODO: implement iterator
 
-  private grid: T[][] = [];
+  public grid: T[][] = [];
 
   set(x: number, y: number, value: T) {
     if (!this.grid[x]) {

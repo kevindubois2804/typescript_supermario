@@ -1,6 +1,8 @@
+import Camera from './Camera';
+import { setupMouseControl } from './debug';
 import { createMario } from './entities';
 import setupKeyboard from './input';
-import { createCollisionLayer } from './layers';
+import { createCameraLayer, createCollisionLayer } from './layers';
 import { loadLevel } from './loaders';
 
 import Timer from './Timer';
@@ -10,34 +12,35 @@ const context = canvas.getContext('2d')!;
 
 // we run our three promises in parallel
 Promise.all([createMario(), loadLevel('1-1')]).then(([mario, level]) => {
-  level.comp.layers.push(createCollisionLayer(level));
+  const camera = new Camera();
 
+  window.camera = camera;
+
+  console.log(level.tiles.grid[23][9]);
+
+  mario.pos.set(64, 100);
+
+  level.comp.layers.push(createCollisionLayer(level), createCameraLayer(camera));
   level.entities.add(mario);
-
-  mario.pos.set(64, 180);
 
   const input = setupKeyboard(mario);
 
   input.listenTo(window);
 
-  // for debugging purposes
-  ['mousedown', 'mousemove'].forEach((eventName) => {
-    canvas.addEventListener(eventName, (event) => {
-      if (event instanceof MouseEvent) {
-        if (event.buttons === 1) {
-          mario.vel.set(0, 0);
-          mario.pos.set(event.offsetX, event.offsetY);
-        }
-      }
-    });
-  });
+  setupMouseControl(canvas, mario, camera);
 
   const timer = new Timer(1 / 60);
 
   timer.update = function update(deltaTime) {
     level.update(deltaTime);
-    level.comp.draw(context);
+    level.comp.draw(context, camera);
   };
 
   timer.start();
 });
+
+// visualizing tiles
+// context.strokeStyle = 'yellow';
+// context.beginPath();
+// context.rect(2 * 16, 11 * 16, 16, 16);
+// context.stroke();

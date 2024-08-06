@@ -7,13 +7,13 @@ import Jump from './traits/Jump.js';
 export function createMario(): Promise<Entity> {
   return loadMarioSprite().then((sprite) => {
     const mario = new Entity();
-    mario.size.set(56, 64);
+    mario.size.set(16, 14);
 
     mario.addTrait(new Go());
     mario.addTrait(new Jump());
 
     mario.draw = function drawMario(context) {
-      sprite.draw('idle', context, this.pos.x, this.pos.y);
+      sprite.draw('idle', context, 0, 0);
     };
 
     return mario;

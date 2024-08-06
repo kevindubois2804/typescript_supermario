@@ -1,3 +1,4 @@
+import Camera from './Camera';
 import { Entity } from './Entity';
 import Level from './Level';
 import { raise } from './raise';
@@ -7,25 +8,69 @@ import { LayerFunction } from './types';
 // createBackgroundLayer is a high order function that create all the necessary information to create a buffered canvas on which the background is drawn and returns a function that can draw the buffered canvas on the main canvas
 // the necessary information is taken from the level tiles set
 export function createBackgroundLayer(level: Level, sprites: SpriteSheet): LayerFunction {
+  const tiles = level.tiles;
+  const resolver = level.tileCollider.tiles;
+
   // since the backgrounds will be repeatedly drawn on each animation frame, we offload them to an offscreen canvas( buffer )
   const buffer = document.createElement('canvas') as HTMLCanvasElement;
   const bufferContext = buffer.getContext('2d') || raise('Canvas not supported');
-  buffer.width = 256;
+  buffer.width = 256 + 16;
   buffer.height = 240;
 
-  level.tiles.forEach((tile, x, y) => {
-    sprites.drawTile(tile.name, bufferContext, x, y);
-  });
+  let startIndex: number, endIndex: number;
+  // function to redraw the whole screen at a time
+  function redraw(drawFrom: number, drawTo: number) {
+    // small check for optimization; only execute redraw if we are moving
+    if (drawFrom === startIndex && drawTo === endIndex) {
+      return;
+    }
 
-  return function drawBackgroundLayer(context: CanvasRenderingContext2D) {
-    context.drawImage(buffer, 0, 0);
+    console.log('redrawing!');
+
+    startIndex = drawFrom;
+    endIndex = drawTo;
+    // we will draw a subset of the tile matrix
+    for (let x = startIndex; x <= endIndex; ++x) {
+      const col = tiles.grid[x];
+      if (col) {
+        col.forEach((tile, y) => {
+          sprites.drawTile(tile.name, bufferContext, x - startIndex, y);
+        });
+      }
+    }
+  }
+
+  return function drawBackgroundLayer(context: CanvasRenderingContext2D, camera: Camera) {
+    // we need to figure out indexes of camera right positions
+    // first we get the size
+    const drawWidth = resolver.toIndex(camera.size.x);
+
+    // next we get first index
+    const drawFrom = resolver.toIndex(camera.pos.x);
+
+    // and the second index
+    const drawTo = drawFrom + drawWidth;
+
+    redraw(drawFrom, drawTo);
+
+    context.drawImage(buffer, -camera.pos.x % 16, -camera.pos.y);
   };
 }
 
 // high order function that returns a function that will be responsible to draw a buffered canvas on which a sprite is drawn
-export function createSpriteLayer(entities: Set<Entity>): LayerFunction {
-  return function drawSpriteLayer(context) {
-    entities.forEach((entity) => entity.draw(context));
+export function createSpriteLayer(entities: Set<Entity>, width: number = 64, height: number = 64): LayerFunction {
+  const spriteBuffer = document.createElement('canvas') as HTMLCanvasElement;
+  spriteBuffer.width = width;
+  spriteBuffer.height = height;
+
+  const spriteBufferContext = spriteBuffer.getContext('2d') || raise('Canvas not supported');
+
+  return function drawSpriteLayer(context: CanvasRenderingContext2D, camera: Camera) {
+    entities.forEach((entity) => {
+      spriteBufferContext.clearRect(0, 0, width, height);
+      entity.draw(spriteBufferContext);
+      context.drawImage(spriteBuffer, entity.pos.x - camera.pos.x, entity.pos.y - camera.pos.y);
+    });
   };
 }
 
@@ -50,23 +95,33 @@ export function createCollisionLayer(level: Level) {
     return getByIndexOriginal.call(tileResolver, x, y);
   };
 
-  return function drawCollision(context: CanvasRenderingContext2D) {
+  return function drawCollision(context: CanvasRenderingContext2D, camera: Camera) {
     context.strokeStyle = 'blue';
     // we iterate over the resolved tiles
     resolvedTiles.forEach(({ x, y }) => {
       context.beginPath();
-      context.rect(x * tileSize, y * tileSize, tileSize, tileSize);
+      context.rect(x * tileSize - camera.pos.x, y * tileSize - camera.pos.y, tileSize, tileSize);
       context.stroke();
     });
 
     context.strokeStyle = 'red';
     level.entities.forEach((entity) => {
       context.beginPath();
-      context.rect(entity.pos.x, entity.pos.y, entity.size.x, entity.size.y);
+      context.rect(entity.pos.x - camera.pos.x, entity.pos.y - camera.pos.y, entity.size.x, entity.size.y);
       context.stroke();
     });
 
     //once we have drawn everything we empty the resolved tiles array
     resolvedTiles.length = 0;
+  };
+}
+
+// we can send in the same camera or draw another camera from another camera perspective
+export function createCameraLayer(cameraToDraw: Camera) {
+  return function drawCameraRect(context: CanvasRenderingContext2D, fromCamera: Camera) {
+    context.strokeStyle = 'purple';
+    context.beginPath();
+    context.rect(cameraToDraw.pos.x - fromCamera.pos.x, cameraToDraw.pos.y - fromCamera.pos.y, cameraToDraw.size.x, cameraToDraw.size.y);
+    context.stroke();
   };
 }

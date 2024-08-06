@@ -2,13 +2,13 @@ import Compositor from './Compositor';
 import { Entity } from './Entity';
 import { Matrix } from './math';
 import { TileCollider } from './TileCollider';
-import { TileSpec } from './types';
+import { LevelSpecTile } from './types';
 
 export default class Level {
   comp = new Compositor();
   entities = new Set<Entity>();
   gravity: number = 2000;
-  tiles = new Matrix<TileSpec>();
+  tiles = new Matrix<LevelSpecTile>();
 
   tileCollider = new TileCollider(this.tiles);
 

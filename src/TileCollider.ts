@@ -1,11 +1,11 @@
 import { Entity } from './Entity';
 import { Matrix } from './math';
 import { TileResolver } from './TileResolver';
-import { TileSpec } from './types';
+import { LevelSpecTile } from './types';
 
 export class TileCollider {
   tiles;
-  constructor(tileMatrix: Matrix<TileSpec>) {
+  constructor(tileMatrix: Matrix<LevelSpecTile>) {
     this.tiles = new TileResolver(tileMatrix);
   }
 
@@ -21,7 +21,7 @@ export class TileCollider {
     const matches = this.tiles.searchByRange(entity.pos.x, entity.pos.x + entity.size.x, y, y);
 
     matches.forEach((match) => {
-      if (match.tile.name !== 'ground') {
+      if (match.tile.type !== 'ground') {
         return;
       }
 
@@ -53,7 +53,7 @@ export class TileCollider {
     const matches = this.tiles.searchByRange(x, x, entity.pos.y, entity.pos.y + entity.size.y);
 
     matches.forEach((match) => {
-      if (match.tile.name !== 'ground') {
+      if (match.tile.type !== 'ground') {
         return;
       }
 
