@@ -1,42 +1,67 @@
+import { Animation } from './animation';
+import { raise } from './raise';
+
 export default class SpriteSheet {
-  tiles = new Map<string, HTMLCanvasElement>();
+  tiles = new Map<string, HTMLCanvasElement[]>();
+  animations = new Map<string, Animation>();
   constructor(public image: HTMLImageElement, public width: number, public height: number) {}
 
-  define(name: string, x: number, y: number, width: number, height: number): void {
-    // we want to save the subset of the image to a buffer
-    // for that we first create the buffer
-    // the buffer is to be differentiated to the main canvas element selected by id. Here we create it programatically, whereas main canvas is created by browser on initial page load
-    const buffer = document.createElement('canvas') as HTMLCanvasElement;
+  define(name: string, x: number, y: number, width: number, height: number) {
+    const buffers = [false, true].map((flipped) => {
+      const buffer = document.createElement('canvas');
+      buffer.width = width;
+      buffer.height = height;
 
-    // we want to set the width and height of this canvas buffer
-    buffer.width = width;
-    buffer.height = height;
+      const context = buffer.getContext('2d') || raise('Canvas not supported');
 
-    // next we draw the subset of the image on this buffer
-    buffer.getContext('2d')?.drawImage(this.image, x, y, width, height, 0, 0, width, height);
+      if (flipped) {
+        context.scale(-1, 1);
+        context.translate(-width, 0);
+      }
 
-    // once we have drawn the image on this buffer we want to save this buffer in a Map
-    this.tiles.set(name, buffer);
+      context.drawImage(this.image, x, y, width, height, 0, 0, width, height);
+
+      return buffer;
+    });
+
+    this.tiles.set(name, buffers);
   }
 
   defineTile(name: string, x: number, y: number) {
     this.define(name, x * this.width, y * this.height, this.width, this.height);
   }
 
+  defineAnim(name: string, animation: Animation) {
+    this.animations.set(name, animation);
+  }
+
   // draw a buffer
-  draw(name: string, context: CanvasRenderingContext2D, x: number, y: number): void {
-    // first we retrieve the buffer from the tiles set
-    const buffer = this.tiles.get(name);
-    // we throw an error if the buffer isn't found in the tiles set
-    if (!buffer) {
+  draw(name: string, context: CanvasRenderingContext2D, x: number, y: number, flip = false) {
+    const buffers = this.tiles.get(name);
+    if (!buffers) {
       throw new Error(`SpriteSheet.draw(): Sprite "${name}" not found`);
     }
-    // we draw the buffer at coordinates x and y
-    context.drawImage(buffer, x, y);
+    context.drawImage(buffers[flip ? 1 : 0], x, y);
   }
 
   // convenient method to draw a buffer while taking into account tile sizes
   drawTile(name: string, context: CanvasRenderingContext2D, x: number, y: number): void {
     this.draw(name, context, x * this.width, y * this.height);
+  }
+
+  drawAnim(name: string, context: CanvasRenderingContext2D, x: number, y: number, distance: number) {
+    const animation = this.animations.get(name);
+    if (!animation) {
+      throw new Error(`Animation not found: ${name}`);
+    }
+    this.drawTile(animation(distance), context, x, y);
+  }
+
+  getAnim(name: string) {
+    const anim = this.animations.get(name);
+    if (!anim) {
+      throw new Error(`Animation not found: ${name}`);
+    }
+    return anim;
   }
 }

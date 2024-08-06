@@ -21,11 +21,9 @@ export function createBackgroundLayer(level: Level, sprites: SpriteSheet): Layer
   // function to redraw the whole screen at a time
   function redraw(drawFrom: number, drawTo: number) {
     // small check for optimization; only execute redraw if we are moving
-    if (drawFrom === startIndex && drawTo === endIndex) {
-      return;
-    }
-
-    console.log('redrawing!');
+    // if (drawFrom === startIndex && drawTo === endIndex) {
+    //   return;
+    // }
 
     startIndex = drawFrom;
     endIndex = drawTo;
@@ -34,7 +32,11 @@ export function createBackgroundLayer(level: Level, sprites: SpriteSheet): Layer
       const col = tiles.grid[x];
       if (col) {
         col.forEach((tile, y) => {
-          sprites.drawTile(tile.name, bufferContext, x - startIndex, y);
+          if (sprites.animations.has(tile.name)) {
+            sprites.drawAnim(tile.name, bufferContext, x - startIndex, y, level.totalTime);
+          } else {
+            sprites.drawTile(tile.name, bufferContext, x - startIndex, y);
+          }
         });
       }
     }

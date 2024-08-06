@@ -1,5 +1,5 @@
-import { loadImage } from './loaders';
-import SpriteSheet from './SpriteSheet';
+// import { loadImage } from './loaders';
+// import SpriteSheet from './SpriteSheet';
 
 // export function loadBackgroundSprites(): Promise<SpriteSheet> {
 //   return loadImage('/img/tiles.png').then((image) => {
@@ -10,10 +10,10 @@ import SpriteSheet from './SpriteSheet';
 //   });
 // }
 
-export function loadMarioSprite(): Promise<SpriteSheet> {
-  return loadImage('/img/characters.gif').then((image) => {
-    const mario = new SpriteSheet(image, 16, 16);
-    mario.define('idle', 276, 44, 16, 16);
-    return mario;
-  });
-}
+// export function loadMarioSprite(): Promise<SpriteSheet> {
+//   return loadImage('/img/characters.gif').then((image) => {
+//     const mario = new SpriteSheet(image, 16, 16);
+//     mario.define('idle', 276, 44, 16, 16);
+//     return mario;
+//   });
+// }

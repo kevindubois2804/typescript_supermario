@@ -2,6 +2,7 @@ import { createBackgroundLayer, createSpriteLayer } from './layers';
 import Level from './Level';
 import { BackgroundSpec, LevelSpec, SpriteSheetSpec } from './types';
 import SpriteSheet from './SpriteSheet';
+import { createAnim } from './animation';
 
 export function loadImage(url: string): Promise<HTMLImageElement> {
   return new Promise((resolve) => {
@@ -23,6 +24,18 @@ export function loadSpriteSheet(name: string): Promise<SpriteSheet> {
         sheetSpec.tiles.forEach((tileSpec) => {
           sprites.defineTile(tileSpec.name, tileSpec.index[0], tileSpec.index[1]);
         });
+
+      if (sheetSpec.frames)
+        sheetSpec.frames.forEach((frameSpec) => {
+          sprites.define(frameSpec.name, ...frameSpec.rect);
+        });
+
+      if (sheetSpec.animations) {
+        sheetSpec.animations.forEach((animSpec) => {
+          const animation = createAnim(animSpec.frames, animSpec.frameLen);
+          sprites.defineAnim(animSpec.name, animation);
+        });
+      }
 
       return sprites;
     });

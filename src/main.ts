@@ -14,8 +14,6 @@ const context = canvas.getContext('2d')!;
 Promise.all([createMario(), loadLevel('1-1')]).then(([mario, level]) => {
   const camera = new Camera();
 
-  window.camera = camera;
-
   console.log(level.tiles.grid[23][9]);
 
   mario.pos.set(64, 100);

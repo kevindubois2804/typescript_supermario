@@ -23,6 +23,8 @@ export type SpriteSheetSpec = {
   tileW: number;
   tileH: number;
   tiles?: SpriteTileSpec[];
+  frames?: FrameSpec[];
+  animations?: AnimationSpec[];
 };
 
 export type SpriteTileSpec = {
@@ -45,3 +47,9 @@ export type BackgroundSpec = {
   ranges: BackgroundRange[];
 };
 export type BackgroundRange = [number, number, number, number];
+
+export type AnimationSpec = {
+  name: string;
+  frameLen: number;
+  frames: string[];
+};

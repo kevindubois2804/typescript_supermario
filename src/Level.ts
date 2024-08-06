@@ -8,8 +8,8 @@ export default class Level {
   comp = new Compositor();
   entities = new Set<Entity>();
   gravity: number = 2000;
+  totalTime = 0;
   tiles = new Matrix<LevelSpecTile>();
-
   tileCollider = new TileCollider(this.tiles);
 
   update(deltaTime: number) {
@@ -31,5 +31,7 @@ export default class Level {
       // after collisions checked on the y-axis apply gravity
       entity.vel.y += this.gravity * deltaTime;
     });
+
+    this.totalTime += deltaTime;
   }
 }
