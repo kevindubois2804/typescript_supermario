@@ -3,6 +3,8 @@ import { loadSpriteSheet } from '../loaders';
 import SpriteSheet from '../SpriteSheet';
 import { Go } from '../traits/Go';
 import Jump from '../traits/Jump';
+import { Killable } from '../traits/Killable';
+import { Stomper } from '../traits/Stomper';
 
 const SLOW_DRAG = 1 / 1000;
 const FAST_DRAG = 1 / 5000;
@@ -44,6 +46,10 @@ function createMarioFactory(sprite: SpriteSheet) {
 
     mario.addTrait(new Go());
     mario.addTrait(new Jump());
+    mario.addTrait(new Killable());
+    mario.addTrait(new Stomper());
+
+    mario.killable.removeAfter = 0;
 
     mario.turbo = setTurboState;
     mario.draw = drawMario;

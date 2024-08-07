@@ -1,5 +1,6 @@
 import Compositor from './Compositor';
 import { Entity } from './Entity';
+import { EntityCollider } from './EntityCollider';
 import { Matrix } from './math';
 import { TileCollider } from './TileCollider';
 
@@ -25,6 +26,7 @@ export default class Level {
   gravity: number = 1500;
   totalTime = 0;
   tileCollider: TileCollider;
+  entityCollider = new EntityCollider(this.entities);
   // // legacy code
   // tiles = new Matrix<LevelSpecTile>();
   // tileCollider = new TileCollider(this.tiles);
@@ -35,22 +37,25 @@ export default class Level {
 
   update(deltaTime: number) {
     this.entities.forEach((entity) => {
-      entity.update(deltaTime);
+      entity.update(deltaTime, this);
 
-      // we calculate the new x position
       entity.pos.x += entity.vel.x * deltaTime;
+      if (entity.canCollide) {
+        this.tileCollider.checkX(entity);
+      }
 
-      // we run the tilecollider and do the checks on the x-axis
-      this.tileCollider?.checkX(entity);
-
-      // we calculate the new y position
       entity.pos.y += entity.vel.y * deltaTime;
+      if (entity.canCollide) {
+        this.tileCollider.checkY(entity);
+      }
 
-      // we run the tilecollider and do the checks on the y-axis
-      this.tileCollider?.checkY(entity);
-
-      // after collisions checked on the y-axis apply gravity
       entity.vel.y += this.gravity * deltaTime;
+    });
+
+    this.entities.forEach((entity) => {
+      if (entity.canCollide) {
+        this.entityCollider.check(entity);
+      }
     });
 
     this.totalTime += deltaTime;

@@ -27,6 +27,12 @@ export type LevelSpec = {
   spriteSheet: string;
   patterns: LevelSpecPatterns;
   layers: LevelSpecLayer[];
+  entities: LevelSpecEntity[];
+};
+
+export type LevelSpecEntity = {
+  name: string;
+  pos: [number, number];
 };
 
 export type LevelSpecPatterns = {
@@ -57,10 +63,4 @@ export type AnimationSpec = {
 export type FrameSpec = {
   name: string;
   rect: [number, number, number, number];
-};
-
-export type TileCreatorResult = {
-  tile: LevelSpecTile;
-  x: number;
-  y: number;
 };

@@ -1,6 +1,7 @@
 import BoundingBox from './BoundingBox.js';
+import Level from './Level.js';
 import { Vec2 } from './math.js';
-import Trait from './Trait.js';
+import Trait, { TraitConstructor } from './Trait.js';
 
 export enum Sides {
   top,
@@ -18,6 +19,7 @@ export class Entity implements Entity {
   lifetime: number = 0;
   bounds = new BoundingBox(this.pos, this.size, this.offset);
   traits: Trait[] = [];
+  canCollide: boolean = true;
 
   draw(context: CanvasRenderingContext2D) {}
 
@@ -26,15 +28,26 @@ export class Entity implements Entity {
     this[trait.NAME] = trait;
   }
 
+  getTrait<T extends Trait>(TraitClass: TraitConstructor<T>): T | null {
+    const trait = this.traits.find((trait) => trait instanceof TraitClass);
+    return trait as T | null;
+  }
+
   obstruct(side: Sides) {
     this.traits.forEach((trait) => {
       trait.obstruct(this, side);
     });
   }
 
-  update(deltaTime: number) {
+  collides(candidate: Entity) {
     this.traits.forEach((trait) => {
-      trait.update(this, deltaTime);
+      trait.collides(this, candidate);
+    });
+  }
+
+  update(deltaTime: number, level: Level) {
+    this.traits.forEach((trait) => {
+      trait.update(this, deltaTime, level);
     });
 
     this.lifetime += deltaTime;
