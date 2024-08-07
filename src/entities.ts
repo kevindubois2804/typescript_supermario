@@ -1,49 +1,20 @@
-import { createAnim } from './animation.js';
+import { loadMario } from './entities/Mario.js';
+import { loadGoomba } from './entities/Goomba.js';
+import { loadKoopa } from './entities/Koopa.js';
 import { Entity } from './Entity.js';
-import { loadSpriteSheet } from './loaders.js';
-import { Go } from './traits/Go.js';
-import Jump from './traits/Jump.js';
 
-const SLOW_DRAG = 1 / 1000;
-const FAST_DRAG = 1 / 5000;
+export type EntityFactory = () => Entity;
 
-// setting up mario
-export function createMario(): Promise<Entity> {
-  return loadSpriteSheet('mario').then((sprite) => {
-    const mario = new Entity();
+export type EntityFactories = {
+  [name: string]: EntityFactory;
+};
 
-    mario.size.set(16, 14);
+export function loadEntities(): Promise<EntityFactories> {
+  const entityFactories: EntityFactories = {};
 
-    mario.addTrait(new Go());
-    mario.go.dragFactor = FAST_DRAG;
-    mario.addTrait(new Jump());
+  function addAs(name: string) {
+    return (factory: EntityFactory) => (entityFactories[name] = factory);
+  }
 
-    mario.turbo = function setTurboState(turboOff: boolean) {
-      this.go.dragFactor = turboOff ? SLOW_DRAG : FAST_DRAG;
-    };
-
-    const runAnim = createAnim(['run-1', 'run-2', 'run-3'], 10);
-
-    // function that looks up at the mario object and decides which animation frame should be played
-    function routeFrame(mario: Entity): string {
-      if (mario.jump.falling) {
-        return 'jump';
-      }
-
-      if (mario.go.distance > 0) {
-        if ((mario.vel.x > 0 && mario.go.dir < 0) || (mario.vel.x < 0 && mario.go.dir > 0)) {
-          return 'break';
-        }
-        return runAnim(mario.go.distance);
-      }
-
-      return 'idle';
-    }
-
-    mario.draw = function drawMario(context) {
-      sprite.draw(routeFrame(this), context, 0, 0, this.go.heading < 0);
-    };
-
-    return mario;
-  });
+  return Promise.all([loadMario().then(addAs('mario')), loadGoomba().then(addAs('goomba')), loadKoopa().then(addAs('koopa'))]).then(() => entityFactories);
 }

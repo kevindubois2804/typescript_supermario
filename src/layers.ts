@@ -22,7 +22,6 @@ export function createBackgroundLayer(level: Level, tiles: Matrix<BackgroundTile
   function redraw(startIndex: number, endIndex: number) {
     bufferContext.clearRect(0, 0, buffer.width, buffer.height);
     // we will draw a subset of the tile matrix
-    console.log(tiles);
     for (let x = startIndex; x <= endIndex; ++x) {
       const col = tiles.grid[x];
       if (col) {
@@ -105,7 +104,7 @@ export function createCollisionLayer(level: Level): LayerFunction {
     context.strokeStyle = 'red';
     level.entities.forEach((entity) => {
       context.beginPath();
-      context.rect(entity.pos.x - camera.pos.x, entity.pos.y - camera.pos.y, entity.size.x, entity.size.y);
+      context.rect(entity.bounds.left - camera.pos.x, entity.bounds.top - camera.pos.y, entity.size.x, entity.size.y);
       context.stroke();
     });
 

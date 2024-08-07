@@ -1,3 +1,4 @@
+import BoundingBox from './BoundingBox.js';
 import { Vec2 } from './math.js';
 import Trait from './Trait.js';
 
@@ -13,6 +14,9 @@ export class Entity implements Entity {
   pos: Vec2 = new Vec2();
   vel: Vec2 = new Vec2();
   size: Vec2 = new Vec2();
+  offset: Vec2 = new Vec2(0, 0);
+  lifetime: number = 0;
+  bounds = new BoundingBox(this.pos, this.size, this.offset);
   traits: Trait[] = [];
 
   draw(context: CanvasRenderingContext2D) {}
@@ -32,5 +36,7 @@ export class Entity implements Entity {
     this.traits.forEach((trait) => {
       trait.update(this, deltaTime);
     });
+
+    this.lifetime += deltaTime;
   }
 }

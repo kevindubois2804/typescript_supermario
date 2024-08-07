@@ -34,7 +34,6 @@ export function loadSpriteSheet(name: string): Promise<SpriteSheet> {
           sprites.defineAnim(animSpec.name, animation);
         });
       }
-
       return sprites;
     });
 }
