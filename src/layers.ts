@@ -1,15 +1,16 @@
 import Camera from './Camera';
 import { Entity } from './Entity';
-import Level from './Level';
+import Level, { BackgroundTile } from './Level';
+import { Matrix } from './math';
 import { raise } from './raise';
 import SpriteSheet from './SpriteSheet';
+import { TileResolver } from './TileResolver';
 import { LayerFunction } from './types';
 
 // createBackgroundLayer is a high order function that create all the necessary information to create a buffered canvas on which the background is drawn and returns a function that can draw the buffered canvas on the main canvas
 // the necessary information is taken from the level tiles set
-export function createBackgroundLayer(level: Level, sprites: SpriteSheet): LayerFunction {
-  const tiles = level.tiles;
-  const resolver = level.tileCollider.tiles;
+export function createBackgroundLayer(level: Level, tiles: Matrix<BackgroundTile>, sprites: SpriteSheet): LayerFunction {
+  const resolver = new TileResolver(tiles);
 
   // since the backgrounds will be repeatedly drawn on each animation frame, we offload them to an offscreen canvas( buffer )
   const buffer = document.createElement('canvas') as HTMLCanvasElement;
@@ -17,17 +18,11 @@ export function createBackgroundLayer(level: Level, sprites: SpriteSheet): Layer
   buffer.width = 256 + 16;
   buffer.height = 240;
 
-  let startIndex: number, endIndex: number;
   // function to redraw the whole screen at a time
-  function redraw(drawFrom: number, drawTo: number) {
-    // small check for optimization; only execute redraw if we are moving
-    // if (drawFrom === startIndex && drawTo === endIndex) {
-    //   return;
-    // }
-
-    startIndex = drawFrom;
-    endIndex = drawTo;
+  function redraw(startIndex: number, endIndex: number) {
+    bufferContext.clearRect(0, 0, buffer.width, buffer.height);
     // we will draw a subset of the tile matrix
+    console.log(tiles);
     for (let x = startIndex; x <= endIndex; ++x) {
       const col = tiles.grid[x];
       if (col) {
@@ -77,11 +72,12 @@ export function createSpriteLayer(entities: Set<Entity>, width: number = 64, hei
 }
 
 // keeps track of the matches from th tile resolver we get out as we move mario around; for debugging purposes
-export function createCollisionLayer(level: Level) {
+export function createCollisionLayer(level: Level): LayerFunction {
   // where the resolved tiles are stored for later drawing them on canvas
   const resolvedTiles = [] as Array<{ x: number; y: number }>;
 
   // we get the tile resolver
+  // if (!level.tileCollider) return;
   const tileResolver = level.tileCollider.tiles;
 
   // we get the tile size

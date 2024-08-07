@@ -9,15 +9,6 @@ export type Position = {
 
 export type KeyListener = (keyState: number) => void;
 
-export type TileRange = number[];
-
-export type LevelSpecTile = {
-  type: string;
-  name: string;
-  // pattern?: string;
-  // ranges: TileRange[];
-};
-
 export type SpriteSheetSpec = {
   imageURL: string;
   tileW: number;
@@ -32,24 +23,44 @@ export type SpriteTileSpec = {
   index: [number, number];
 };
 
-export type FrameSpec = {
-  name: string;
-  rect: [number, number, number, number];
-};
-
 export type LevelSpec = {
   spriteSheet: string;
-  backgrounds: BackgroundSpec[];
+  patterns: LevelSpecPatterns;
+  layers: LevelSpecLayer[];
 };
-export type BackgroundSpec = {
-  tile: string;
+
+export type LevelSpecPatterns = {
+  [name: string]: {
+    tiles: LevelSpecTile[];
+  };
+};
+
+export type LevelSpecLayer = {
+  tiles: LevelSpecTile[];
+};
+
+export type LevelSpecTile = {
   type: string;
-  ranges: BackgroundRange[];
+  name: string;
+  pattern?: string;
+  ranges: TileRange[];
 };
-export type BackgroundRange = [number, number, number, number];
+
+export type TileRange = number[];
 
 export type AnimationSpec = {
   name: string;
   frameLen: number;
   frames: string[];
+};
+
+export type FrameSpec = {
+  name: string;
+  rect: [number, number, number, number];
+};
+
+export type TileCreatorResult = {
+  tile: LevelSpecTile;
+  x: number;
+  y: number;
 };

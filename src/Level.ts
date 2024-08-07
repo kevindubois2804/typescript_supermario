@@ -2,15 +2,36 @@ import Compositor from './Compositor';
 import { Entity } from './Entity';
 import { Matrix } from './math';
 import { TileCollider } from './TileCollider';
-import { LevelSpecTile } from './types';
+
+export type CollisionTile = {
+  type: string;
+};
+
+export type BackgroundTile = {
+  name: string;
+};
+
+export type TileResolverMatch<TileType> = {
+  tile: TileType;
+  x1: number;
+  x2: number;
+  y1: number;
+  y2: number;
+};
 
 export default class Level {
   comp = new Compositor();
   entities = new Set<Entity>();
-  gravity: number = 2000;
+  gravity: number = 1500;
   totalTime = 0;
-  tiles = new Matrix<LevelSpecTile>();
-  tileCollider = new TileCollider(this.tiles);
+  tileCollider: TileCollider;
+  // // legacy code
+  // tiles = new Matrix<LevelSpecTile>();
+  // tileCollider = new TileCollider(this.tiles);
+
+  setCollisionGrid(matrix: Matrix<CollisionTile>) {
+    this.tileCollider = new TileCollider(matrix);
+  }
 
   update(deltaTime: number) {
     this.entities.forEach((entity) => {
@@ -20,13 +41,13 @@ export default class Level {
       entity.pos.x += entity.vel.x * deltaTime;
 
       // we run the tilecollider and do the checks on the x-axis
-      this.tileCollider.checkX(entity);
+      this.tileCollider?.checkX(entity);
 
       // we calculate the new y position
       entity.pos.y += entity.vel.y * deltaTime;
 
       // we run the tilecollider and do the checks on the y-axis
-      this.tileCollider.checkY(entity);
+      this.tileCollider?.checkY(entity);
 
       // after collisions checked on the y-axis apply gravity
       entity.vel.y += this.gravity * deltaTime;

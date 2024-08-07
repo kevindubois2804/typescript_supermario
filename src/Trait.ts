@@ -4,5 +4,7 @@ export default abstract class Trait {
     this.NAME = name;
   }
 
+  obstruct(...args: any[]): void {}
+
   update(...args: any[]): void {}
 }

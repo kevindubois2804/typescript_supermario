@@ -1,8 +1,7 @@
 import { Matrix } from './math';
-import { LevelSpecTile } from './types';
 
-export type TileResolverMatch = {
-  tile: LevelSpecTile;
+export type TileResolverMatch<TileType> = {
+  tile: TileType;
   x1: number;
   x2: number;
   y1: number;
@@ -10,8 +9,8 @@ export type TileResolverMatch = {
 };
 
 // the tile resolver job is to convert world positions to tile indexes
-export class TileResolver {
-  constructor(public matrix: Matrix<LevelSpecTile>, public tileSize = 16) {}
+export class TileResolver<TileType> {
+  constructor(public matrix: Matrix<TileType>, public tileSize = 16) {}
 
   // take a position and returns the index of that position
   toIndex(pos: number) {
@@ -33,7 +32,7 @@ export class TileResolver {
   }
 
   // method that returns a tile based on indexes
-  getByIndex(indexX: number, indexY: number): TileResolverMatch | undefined {
+  getByIndex(indexX: number, indexY: number): TileResolverMatch<TileType> | void {
     const tile = this.matrix.get(indexX, indexY);
     if (tile) {
       const x1 = indexX * this.tileSize;
@@ -58,7 +57,7 @@ export class TileResolver {
   // return all the tiles that we find for a range of world positions
   searchByRange(x1: number, x2: number, y1: number, y2: number) {
     // we collect the matches
-    const matches = [] as TileResolverMatch[];
+    const matches = [] as TileResolverMatch<TileType>[];
 
     // we iterate over the ranges
     this.toIndexRange(x1, x2).forEach((indexX) => {

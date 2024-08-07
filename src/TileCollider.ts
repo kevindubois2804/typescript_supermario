@@ -1,11 +1,12 @@
-import { Entity } from './Entity';
+import { Entity, Sides } from './Entity';
+import { CollisionTile } from './Level';
 import { Matrix } from './math';
 import { TileResolver } from './TileResolver';
-import { LevelSpecTile } from './types';
+
 
 export class TileCollider {
   tiles;
-  constructor(tileMatrix: Matrix<LevelSpecTile>) {
+  constructor(tileMatrix: Matrix<CollisionTile>) {
     this.tiles = new TileResolver(tileMatrix);
   }
 
@@ -29,11 +30,15 @@ export class TileCollider {
         if (entity.pos.y + entity.size.y > match.y1) {
           entity.pos.y = match.y1 - entity.size.y;
           entity.vel.y = 0;
+
+          entity.obstruct(Sides.bottom);
         }
       } else if (entity.vel.y < 0) {
         if (entity.pos.y < match.y2) {
           entity.pos.y = match.y2;
           entity.vel.y = 0;
+
+          entity.obstruct(Sides.top);
         }
       }
     });
