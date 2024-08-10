@@ -14,9 +14,17 @@ export class Stomper extends Trait {
     us.vel.y = -this.bounceSpeed;
   }
 
+  onStomp = (us: Entity, them: Entity) => {};
+
   collides(us: Entity, them: Entity) {
-    if (them.getTrait(Killable) && us.vel.y > them.vel.y) {
+    const killable = them.getTrait(Killable);
+    if (!killable || killable.dead) {
+      return;
+    }
+
+    if (us.vel.y > them.vel.y) {
       this.bounce(us, them);
+      this.onStomp(us, them);
     }
   }
 

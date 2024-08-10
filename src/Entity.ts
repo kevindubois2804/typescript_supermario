@@ -1,6 +1,7 @@
 import BoundingBox from './BoundingBox.js';
 import Level from './Level.js';
 import { Vec2 } from './math.js';
+import { TileResolverMatch } from './TileResolver.js';
 import Trait, { TraitConstructor } from './Trait.js';
 
 export enum Sides {
@@ -19,7 +20,6 @@ export class Entity implements Entity {
   lifetime: number = 0;
   bounds = new BoundingBox(this.pos, this.size, this.offset);
   traits: Trait[] = [];
-  canCollide: boolean = true;
 
   draw(context: CanvasRenderingContext2D) {}
 
@@ -33,9 +33,9 @@ export class Entity implements Entity {
     return trait as T | null;
   }
 
-  obstruct(side: Sides) {
+  obstruct(side: Sides, match: TileResolverMatch<any>) {
     this.traits.forEach((trait) => {
-      trait.obstruct(this, side);
+      trait.obstruct(this, side, match);
     });
   }
 
@@ -51,5 +51,11 @@ export class Entity implements Entity {
     });
 
     this.lifetime += deltaTime;
+  }
+
+  finalize() {
+    this.traits.forEach((trait) => {
+      trait.finalize();
+    });
   }
 }

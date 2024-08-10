@@ -1,5 +1,6 @@
 import { EntityFactories } from '../entities';
-import { createBackgroundLayer, createSpriteLayer } from '../layers';
+import { createBackgroundLayer } from '../layers/background';
+import { createSpriteLayer } from '../layers/sprite';
 import Level, { BackgroundTile, CollisionTile } from '../Level';
 import { loadJSON, loadSpriteSheet } from '../loaders';
 import { Matrix } from '../math';
@@ -32,8 +33,8 @@ function setupBackgrounds(levelSpec: LevelSpec, level: Level, backgroundSprites:
 function setupEntities(levelSpec: LevelSpec, level: Level, entityFactories: EntityFactories) {
   levelSpec.entities.forEach(({ name, pos: [x, y] }) => {
     const createEntity = entityFactories[name];
+
     const entity = createEntity();
-    console.log(entity);
     entity.pos.set(x, y);
     level.entities.add(entity);
   });

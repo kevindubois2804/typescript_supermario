@@ -4,6 +4,8 @@ import SpriteSheet from '../SpriteSheet';
 import { Go } from '../traits/Go';
 import Jump from '../traits/Jump';
 import { Killable } from '../traits/Killable';
+import { Physics } from '../traits/Physics';
+import { Solid } from '../traits/Solid';
 import { Stomper } from '../traits/Stomper';
 
 const SLOW_DRAG = 1 / 1000;
@@ -44,6 +46,8 @@ function createMarioFactory(sprite: SpriteSheet) {
     const mario = new Entity();
     mario.size.set(14, 16);
 
+    mario.addTrait(new Physics());
+    mario.addTrait(new Solid());
     mario.addTrait(new Go());
     mario.addTrait(new Jump());
     mario.addTrait(new Killable());
