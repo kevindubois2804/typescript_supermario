@@ -9,12 +9,12 @@ export type EntityFactories = {
   [name: string]: EntityFactory;
 };
 
-export function loadEntities(): Promise<EntityFactories> {
+export function loadEntities(audioContext: AudioContext): Promise<EntityFactories> {
   const entityFactories: EntityFactories = {};
 
   function addAs(name: string) {
     return (factory: EntityFactory) => (entityFactories[name] = factory);
   }
 
-  return Promise.all([loadMario().then(addAs('mario')), loadGoomba().then(addAs('goomba')), loadKoopa().then(addAs('koopa'))]).then(() => entityFactories);
+  return Promise.all([loadMario(audioContext).then(addAs('mario')), loadGoomba().then(addAs('goomba')), loadKoopa().then(addAs('koopa'))]).then(() => entityFactories);
 }

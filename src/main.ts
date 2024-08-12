@@ -24,8 +24,9 @@ function createPlayerEnv(playerEntity: Entity) {
 
 async function main(canvas: HTMLCanvasElement) {
   const context = canvas.getContext('2d')!;
+  const audioContext = new AudioContext();
 
-  const [entityFactories, font] = await Promise.all([loadEntities(), loadFont()]);
+  const [entityFactories, font] = await Promise.all([loadEntities(audioContext), loadFont()]);
 
   const loadLevel = createLevelLoader(entityFactories);
 
@@ -47,7 +48,7 @@ async function main(canvas: HTMLCanvasElement) {
 
   const timer = new Timer(1 / 60);
   timer.update = function update(deltaTime) {
-    level.update(deltaTime);
+    level.update({ deltaTime, audioContext });
 
     console.log(mario.pos);
 
@@ -59,9 +60,11 @@ async function main(canvas: HTMLCanvasElement) {
   timer.start();
 }
 
-main(canvas);
-// visualizing tiles
-// context.strokeStyle = 'yellow';
-// context.beginPath();
-// context.rect(2 * 16, 11 * 16, 16, 16);
-// context.stroke();
+// main(canvas);
+
+const start = () => {
+  window.removeEventListener('click', start);
+  main(canvas);
+};
+
+window.addEventListener('click', start);

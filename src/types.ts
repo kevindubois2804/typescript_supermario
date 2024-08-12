@@ -64,3 +64,8 @@ export type FrameSpec = {
   name: string;
   rect: [number, number, number, number];
 };
+
+export type GameContext = {
+  audioContext: AudioContext;
+  deltaTime: number;
+};

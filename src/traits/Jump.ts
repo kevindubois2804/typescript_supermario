@@ -1,5 +1,6 @@
 import { Entity, Sides } from '../Entity';
 import Trait from '../Trait';
+import { GameContext } from '../types';
 
 export default class Jump extends Trait {
   duration: number = 0.3;
@@ -35,21 +36,19 @@ export default class Jump extends Trait {
     }
   }
 
-  update(entity: Entity, deltaTime: number) {
+  update(entity: Entity, { deltaTime }: GameContext) {
     if (this.requestTime > 0) {
       if (this.ready > 0) {
+        this.sounds.add('jump');
         this.engageTime = this.duration;
         this.requestTime = 0;
       }
-
       this.requestTime -= deltaTime;
     }
-
     if (this.engageTime > 0) {
       entity.vel.y = -(this.velocity + Math.abs(entity.vel.x) * this.speedBoost);
       this.engageTime -= deltaTime;
     }
-
-    this.ready--;
+    this.ready -= 1;
   }
 }

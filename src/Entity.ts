@@ -1,8 +1,10 @@
+import { AudioBoard } from './AudioBoard.js';
 import BoundingBox from './BoundingBox.js';
 import Level from './Level.js';
 import { Vec2 } from './math.js';
 import { TileResolverMatch } from './TileResolver.js';
 import Trait, { TraitConstructor } from './Trait.js';
+import { GameContext } from './types.js';
 
 export enum Sides {
   top,
@@ -20,6 +22,7 @@ export class Entity implements Entity {
   lifetime: number = 0;
   bounds = new BoundingBox(this.pos, this.size, this.offset);
   traits: Trait[] = [];
+  audio?: AudioBoard;
 
   draw(context: CanvasRenderingContext2D) {}
 
@@ -28,9 +31,13 @@ export class Entity implements Entity {
     this[trait.NAME] = trait;
   }
 
-  getTrait<T extends Trait>(TraitClass: TraitConstructor<T>): T | null {
-    const trait = this.traits.find((trait) => trait instanceof TraitClass);
-    return trait as T | null;
+  getTrait<T extends Trait>(TraitClass: TraitConstructor<T>): T | undefined {
+    for (const trait of this.traits) {
+      if (trait instanceof TraitClass) {
+        return trait as T;
+      }
+    }
+    return undefined;
   }
 
   obstruct(side: Sides, match: TileResolverMatch<any>) {
@@ -45,12 +52,12 @@ export class Entity implements Entity {
     });
   }
 
-  update(deltaTime: number, level: Level) {
+  update(gameContext: GameContext, level: Level) {
     this.traits.forEach((trait) => {
-      trait.update(this, deltaTime, level);
+      trait.update(this, gameContext, level);
+      if (this.audio) trait.playSounds(this.audio, gameContext.audioContext);
     });
-
-    this.lifetime += deltaTime;
+    this.lifetime += gameContext.deltaTime;
   }
 
   finalize() {
