@@ -1,7 +1,6 @@
 import Compositor from './Compositor';
 import { Entity } from './Entity';
 import { EntityCollider } from './EntityCollider';
-import { Matrix } from './math';
 import { TileCollider } from './TileCollider';
 import { GameContext } from './types';
 
@@ -26,15 +25,8 @@ export default class Level {
   entities = new Set<Entity>();
   gravity: number = 1500;
   totalTime = 0;
-  tileCollider: TileCollider;
+  tileCollider = new TileCollider();
   entityCollider = new EntityCollider(this.entities);
-  // // legacy code
-  // tiles = new Matrix<LevelSpecTile>();
-  // tileCollider = new TileCollider(this.tiles);
-
-  setCollisionGrid(matrix: Matrix<CollisionTile>) {
-    this.tileCollider = new TileCollider(matrix);
-  }
 
   update(gameContext: GameContext) {
     this.entities.forEach((entity) => {

@@ -1,15 +1,14 @@
 // createBackgroundLayer is a high order function that create all the necessary information to create a buffered canvas on which the background is drawn and returns a function that can draw the buffered canvas on the main canvas
 
 import Camera from '../Camera';
-import Level, { BackgroundTile } from '../Level';
-import { Matrix } from '../math';
+import Level from '../Level';
 import { raise } from '../raise';
 import SpriteSheet from '../SpriteSheet';
-import { TileResolver } from '../TileResolver';
+import { TileResolver, TileResolverMatrix } from '../TileResolver';
 import { LayerFunction } from '../types';
 
 // the necessary information is taken from the level tiles set
-export function createBackgroundLayer(level: Level, tiles: Matrix<BackgroundTile>, sprites: SpriteSheet): LayerFunction {
+export function createBackgroundLayer(level: Level, tiles: TileResolverMatrix, sprites: SpriteSheet): LayerFunction {
   const resolver = new TileResolver(tiles);
 
   // since the backgrounds will be repeatedly drawn on each animation frame, we offload them to an offscreen canvas( buffer )

@@ -1,4 +1,5 @@
 import Camera from './Camera';
+import { EntityFactory } from './entities';
 
 export type LayerFunction = (context: CanvasRenderingContext2D, camera: Camera) => void;
 
@@ -68,4 +69,7 @@ export type FrameSpec = {
 export type GameContext = {
   audioContext: AudioContext;
   deltaTime: number;
+  entityFactories: Dict<EntityFactory>;
 };
+
+export type Dict<T> = { [_ in string]?: T };

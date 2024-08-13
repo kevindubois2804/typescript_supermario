@@ -43,13 +43,17 @@ class KoopaBehavior extends Trait {
 
   handleStomp(us: Entity, them: Entity) {
     if (this.state === KoopaState.walking) {
-      this.hide(us);
+      console.log('ok');
+      this.queue(() => this.hide(us));
+      // this.hide(us);
     } else if (this.state === KoopaState.hiding) {
+      console.log('ok2');
       us.getTrait(Killable)!.kill();
       us.vel.set(100, -200);
       us.getTrait(Solid)!.obstructs = false;
     } else if (this.state === KoopaState.panic) {
-      this.hide(us);
+      this.queue(() => this.hide(us));
+      // this.hide(us);
     }
   }
 

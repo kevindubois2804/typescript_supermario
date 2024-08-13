@@ -9,7 +9,7 @@ export class Solid extends Trait {
     super('solid');
   }
 
-  obstruct(entity: Entity, side: Sides, match: TileResolverMatch<any>) {
+  obstruct(entity: Entity, side: Sides, match: TileResolverMatch) {
     if (!this.obstructs) return;
 
     if (side === Sides.bottom) {

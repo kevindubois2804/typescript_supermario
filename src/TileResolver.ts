@@ -1,16 +1,21 @@
 import { Matrix } from './math';
+import { LevelSpecTile } from './types';
 
-export type TileResolverMatch<TileType> = {
-  tile: TileType;
+export type TileResolverMatch = {
+  tile: LevelSpecTile;
   x1: number;
   x2: number;
   y1: number;
   y2: number;
+  indexX: number;
+  indexY: number;
 };
 
+export type TileResolverMatrix = Matrix<LevelSpecTile>;
+
 // the tile resolver job is to convert world positions to tile indexes
-export class TileResolver<TileType> {
-  constructor(public matrix: Matrix<TileType>, public tileSize = 16) {}
+export class TileResolver {
+  constructor(public matrix: TileResolverMatrix, public tileSize = 16) {}
 
   // take a position and returns the index of that position
   toIndex(pos: number) {
@@ -32,20 +37,14 @@ export class TileResolver<TileType> {
   }
 
   // method that returns a tile based on indexes
-  getByIndex(indexX: number, indexY: number): TileResolverMatch<TileType> | void {
+  getByIndex(indexX: number, indexY: number): TileResolverMatch | undefined {
     const tile = this.matrix.get(indexX, indexY);
     if (tile) {
       const x1 = indexX * this.tileSize;
       const x2 = x1 + this.tileSize;
       const y1 = indexY * this.tileSize;
       const y2 = y1 + this.tileSize;
-      return {
-        tile,
-        x1,
-        x2,
-        y1,
-        y2,
-      };
+      return { tile, x1, x2, y1, y2, indexX, indexY };
     }
   }
 
@@ -55,19 +54,14 @@ export class TileResolver<TileType> {
   }
 
   // return all the tiles that we find for a range of world positions
-  searchByRange(x1: number, x2: number, y1: number, y2: number) {
-    // we collect the matches
-    const matches = [] as TileResolverMatch<TileType>[];
-
-    // we iterate over the ranges
-    this.toIndexRange(x1, x2).forEach((indexX) => {
-      this.toIndexRange(y1, y2).forEach((indexY) => {
+  *searchByRange(x1: number, x2: number, y1: number, y2: number) {
+    for (const indexX of this.toIndexRange(x1, x2)) {
+      for (const indexY of this.toIndexRange(y1, y2)) {
         const match = this.getByIndex(indexX, indexY);
         if (match) {
-          matches.push(match);
+          yield match;
         }
-      });
-    });
-    return matches;
+      }
+    }
   }
 }

@@ -1,5 +1,5 @@
 import { AudioBoard } from '../AudioBoard';
-import { EntityFactories } from '../entities';
+import { EntityFactoryDict } from '../entities';
 import { Entity } from '../Entity';
 import Level from '../Level';
 import { loadAudioBoard } from '../loaders/audio';
@@ -8,13 +8,13 @@ import { Emitter } from '../traits/Emitter';
 
 const HOLD_FIRE_THRESHOLD = 30;
 
-export function loadCannon(audioContext: AudioContext, entityFactories: EntityFactories) {
+export function loadCannon(audioContext: AudioContext, entityFactories: EntityFactoryDict) {
   return loadAudioBoard('cannon', audioContext).then((audio) => {
     return createCannonFactory(audio, entityFactories);
   });
 }
 
-function createCannonFactory(audio: AudioBoard, entityFactories: EntityFactories) {
+function createCannonFactory(audio: AudioBoard, entityFactories: EntityFactoryDict) {
   function emitBullet(cannon: Entity, level: Level) {
     let dir = 1;
     for (const player of findPlayers(level)) {
@@ -27,7 +27,9 @@ function createCannonFactory(audio: AudioBoard, entityFactories: EntityFactories
       }
     }
 
-    const bullet = entityFactories.bullet();
+    const bullet = entityFactories.bullet?.();
+
+    if (!bullet) return;
 
     bullet.pos.copy(cannon.pos);
     bullet.vel.set(80 * dir, 0);

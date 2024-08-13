@@ -19,7 +19,7 @@ export default abstract class Trait {
   }
 
   update(entity: Entity, gameContext: GameContext, level: Level) {}
-  obstruct(entity: Entity, side: Sides, match: TileResolverMatch<any>) {}
+  obstruct(entity: Entity, side: Sides, match: TileResolverMatch) {}
   collides(us: Entity, them: Entity) {}
   queue(task: TraitTask) {
     this.tasks.push(task);

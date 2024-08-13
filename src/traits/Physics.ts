@@ -8,12 +8,14 @@ export class Physics extends Trait {
     super('physics');
   }
 
-  update(entity: Entity, { deltaTime }: GameContext, level: Level) {
-    entity.pos.x += entity.vel.x * deltaTime;
+  update(entity: Entity, gameContext: GameContext, level: Level) {
+    entity.pos.x += entity.vel.x * gameContext.deltaTime;
 
-    level.tileCollider.checkX(entity);
-    entity.pos.y += entity.vel.y * deltaTime;
-    level.tileCollider.checkY(entity);
-    entity.vel.y += level.gravity * deltaTime;
+    level.tileCollider.checkX(entity, gameContext, level);
+
+    entity.pos.y += entity.vel.y * gameContext.deltaTime;
+    level.tileCollider.checkY(entity, gameContext, level);
+
+    entity.vel.y += level.gravity * gameContext.deltaTime;
   }
 }

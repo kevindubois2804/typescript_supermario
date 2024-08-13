@@ -41,7 +41,7 @@ export class Entity implements Entity {
     return undefined;
   }
 
-  obstruct(side: Sides, match: TileResolverMatch<any>) {
+  obstruct(side: Sides, match: TileResolverMatch) {
     this.traits.forEach((trait) => {
       trait.obstruct(this, side, match);
     });

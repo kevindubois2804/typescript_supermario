@@ -11,6 +11,7 @@ import { createLevelLoader } from './loaders/level';
 
 import Timer from './Timer';
 import { createPlayer, createPlayerEnv } from './player';
+import { raise } from './raise';
 
 const canvas = document.getElementById('screen') as HTMLCanvasElement;
 
@@ -26,6 +27,7 @@ async function main(canvas: HTMLCanvasElement) {
 
   const camera = new Camera();
 
+  if (!entityFactories.mario) raise('where is mario tho??');
   const mario = createPlayer(entityFactories.mario());
   level.entities.add(mario);
 
@@ -40,9 +42,7 @@ async function main(canvas: HTMLCanvasElement) {
 
   const timer = new Timer(1 / 60);
   timer.update = function update(deltaTime) {
-    level.update({ deltaTime, audioContext });
-
-    console.log(level.entities);
+    level.update({ deltaTime, audioContext, entityFactories });
 
     camera.pos.x = Math.max(0, mario.pos.x - 100);
 
