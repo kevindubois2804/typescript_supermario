@@ -23,6 +23,7 @@ export class Entity implements Entity {
   bounds = new BoundingBox(this.pos, this.size, this.offset);
   traits: Trait[] = [];
   audio?: AudioBoard;
+  sounds = new Set<string>();
 
   draw(context: CanvasRenderingContext2D) {}
 
@@ -34,7 +35,7 @@ export class Entity implements Entity {
   getTrait<T extends Trait>(TraitClass: TraitConstructor<T>): T | undefined {
     for (const trait of this.traits) {
       if (trait instanceof TraitClass) {
-        return trait as T;
+        return trait;
       }
     }
     return undefined;
@@ -55,7 +56,7 @@ export class Entity implements Entity {
   update(gameContext: GameContext, level: Level) {
     this.traits.forEach((trait) => {
       trait.update(this, gameContext, level);
-      if (this.audio) trait.playSounds(this.audio, gameContext.audioContext);
+      if (this.audio) this.playSounds(this.audio, gameContext.audioContext);
     });
     this.lifetime += gameContext.deltaTime;
   }
@@ -64,5 +65,10 @@ export class Entity implements Entity {
     this.traits.forEach((trait) => {
       trait.finalize();
     });
+  }
+
+  private playSounds(audioBoard: AudioBoard, audioContext: AudioContext) {
+    this.sounds.forEach((name) => audioBoard.play(name, audioContext));
+    this.sounds.clear();
   }
 }

@@ -1,5 +1,5 @@
-import { AudioBoard } from './AudioBoard';
 import { Entity, Sides } from './Entity';
+import { EventEmitter } from './EventEmitter';
 import Level from './Level';
 import { TileResolverMatch } from './TileResolver';
 import { GameContext } from './types';
@@ -11,7 +11,7 @@ export interface TraitConstructor<T extends Trait> {
 type TraitTask = (...args: any[]) => void;
 
 export default abstract class Trait {
-  sounds = new Set<string>();
+  events = new EventEmitter();
   NAME: string;
   tasks: TraitTask[] = [];
   constructor(name: string) {
@@ -27,9 +27,5 @@ export default abstract class Trait {
   finalize() {
     this.tasks.forEach((task) => task());
     this.tasks.length = 0;
-  }
-  playSounds(audioBoard: AudioBoard, audioContext: AudioContext) {
-    this.sounds.forEach((name) => audioBoard.play(name, audioContext));
-    this.sounds.clear();
   }
 }

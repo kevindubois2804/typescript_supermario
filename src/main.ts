@@ -1,26 +1,18 @@
 import Camera from './Camera';
 import { setupMouseControl } from './debug';
 import { loadEntities } from './entities';
-import { Entity } from './Entity';
+
 import setupKeyboard from './input';
 import { createCameraLayer } from './layers/camera';
 import { createCollisionLayer } from './layers/collision';
 import { createDashboardLayer } from './layers/dashboard';
 import { loadFont } from './loaders/font';
 import { createLevelLoader } from './loaders/level';
-import { PlayerController } from './traits/PlayerController';
+
 import Timer from './Timer';
+import { createPlayer, createPlayerEnv } from './player';
 
 const canvas = document.getElementById('screen') as HTMLCanvasElement;
-
-function createPlayerEnv(playerEntity: Entity) {
-  const playerEnv = new Entity();
-  const playerControl = new PlayerController();
-  playerControl.checkpoint.set(64, 64);
-  playerControl.setPlayer(playerEntity);
-  playerEnv.addTrait(playerControl);
-  return playerEnv;
-}
 
 async function main(canvas: HTMLCanvasElement) {
   const context = canvas.getContext('2d')!;
@@ -34,7 +26,7 @@ async function main(canvas: HTMLCanvasElement) {
 
   const camera = new Camera();
 
-  const mario = entityFactories.mario();
+  const mario = createPlayer(entityFactories.mario());
   level.entities.add(mario);
 
   const playerEnv = createPlayerEnv(mario);
@@ -50,7 +42,7 @@ async function main(canvas: HTMLCanvasElement) {
   timer.update = function update(deltaTime) {
     level.update({ deltaTime, audioContext });
 
-    console.log(mario.pos);
+    console.log(level.entities);
 
     camera.pos.x = Math.max(0, mario.pos.x - 100);
 

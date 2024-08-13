@@ -7,6 +7,7 @@ import { PendulumMove } from '../traits/PendulumMove.js';
 import { Physics } from '../traits/Physics.js';
 import { Solid } from '../traits/Solid.js';
 import { Stomper } from '../traits/Stomper.js';
+import { GameContext } from '../types.js';
 
 enum KoopaState {
   walking,
@@ -100,7 +101,7 @@ class KoopaBehavior extends Trait {
     this.state = KoopaState.panic;
   }
 
-  update(us: Entity, deltaTime: number) {
+  update(us: Entity, { deltaTime }: GameContext) {
     if (this.state === KoopaState.hiding) {
       this.hideTime += deltaTime;
 
