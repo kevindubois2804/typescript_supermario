@@ -50,6 +50,7 @@ async function main(canvas: HTMLCanvasElement) {
   };
 
   timer.start();
+  level.music.player?.playTrack('main');
 }
 
 // main(canvas);

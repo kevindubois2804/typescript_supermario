@@ -2,11 +2,13 @@ import { EntityFactoryDict } from '../entities';
 import { createBackgroundLayer } from '../layers/background';
 import { createSpriteLayer } from '../layers/sprite';
 import Level from '../Level';
-import { loadJSON, loadSpriteSheet } from '../loaders';
+import { loadJSON } from '../loaders';
 import { Matrix } from '../math';
 import SpriteSheet from '../SpriteSheet';
 import { TileResolverMatrix } from '../TileResolver';
 import { LevelSpec, LevelSpecPatterns, LevelSpecTile, TileRange } from '../types';
+import { loadMusicSheet } from './music';
+import { loadSpriteSheet } from './sprite';
 
 function setupBackground(levelSpec: LevelSpec, level: Level, backgroundSprites: SpriteSheet) {
   for (const layer of levelSpec.layers) {
@@ -34,11 +36,13 @@ export function createLevelLoader(entityFactory: EntityFactoryDict) {
   return async function loadLevel(name: string) {
     const levelSpec = await loadJSON<LevelSpec>(`levels/${name}.json`);
     const backgroundSprites = await loadSpriteSheet(levelSpec.spriteSheet);
+    const musicPlayer = await loadMusicSheet(levelSpec.musicSheet);
 
     const level = new Level();
 
     setupBackground(levelSpec, level, backgroundSprites);
     setupEntities(levelSpec, level, entityFactory);
+    level.music.setPlayer(musicPlayer);
     return level;
   };
 }

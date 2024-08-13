@@ -1,6 +1,6 @@
 import { Entity } from '../Entity';
 import Level from '../Level';
-import { loadSpriteSheet } from '../loaders';
+import { loadSpriteSheet } from '../loaders/sprite';
 import SpriteSheet from '../SpriteSheet';
 import Trait from '../Trait';
 import { Gravity } from '../traits/Gravity';

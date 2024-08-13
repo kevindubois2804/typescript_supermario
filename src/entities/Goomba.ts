@@ -1,5 +1,5 @@
 import { Entity } from '../Entity.js';
-import { loadSpriteSheet } from '../loaders.js';
+import { loadSpriteSheet } from '../loaders/sprite';
 import SpriteSheet from '../SpriteSheet.js';
 import Trait from '../Trait.js';
 import { Killable } from '../traits/Killable.js';

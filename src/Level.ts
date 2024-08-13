@@ -1,6 +1,7 @@
 import Compositor from './Compositor';
 import { Entity } from './Entity';
 import { EntityCollider } from './EntityCollider';
+import { MusicController } from './MusicController';
 import { TileCollider } from './TileCollider';
 import { GameContext } from './types';
 
@@ -27,6 +28,7 @@ export default class Level {
   totalTime = 0;
   tileCollider = new TileCollider();
   entityCollider = new EntityCollider(this.entities);
+  music = new MusicController();
 
   update(gameContext: GameContext) {
     this.entities.forEach((entity) => {
