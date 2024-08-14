@@ -1,10 +1,9 @@
 import { Entity } from '../Entity';
 import Level from '../Level';
 import { Vec2 } from '../math';
-import Trait from '../Trait';
+import { Trait } from '../Trait';
 import { GameContext } from '../types';
 import { Killable } from './Killable';
-import { Stomper } from './Stomper';
 
 export class PlayerController extends Trait {
   player: Entity;
@@ -13,18 +12,15 @@ export class PlayerController extends Trait {
   score = 0;
 
   constructor() {
-    super('playerController');
+    super();
+
+    // this.listen('stomp', () => {
+    //   this.score += 100;
+    // });
   }
 
   setPlayer(entity: Entity) {
     this.player = entity;
-
-    const stomper = this.player.getTrait(Stomper);
-    if (stomper) {
-      stomper.events.listen('stomp', () => {
-        this.score += 100;
-      });
-    }
   }
 
   update(_: Entity, { deltaTime }: GameContext, level: Level) {

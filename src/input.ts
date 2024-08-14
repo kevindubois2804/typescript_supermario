@@ -1,13 +1,15 @@
 import { Entity } from './Entity';
 import KeyboardState from './KeyboardStates';
+import { Go } from './traits/Go';
+import Jump from './traits/Jump';
 
 export default function setupKeyboard(mario: Entity) {
   const input = new KeyboardState();
   input.addMapping('Space', (keyState) => {
     if (keyState) {
-      mario.jump.start();
+      mario.getTrait(Jump)!.start();
     } else {
-      mario.jump.cancel();
+      mario.getTrait(Jump)!.cancel();
     }
   });
 
@@ -15,10 +17,10 @@ export default function setupKeyboard(mario: Entity) {
     mario.turbo(keyState);
   });
   input.addMapping('ArrowRight', (keyState) => {
-    mario.go.dir += keyState ? 1 : -1;
+    mario.getTrait(Go)!.dir += keyState ? 1 : -1;
   });
   input.addMapping('ArrowLeft', (keyState) => {
-    mario.go.dir += keyState ? -1 : 1;
+    mario.getTrait(Go)!.dir += keyState ? -1 : 1;
   });
 
   return input;

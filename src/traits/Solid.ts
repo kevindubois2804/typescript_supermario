@@ -1,13 +1,9 @@
 import { Entity, Sides } from '../Entity';
 import { TileResolverMatch } from '../TileResolver';
-import Trait from '../Trait';
+import { Trait } from '../Trait';
 
 export class Solid extends Trait {
   obstructs = true;
-
-  constructor() {
-    super('solid');
-  }
 
   obstruct(entity: Entity, side: Sides, match: TileResolverMatch) {
     if (!this.obstructs) return;

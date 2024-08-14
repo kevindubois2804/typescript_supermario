@@ -1,5 +1,5 @@
 import { Entity } from '../Entity';
-import Trait from '../Trait';
+import { Trait } from '../Trait';
 import { GameContext } from '../types';
 import Jump from './Jump';
 
@@ -11,10 +11,6 @@ export class Go extends Trait {
   speed: number = 6000;
   dragFactor: number = 1 / 5000;
   deceleration: number = 300;
-
-  constructor() {
-    super('go');
-  }
 
   update(entity: Entity, { deltaTime }: GameContext) {
     const absX = Math.abs(entity.vel.x);

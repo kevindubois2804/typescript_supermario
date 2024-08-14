@@ -1,13 +1,9 @@
 import { Entity } from '../Entity';
 import Level from '../Level';
-import Trait from '../Trait';
+import { Trait } from '../Trait';
 import { GameContext } from '../types';
 
 export class Physics extends Trait {
-  constructor() {
-    super('physics');
-  }
-
   update(entity: Entity, gameContext: GameContext, level: Level) {
     entity.pos.x += entity.vel.x * gameContext.deltaTime;
 

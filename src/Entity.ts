@@ -1,9 +1,10 @@
 import { AudioBoard } from './AudioBoard.js';
 import BoundingBox from './BoundingBox.js';
+import { EventBuffer } from './EventBuffer.js';
 import Level from './Level.js';
 import { Vec2 } from './math.js';
 import { TileResolverMatch } from './TileResolver.js';
-import Trait, { TraitConstructor } from './Trait.js';
+import { Trait, TraitConstructor } from './Trait.js';
 import { GameContext } from './types.js';
 
 export enum Sides {
@@ -24,12 +25,13 @@ export class Entity implements Entity {
   traits: Trait[] = [];
   audio?: AudioBoard;
   sounds = new Set<string>();
+  events = new EventBuffer();
 
   draw(context: CanvasRenderingContext2D) {}
 
-  addTrait<T extends Trait>(trait: T) {
+  addTrait<T extends Trait>(trait: T): T {
     this.traits.push(trait);
-    this[trait.NAME] = trait;
+    return trait;
   }
 
   getTrait<T extends Trait>(TraitClass: TraitConstructor<T>): T | undefined {
@@ -39,6 +41,11 @@ export class Entity implements Entity {
       }
     }
     return undefined;
+  }
+
+  useTrait<T extends Trait>(TraitClass: TraitConstructor<T>, fn: (trait: T) => void): void {
+    const trait = this.getTrait(TraitClass);
+    if (trait) fn(trait);
   }
 
   obstruct(side: Sides, match: TileResolverMatch) {
@@ -62,9 +69,13 @@ export class Entity implements Entity {
   }
 
   finalize() {
+    this.events.emit(Trait.EVENT_TASK);
+
     this.traits.forEach((trait) => {
-      trait.finalize();
+      trait.finalize(this);
     });
+
+    this.events.clear();
   }
 
   private playSounds(audioBoard: AudioBoard, audioContext: AudioContext) {

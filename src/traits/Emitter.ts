@@ -1,6 +1,6 @@
 import { Entity } from '../Entity';
 import Level from '../Level';
-import Trait from '../Trait';
+import { Trait } from '../Trait';
 import { GameContext } from '../types';
 
 type EmitterFn = (entity: Entity, level: Level) => void;
@@ -9,10 +9,6 @@ export class Emitter extends Trait {
   interval = 2;
   coolDown = this.interval;
   emitters: EmitterFn[] = [];
-
-  constructor() {
-    super('emitter');
-  }
 
   update(entity: Entity, { deltaTime }: GameContext, level: Level) {
     this.coolDown -= deltaTime;

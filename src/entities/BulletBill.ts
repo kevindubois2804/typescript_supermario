@@ -2,9 +2,10 @@ import { Entity } from '../Entity';
 import Level from '../Level';
 import { loadSpriteSheet } from '../loaders/sprite';
 import SpriteSheet from '../SpriteSheet';
-import Trait from '../Trait';
+import { Trait } from '../Trait';
 import { Gravity } from '../traits/Gravity';
 import { Killable } from '../traits/Killable';
+import { Stomper } from '../traits/Stomper';
 import { Velocity } from '../traits/Velocity';
 import { GameContext } from '../types';
 
@@ -14,27 +15,24 @@ export function loadBulletBill() {
 
 class BulletBillBehavior extends Trait {
   gravity = new Gravity();
-  constructor() {
-    super('behavior');
-  }
 
   collides(us: Entity, them: Entity) {
-    if (us.killable.dead) {
+    if (us.getTrait(Killable)!.dead) {
       return;
     }
 
-    if (them.stomper) {
+    if (them.getTrait(Stomper)) {
       if (them.vel.y > us.vel.y) {
-        us.killable.kill();
+        us.getTrait(Killable)!.kill();
         us.vel.set(100, -200);
       } else {
-        them.killable.kill();
+        them.getTrait(Killable)!.kill();
       }
     }
   }
 
   update(us: Entity, gameContext: GameContext, level: Level) {
-    if (us.killable.dead) {
+    if (us.getTrait(Killable)!.dead) {
       this.gravity.update(us, gameContext, level);
     }
   }

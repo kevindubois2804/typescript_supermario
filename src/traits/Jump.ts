@@ -1,5 +1,5 @@
 import { Entity, Sides } from '../Entity';
-import Trait from '../Trait';
+import { Trait } from '../Trait';
 import { GameContext } from '../types';
 
 export default class Jump extends Trait {
@@ -10,10 +10,6 @@ export default class Jump extends Trait {
   requestTime: number = 0;
   gracePeriod: number = 0.1;
   speedBoost: number = 0.3;
-
-  constructor() {
-    super('jump');
-  }
 
   get falling() {
     return this.ready < 0;
