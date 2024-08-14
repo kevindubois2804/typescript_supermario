@@ -12,6 +12,7 @@ import { createLevelLoader } from './loaders/level';
 import Timer from './Timer';
 import { createPlayer, createPlayerEnv } from './player';
 import { raise } from './raise';
+import Player from './traits/Player';
 
 const canvas = document.getElementById('screen') as HTMLCanvasElement;
 
@@ -23,18 +24,21 @@ async function main(canvas: HTMLCanvasElement) {
 
   const loadLevel = createLevelLoader(entityFactories);
 
-  const level = await loadLevel('1-1');
+  const level = await loadLevel('debug-coin');
 
   const camera = new Camera();
 
   if (!entityFactories.mario) raise('where is mario tho??');
   const mario = createPlayer(entityFactories.mario());
+  mario.useTrait(Player, (player) => {
+    player.name = 'MARIO';
+  });
   level.entities.add(mario);
 
   const playerEnv = createPlayerEnv(mario);
   level.entities.add(playerEnv);
 
-  level.comp.layers.push(createCollisionLayer(level), createCameraLayer(camera), createDashboardLayer(font, playerEnv));
+  level.comp.layers.push(createCollisionLayer(level), createCameraLayer(camera), createDashboardLayer(font, level));
 
   const input = setupKeyboard(mario);
   setupMouseControl(canvas, mario, camera);
@@ -50,7 +54,6 @@ async function main(canvas: HTMLCanvasElement) {
   };
 
   timer.start();
-  level.music.player?.playTrack('main');
 }
 
 // main(canvas);

@@ -10,7 +10,6 @@ export function setupMouseControl(canvas: HTMLCanvasElement, entity: Entity, cam
       if (event instanceof MouseEvent) {
         if (event.buttons === 1) {
           entity.vel.set(0, 0);
-          console.log(event.offsetX);
           entity.pos.set(event.offsetX - 80 + camera.pos.x, event.offsetY + camera.pos.y - 80);
         } else if (event.buttons === 2 && lastEvent && lastEvent.buttons === 2 && lastEvent.type === 'mousemove') {
           camera.pos.x -= event.offsetX - lastEvent.offsetX;

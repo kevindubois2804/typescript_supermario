@@ -5,7 +5,7 @@ import { GameContext } from './types';
 
 export type TraitConstructor<T extends Trait> = new (...args: any[]) => T;
 
-type TraitTask = () => void;
+type TraitTask = (...args: any[]) => void;
 
 type TraitListener = {
   name: string | symbol;
