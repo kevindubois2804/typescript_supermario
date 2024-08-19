@@ -1,6 +1,6 @@
 import { Vec2 } from './math';
 
-export default class BoundingBox {
+export class BoundingBox {
   constructor(public pos: Vec2, public size: Vec2, public offset: Vec2) {}
 
   get bottom() {

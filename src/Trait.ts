@@ -1,9 +1,7 @@
-import { Entity, Sides } from './Entity';
-import Level from './Level';
+import { Entity, Side } from './Entity';
+import { GameContext } from './GameContext';
+import { Level } from './Level';
 import { TileResolverMatch } from './TileResolver';
-import { GameContext } from './types';
-
-export type TraitConstructor<T extends Trait> = new (...args: any[]) => T;
 
 type TraitTask = (...args: any[]) => void;
 
@@ -36,6 +34,6 @@ export abstract class Trait {
   }
 
   update(entity: Entity, gameContext: GameContext, level: Level) {}
-  obstruct(entity: Entity, side: Sides, match: TileResolverMatch) {}
+  obstruct(entity: Entity, side: Side, match: TileResolverMatch) {}
   collides(us: Entity, them: Entity) {}
 }

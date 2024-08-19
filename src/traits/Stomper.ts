@@ -1,4 +1,4 @@
-import { Entity, Sides } from '../Entity';
+import { Entity } from '../Entity';
 import { Trait } from '../Trait';
 import { Killable } from './Killable';
 
@@ -19,11 +19,12 @@ export class Stomper extends Trait {
     }
 
     if (us.vel.y > them.vel.y) {
+      // using queue() fixes a race condition that can sometimes cause a stomper
+      // to incorrectly get killed by a killable
       this.queue(() => this.bounce(us, them));
+
       us.sounds.add('stomp');
       us.events.emit(Stomper.EVENT_STOMP, us, them);
     }
   }
-
-  obstruct(ent: Entity, side: Sides) {}
 }

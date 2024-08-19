@@ -1,6 +1,6 @@
 import { Entity } from '../Entity';
+import { GameContext } from '../GameContext';
 import { Trait } from '../Trait';
-import { GameContext } from '../types';
 
 export class Velocity extends Trait {
   update(entity: Entity, { deltaTime }: GameContext) {

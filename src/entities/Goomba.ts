@@ -1,17 +1,18 @@
-import { Entity } from '../Entity.js';
+import { Animation } from '../animation';
+import { Entity } from '../Entity';
 import { loadSpriteSheet } from '../loaders/sprite';
-import SpriteSheet from '../SpriteSheet.js';
-import { Trait } from '../Trait.js';
+import { SpriteSheet } from '../SpriteSheet';
 
-import { Killable } from '../traits/Killable.js';
-import { PendulumMove } from '../traits/PendulumMove.js';
-import { Physics } from '../traits/Physics.js';
-import { Solid } from '../traits/Solid.js';
-import { Stomper } from '../traits/Stomper.js';
+import { Trait } from '../Trait';
+import { Killable } from '../traits/Killable';
+import { PendulumMove } from '../traits/PendulumMove';
+import { Physics } from '../traits/Physics';
+import { Solid } from '../traits/Solid';
+import { Stomper } from '../traits/Stomper';
 
 class GoombaBehavior extends Trait {
   collides(us: Entity, them: Entity) {
-    if (us.getTrait(Killable)!.dead) {
+    if (us.getTrait(Killable)?.dead) {
       return;
     }
 
@@ -21,46 +22,41 @@ class GoombaBehavior extends Trait {
         us.useTrait(PendulumMove, (pm) => (pm.speed = 0));
         us.useTrait(Killable, (k) => k.kill());
       } else {
-        const killable = them.getTrait(Killable);
-        if (killable) {
-          killable.kill();
-        }
+        them.getTrait(Killable)?.kill();
       }
     }
   }
 }
 
-export function loadGoomba() {
-  return loadSpriteSheet('goomba').then(createGoombaFactory);
-}
+export class Goomba extends Entity {
+  walk = this.addTrait(new PendulumMove());
+  behavior = this.addTrait(new GoombaBehavior());
+  killable = this.addTrait(new Killable());
+  solid = this.addTrait(new Solid());
+  physics = this.addTrait(new Physics());
 
-function createGoombaFactory(sprite: SpriteSheet) {
-  const walkAnim = sprite.animations.get('walk')!;
+  constructor(private sprites: SpriteSheet, private walkAnim: Animation) {
+    super();
+    this.size.set(16, 16);
+  }
 
-  function routeAnim(goomba: Entity) {
-    if (goomba.getTrait(Killable)!.dead) {
+  draw(context: CanvasRenderingContext2D) {
+    this.sprites.draw(this.routeAnim(), context, 0, 0);
+  }
+
+  private routeAnim() {
+    if (this.killable.dead) {
       return 'flat';
     }
-
-    return walkAnim(goomba.lifetime);
+    return this.walkAnim(this.lifetime);
   }
+}
 
-  function drawGoomba(context: CanvasRenderingContext2D) {
-    sprite.draw(routeAnim(this), context, 0, 0);
-  }
+export async function loadGoomba() {
+  const sprites = await loadSpriteSheet('goomba');
+  const walkAnim = sprites.getAnimation('walk');
 
   return function createGoomba() {
-    const goomba = new Entity();
-    goomba.size.set(16, 16);
-
-    goomba.addTrait(new Physics());
-    goomba.addTrait(new Solid());
-    goomba.addTrait(new PendulumMove());
-    goomba.addTrait(new GoombaBehavior());
-    goomba.addTrait(new Killable());
-
-    goomba.draw = drawGoomba;
-
-    return goomba;
+    return new Goomba(sprites, walkAnim);
   };
 }

@@ -1,22 +1,22 @@
 import { Entity } from '../Entity';
+import { GameContext } from '../GameContext';
 import { Trait } from '../Trait';
-import { GameContext } from '../types';
-import Jump from './Jump';
+import { Jump } from './Jump';
 
 export class Go extends Trait {
-  dir: number = 0;
-  acceleration: number = 400;
-  distance: number = 0;
-  heading: number = 1;
-  speed: number = 6000;
-  dragFactor: number = 1 / 5000;
-  deceleration: number = 300;
+  dir = 0;
+  acceleration = 400;
+  distance = 0;
+  heading = 1;
+  dragFactor = 1 / 5000;
+  deceleration = 300;
 
   update(entity: Entity, { deltaTime }: GameContext) {
     const absX = Math.abs(entity.vel.x);
 
     if (this.dir !== 0) {
       entity.vel.x += this.acceleration * this.dir * deltaTime;
+
       const jump = entity.getTrait(Jump);
       if (jump) {
         if (jump.falling === false) {
@@ -33,6 +33,7 @@ export class Go extends Trait {
     }
     const drag = this.dragFactor * entity.vel.x * absX;
     entity.vel.x -= drag;
+
     this.distance += absX * deltaTime;
   }
 }

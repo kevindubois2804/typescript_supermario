@@ -1,7 +1,7 @@
 import { Entity } from '../Entity';
-import Level from '../Level';
+import { GameContext } from '../GameContext';
+import { Level } from '../Level';
 import { Trait } from '../Trait';
-import { GameContext } from '../types';
 
 export class LevelTimer extends Trait {
   static EVENT_TIMER_HURRY = Symbol('timer hurry');
@@ -9,7 +9,7 @@ export class LevelTimer extends Trait {
 
   totalTime = 300;
   currentTime = this.totalTime;
-  hurryTime = 290;
+  hurryTime = 100;
   hurryEmitted?: boolean;
 
   update(entity: Entity, { deltaTime }: GameContext, level: Level) {

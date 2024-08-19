@@ -1,27 +1,57 @@
+import { Mario } from './entities/Mario';
 import { Entity } from './Entity';
-import KeyboardState from './KeyboardStates';
+import { InputRouter } from './InputRouter';
+import { Keyboard } from './Keyboard';
 import { Go } from './traits/Go';
-import Jump from './traits/Jump';
+import { Jump } from './traits/Jump';
 
-export default function setupKeyboard(mario: Entity) {
-  const input = new KeyboardState();
-  input.addMapping('Space', (keyState) => {
-    if (keyState) {
-      mario.getTrait(Jump)!.start();
+export function setupKeyboard(target: EventTarget) {
+  const input = new Keyboard();
+  const router = new InputRouter<Entity>();
+
+  let leftState = 0;
+  let rightState = 0;
+
+  input.listenTo(target);
+
+  input.addListener('ArrowRight', (keyState) => {
+    rightState = keyState;
+    router.route((entity) => {
+      entity.useTrait(Go, (go) => {
+        go.dir = rightState - leftState;
+      });
+    });
+  });
+
+  input.addListener('ArrowLeft', (keyState) => {
+    leftState = keyState;
+    router.route((entity) => {
+      entity.useTrait(Go, (go) => {
+        go.dir = rightState - leftState;
+      });
+    });
+  });
+
+  input.addListener('Space', (pressed) => {
+    if (pressed) {
+      router.route((entity) => {
+        entity.useTrait(Jump, (jump) => jump.start());
+      });
     } else {
-      mario.getTrait(Jump)!.cancel();
+      router.route((entity) => {
+        entity.useTrait(Jump, (jump) => jump.cancel());
+      });
     }
   });
 
-  input.addMapping('KeyO', (keyState) => {
-    mario.turbo(keyState);
-  });
-  input.addMapping('ArrowRight', (keyState) => {
-    mario.getTrait(Go)!.dir += keyState ? 1 : -1;
-  });
-  input.addMapping('ArrowLeft', (keyState) => {
-    mario.getTrait(Go)!.dir += keyState ? -1 : 1;
+  input.addListener('KeyX', (keyState) => {
+    router.route((entity) => {
+      // the turbo should probably be a separate trait
+      if (entity instanceof Mario) {
+        entity.setTurboState(keyState === 1);
+      }
+    });
   });
 
-  return input;
+  return router;
 }
