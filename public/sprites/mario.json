@@ -1,6 +1,5 @@
 {
-  "imageURL": "/img/characters.gif",
-
+  "imageURL": "img/characters.gif",
   "frames": [
     {
       "name": "idle",
@@ -19,7 +18,7 @@
       "rect": [321, 44, 16, 16]
     },
     {
-      "name": "break",
+      "name": "brake",
       "rect": [337, 44, 16, 16]
     },
     {

@@ -1,16 +1,12 @@
 import { Entity } from '../Entity';
-import Level from '../Level';
-import Trait from '../Trait';
-import { GameContext } from '../types';
+import { GameContext } from '../GameContext';
+import { Level } from '../Level';
+import { Trait } from '../Trait';
 
 export class Killable extends Trait {
   dead = false;
   deadTime = 0;
   removeAfter = 2;
-
-  constructor() {
-    super('killable');
-  }
 
   kill() {
     this.queue(() => {

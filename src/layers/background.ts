@@ -1,52 +1,38 @@
-// createBackgroundLayer is a high order function that create all the necessary information to create a buffered canvas on which the background is drawn and returns a function that can draw the buffered canvas on the main canvas
-
 import Camera from '../Camera';
-import Level from '../Level';
+import { Level } from '../Level';
 import { raise } from '../raise';
-import SpriteSheet from '../SpriteSheet';
+import { SpriteSheet } from '../SpriteSheet';
 import { TileResolver, TileResolverMatrix } from '../TileResolver';
-import { LayerFunction } from '../types';
 
-// the necessary information is taken from the level tiles set
-export function createBackgroundLayer(level: Level, tiles: TileResolverMatrix, sprites: SpriteSheet): LayerFunction {
-  const resolver = new TileResolver(tiles);
+export function createBackgroundLayer(level: Level, tiles: TileResolverMatrix, sprites: SpriteSheet) {
+  const tileResolver = new TileResolver(tiles);
 
-  // since the backgrounds will be repeatedly drawn on each animation frame, we offload them to an offscreen canvas( buffer )
-  const buffer = document.createElement('canvas') as HTMLCanvasElement;
-  const bufferContext = buffer.getContext('2d') || raise('Canvas not supported');
+  const buffer = document.createElement('canvas');
   buffer.width = 256 + 16;
   buffer.height = 240;
 
-  // function to redraw the whole screen at a time
-  function redraw(startIndex: number, endIndex: number) {
-    bufferContext.clearRect(0, 0, buffer.width, buffer.height);
-    // we will draw a subset of the tile matrix
-    for (let x = startIndex; x <= endIndex; ++x) {
-      const col = tiles.grid[x];
-      if (col) {
-        col.forEach((tile, y) => {
-          if (sprites.animations.has(tile.name)) {
-            sprites.drawAnim(tile.name, bufferContext, x - startIndex, y, level.totalTime);
-          } else {
-            sprites.drawTile(tile.name, bufferContext, x - startIndex, y);
-          }
-        });
+  const context = buffer.getContext('2d') || raise('Canvas not supported');
+
+  function drawTiles(startIndex: number, endIndex: number) {
+    context.clearRect(0, 0, buffer.width, buffer.height);
+
+    const items = tiles.itemsInRange(startIndex, 0, endIndex, buffer.height / 16);
+
+    for (const [tile, x, y] of items) {
+      if (!tile.name) continue;
+      if (sprites.animations.has(tile.name)) {
+        sprites.drawAnimation(tile.name, context, x - startIndex, y, level.totalTime);
+      } else {
+        sprites.drawTile(tile.name, context, x - startIndex, y);
       }
     }
   }
 
   return function drawBackgroundLayer(context: CanvasRenderingContext2D, camera: Camera) {
-    // we need to figure out indexes of camera right positions
-    // first we get the size
-    const drawWidth = resolver.toIndex(camera.size.x);
-
-    // next we get first index
-    const drawFrom = resolver.toIndex(camera.pos.x);
-
-    // and the second index
+    const drawWidth = tileResolver.toIndex(camera.size.x);
+    const drawFrom = tileResolver.toIndex(camera.pos.x);
     const drawTo = drawFrom + drawWidth;
-
-    redraw(drawFrom, drawTo);
+    drawTiles(drawFrom, drawTo);
 
     context.drawImage(buffer, -camera.pos.x % 16, -camera.pos.y);
   };

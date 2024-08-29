@@ -1,13 +1,11 @@
-import { Entity, Sides } from '../Entity';
-import Trait from '../Trait';
+import { Entity } from '../Entity';
+import { Trait } from '../Trait';
 import { Killable } from './Killable';
 
 export class Stomper extends Trait {
-  bounceSpeed = 400;
+  static EVENT_STOMP = Symbol('stomp');
 
-  constructor() {
-    super('stomper');
-  }
+  bounceSpeed = 400;
 
   bounce(us: Entity, them: Entity) {
     us.bounds.bottom = them.bounds.top;
@@ -21,11 +19,12 @@ export class Stomper extends Trait {
     }
 
     if (us.vel.y > them.vel.y) {
+      // using queue() fixes a race condition that can sometimes cause a stomper
+      // to incorrectly get killed by a killable
       this.queue(() => this.bounce(us, them));
+
       us.sounds.add('stomp');
-      this.events.emit('stomp', us, them);
+      us.events.emit(Stomper.EVENT_STOMP, us, them);
     }
   }
-
-  obstruct(ent: Entity, side: Sides) {}
 }

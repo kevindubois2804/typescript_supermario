@@ -9,6 +9,16 @@ export class Vec2 {
   copy(other: Vec2) {
     this.set(other.x, other.y);
   }
+
+  equals(vec2: Vec2) {
+    return this.x === vec2.x && this.y === vec2.y;
+  }
+
+  distance(vec2: Vec2) {
+    const dx = this.x - vec2.x,
+      dy = this.y - vec2.y;
+    return Math.sqrt(dx * dx + dy * dy);
+  }
 }
 
 export class Matrix<T> {
@@ -49,4 +59,14 @@ export class Matrix<T> {
       }
     }
   }
+}
+
+export function clamp(value: number, min: number, max: number) {
+  if (value > max) {
+    return max;
+  }
+  if (value < min) {
+    return min;
+  }
+  return value;
 }

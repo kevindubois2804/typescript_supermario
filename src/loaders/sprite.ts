@@ -1,6 +1,6 @@
-import { createAnim } from '../animation';
+import { createAnimation } from '../animation';
 import { loadImage, loadJSON } from '../loaders';
-import SpriteSheet from '../SpriteSheet';
+import { SpriteSheet } from '../SpriteSheet';
 import { SpriteSheetSpec } from '../types';
 
 export async function loadSpriteSheet(name: string) {
@@ -26,8 +26,8 @@ export async function loadSpriteSheet(name: string) {
 
   if (sheetSpec.animations) {
     sheetSpec.animations.forEach((animSpec) => {
-      const animation = createAnim(animSpec.frames, animSpec.frameLen);
-      sprites.defineAnim(animSpec.name, animation);
+      const animation = createAnimation(animSpec.frames, animSpec.frameLen);
+      sprites.defineAnimation(animSpec.name, animation);
     });
   }
 

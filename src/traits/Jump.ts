@@ -1,23 +1,15 @@
-import { Entity, Sides } from '../Entity';
-import Trait from '../Trait';
-import { GameContext } from '../types';
+import { Entity, Side } from '../Entity';
+import { GameContext } from '../GameContext';
+import { Trait } from '../Trait';
 
-export default class Jump extends Trait {
-  duration: number = 0.3;
-  velocity: number = 200;
-  engageTime: number = 0;
-  ready: number = 0;
-  requestTime: number = 0;
-  gracePeriod: number = 0.1;
-  speedBoost: number = 0.3;
-
-  constructor() {
-    super('jump');
-  }
-
-  get falling() {
-    return this.ready < 0;
-  }
+export class Jump extends Trait {
+  duration = 0.3;
+  velocity = 200;
+  engageTime = 0;
+  ready = 0;
+  requestTime = 0;
+  gracePeriod = 0.1;
+  speedBoost = 0.3;
 
   start() {
     this.requestTime = this.gracePeriod;
@@ -28,14 +20,6 @@ export default class Jump extends Trait {
     this.requestTime = 0;
   }
 
-  obstruct(entity: Entity, side: Sides) {
-    if (side === Sides.bottom) {
-      this.ready = 1;
-    } else if (side === Sides.top) {
-      this.cancel();
-    }
-  }
-
   update(entity: Entity, { deltaTime }: GameContext) {
     if (this.requestTime > 0) {
       if (this.ready > 0) {
@@ -43,12 +27,27 @@ export default class Jump extends Trait {
         this.engageTime = this.duration;
         this.requestTime = 0;
       }
+
       this.requestTime -= deltaTime;
     }
+
     if (this.engageTime > 0) {
       entity.vel.y = -(this.velocity + Math.abs(entity.vel.x) * this.speedBoost);
       this.engageTime -= deltaTime;
     }
+
     this.ready -= 1;
+  }
+
+  obstruct(entity: Entity, side: Side) {
+    if (side === Side.bottom) {
+      this.ready = 1;
+    } else if (side === Side.top) {
+      this.cancel();
+    }
+  }
+
+  get falling() {
+    return this.ready < 0;
   }
 }

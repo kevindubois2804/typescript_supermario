@@ -1,14 +1,7 @@
-import Camera from './Camera';
-import { EntityFactory } from './entities';
-
-export type LayerFunction = (context: CanvasRenderingContext2D, camera: Camera) => void;
-
 export type Position = {
   x: number;
   y: number;
 };
-
-export type KeyListener = (keyState: number) => void;
 
 export type SpriteSheetSpec = {
   imageURL: string;
@@ -27,9 +20,11 @@ export type SpriteTileSpec = {
 export type LevelSpec = {
   spriteSheet: string;
   musicSheet: string;
+  patternSheet: string;
   patterns: LevelSpecPatterns;
   layers: LevelSpecLayer[];
   entities: LevelSpecEntity[];
+  triggers?: LevelSpecTrigger[];
 };
 
 export type LevelSpecEntity = {
@@ -41,6 +36,13 @@ export type LevelSpecPatterns = {
   [name: string]: {
     tiles: LevelSpecTile[];
   };
+};
+
+export type LevelSpecTrigger = {
+  type: string;
+  name: string;
+  pos: [number, number];
+  size: [number, number];
 };
 
 export type LevelSpecLayer = {
@@ -65,12 +67,6 @@ export type AnimationSpec = {
 export type FrameSpec = {
   name: string;
   rect: [number, number, number, number];
-};
-
-export type GameContext = {
-  audioContext: AudioContext;
-  deltaTime: number;
-  entityFactories: Dict<EntityFactory>;
 };
 
 export type Dict<T> = { [_ in string]?: T };

@@ -1,5 +1,5 @@
 import { loadImage } from '../loaders';
-import SpriteSheet from '../SpriteSheet';
+import { SpriteSheet } from '../SpriteSheet';
 
 const characters = ' !"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~';
 
@@ -9,6 +9,13 @@ export class Font {
   print(text: string, context: CanvasRenderingContext2D, x: number, y: number) {
     for (const [pos, char] of [...text].entries()) {
       this.sprites.draw(char, context, x + pos * this.size, y);
+    }
+  }
+
+  async printWithEffect(text: string, context: CanvasRenderingContext2D, x: number, y: number) {
+    for (const [pos, char] of [...text].entries()) {
+      this.sprites.draw(char, context, x + pos * this.size, y);
+      await new Promise((resolve) => setTimeout(resolve, 500));
     }
   }
 }

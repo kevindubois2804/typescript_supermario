@@ -1,30 +1,26 @@
 import { Entity } from '../Entity';
-import Level from '../Level';
-import Trait from '../Trait';
-import { GameContext } from '../types';
+import { GameContext } from '../GameContext';
+import { Level } from '../Level';
+import { Trait } from '../Trait';
 
-type EmitterFn = (entity: Entity, level: Level) => void;
+type EmitterFn = (entity: Entity, gameContext: GameContext, level: Level) => void;
 
 export class Emitter extends Trait {
   interval = 2;
   coolDown = this.interval;
   emitters: EmitterFn[] = [];
 
-  constructor() {
-    super('emitter');
-  }
-
-  update(entity: Entity, { deltaTime }: GameContext, level: Level) {
-    this.coolDown -= deltaTime;
+  update(entity: Entity, gameContext: GameContext, level: Level) {
+    this.coolDown -= gameContext.deltaTime;
     if (this.coolDown <= 0) {
-      this.emit(entity, level);
+      this.emit(entity, gameContext, level);
       this.coolDown = this.interval;
     }
   }
 
-  emit(entity: Entity, level: Level) {
+  emit(entity: Entity, gameContext: GameContext, level: Level) {
     for (const emitter of this.emitters) {
-      emitter(entity, level);
+      emitter(entity, gameContext, level);
     }
   }
 }

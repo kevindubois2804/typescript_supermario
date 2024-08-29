@@ -1,6 +1,6 @@
 import { Vec2 } from './math';
 
-export default class BoundingBox {
+export class BoundingBox {
   constructor(public pos: Vec2, public size: Vec2, public offset: Vec2) {}
 
   get bottom() {
@@ -33,6 +33,15 @@ export default class BoundingBox {
 
   set right(x) {
     this.pos.x = x - (this.size.x + this.offset.x);
+  }
+
+  getCenter() {
+    return new Vec2(this.pos.x + this.size.x / 2, this.pos.y + this.size.y / 2);
+  }
+
+  setCenter(vec2: Vec2) {
+    this.pos.x = vec2.x - this.size.x / 2;
+    this.pos.y = vec2.y - this.size.x / 2;
   }
 
   overlaps(box: BoundingBox) {

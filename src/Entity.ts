@@ -1,47 +1,74 @@
-import { AudioBoard } from './AudioBoard.js';
-import BoundingBox from './BoundingBox.js';
-import Level from './Level.js';
-import { Vec2 } from './math.js';
-import { TileResolverMatch } from './TileResolver.js';
-import Trait, { TraitConstructor } from './Trait.js';
-import { GameContext } from './types.js';
+import { AudioBoard } from './AudioBoard';
+import { BoundingBox } from './BoundingBox';
+import { EventBuffer } from './EventBuffer';
+import { GameContext } from './GameContext';
+import { Level } from './Level';
+import { Vec2 } from './math';
+import { TileResolverMatch } from './TileResolver';
+import { Trait } from './Trait';
 
-export enum Sides {
+export enum Side {
   top,
   bottom,
   left,
   right,
 }
 
-export class Entity implements Entity {
-  [key: string]: any;
-  pos: Vec2 = new Vec2();
-  vel: Vec2 = new Vec2();
-  size: Vec2 = new Vec2();
-  offset: Vec2 = new Vec2(0, 0);
-  lifetime: number = 0;
-  bounds = new BoundingBox(this.pos, this.size, this.offset);
-  traits: Trait[] = [];
-  audio?: AudioBoard;
-  sounds = new Set<string>();
+type TraitConstructor<T extends Trait> = new (...args: unknown[]) => T;
 
-  draw(context: CanvasRenderingContext2D) {}
+export class Entity {
+  // audio = new AudioBoard()
+  audio?: AudioBoard;
+  pos = new Vec2();
+  vel = new Vec2();
+  size = new Vec2();
+  offset = new Vec2();
+  bounds = new BoundingBox(this.pos, this.size, this.offset);
+  traits = new Map<Function, Trait>();
+  lifetime = 0;
+  sounds = new Set<string>();
+  events = new EventBuffer();
 
   addTrait<T extends Trait>(trait: T) {
-    this.traits.push(trait);
-    this[trait.NAME] = trait;
+    this.traits.set(trait.constructor, trait);
+    return trait;
   }
 
   getTrait<T extends Trait>(TraitClass: TraitConstructor<T>): T | undefined {
-    for (const trait of this.traits) {
-      if (trait instanceof TraitClass) {
-        return trait;
-      }
+    const trait = this.traits.get(TraitClass);
+    if (trait instanceof TraitClass) {
+      return trait;
     }
-    return undefined;
   }
 
-  obstruct(side: Sides, match: TileResolverMatch) {
+  useTrait<T extends Trait>(TraitClass: TraitConstructor<T>, fn: (trait: T) => void): void {
+    const trait = this.getTrait(TraitClass);
+    if (trait) fn(trait);
+  }
+
+  update(gameContext: GameContext, level: Level) {
+    this.traits.forEach((trait) => {
+      trait.update(this, gameContext, level);
+    });
+
+    if (this.audio) this.playSounds(this.audio, gameContext.audioContext);
+
+    this.lifetime += gameContext.deltaTime;
+  }
+
+  draw(context: CanvasRenderingContext2D) {}
+
+  finalize() {
+    this.events.emit(Trait.EVENT_TASK, this);
+
+    this.traits.forEach((trait) => {
+      trait.finalize(this);
+    });
+
+    this.events.clear();
+  }
+
+  obstruct(side: Side, match: TileResolverMatch) {
     this.traits.forEach((trait) => {
       trait.obstruct(this, side, match);
     });
@@ -50,20 +77,6 @@ export class Entity implements Entity {
   collides(candidate: Entity) {
     this.traits.forEach((trait) => {
       trait.collides(this, candidate);
-    });
-  }
-
-  update(gameContext: GameContext, level: Level) {
-    this.traits.forEach((trait) => {
-      trait.update(this, gameContext, level);
-      if (this.audio) this.playSounds(this.audio, gameContext.audioContext);
-    });
-    this.lifetime += gameContext.deltaTime;
-  }
-
-  finalize() {
-    this.traits.forEach((trait) => {
-      trait.finalize();
     });
   }
 

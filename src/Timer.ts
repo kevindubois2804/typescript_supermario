@@ -1,10 +1,10 @@
-export default class Timer {
+export class Timer {
   private accumulatedTime = 0;
   private lastTime?: number;
 
   constructor(private deltaTime = 1 / 60) {}
 
-  update(dt: number) {}
+  update = (dt: number) => {};
 
   start() {
     this.enqueue();

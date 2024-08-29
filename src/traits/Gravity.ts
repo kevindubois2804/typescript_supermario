@@ -1,12 +1,9 @@
 import { Entity } from '../Entity';
-import Level from '../Level';
-import Trait from '../Trait';
-import { GameContext } from '../types';
+import { GameContext } from '../GameContext';
+import { Level } from '../Level';
+import { Trait } from '../Trait';
 
 export class Gravity extends Trait {
-  constructor() {
-    super('gravity');
-  }
   update(entity: Entity, { deltaTime }: GameContext, level: Level) {
     entity.vel.y += level.gravity * deltaTime;
   }

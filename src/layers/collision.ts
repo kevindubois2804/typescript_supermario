@@ -1,6 +1,6 @@
 import Camera from '../Camera';
 import { Entity } from '../Entity';
-import Level from '../Level';
+import { Level } from '../Level';
 import { TileResolver } from '../TileResolver';
 
 function createEntityLayer(entities: Set<Entity>) {
@@ -16,16 +16,21 @@ function createTileCandidateLayer(tileResolver: TileResolver) {
   const tileSize = tileResolver.tileSize;
   const resolvedTiles = [] as Array<{ x: number; y: number }>;
 
+  // eslint-disable-next-line @typescript-eslint/unbound-method
   const getByIndexOriginal = tileResolver.getByIndex;
+
   tileResolver.getByIndex = function getByIndexFake(x: number, y: number) {
     resolvedTiles.push({ x, y });
     return getByIndexOriginal.call(tileResolver, x, y);
   };
+
   return function drawTileCandidates(context: CanvasRenderingContext2D, camera: Camera) {
     context.strokeStyle = 'blue';
+
     resolvedTiles.forEach(({ x, y }) => {
       context.strokeRect(x * tileSize - camera.pos.x, y * tileSize - camera.pos.y, tileSize, tileSize);
     });
+
     resolvedTiles.length = 0;
   };
 }

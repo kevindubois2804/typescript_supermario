@@ -1,25 +1,43 @@
-import { Entity } from '../Entity';
+import { Level } from '../Level';
 import { Font } from '../loaders/font';
-import { PlayerController } from '../traits/PlayerController';
+import { findPlayers } from '../player';
+import { LevelTimer } from '../traits/LevelTimer';
+import Player from '../traits/Player';
 
-export function createDashboardLayer(font: Font, playerEnv: Entity) {
-  const line1 = font.size;
-  const line2 = font.size * 2;
+function getPlayerTrait(level: Level) {
+  for (const entity of findPlayers(level.entities)) {
+    const trait = entity.getTrait(Player);
+    if (trait) return trait;
+  }
+}
 
-  const coins = 13;
+function getTimerTrait(level: Level) {
+  for (const entity of level.entities) {
+    const trait = entity.getTrait(LevelTimer);
+    if (trait) return trait;
+  }
+}
+
+export function createDashboardLayer(font: Font, level: Level) {
+  const line1 = font.size * 2;
+  const line2 = font.size * 3;
 
   return function drawDashboard(context: CanvasRenderingContext2D) {
-    const { time, score } = playerEnv.getTrait(PlayerController)!;
+    const player = getPlayerTrait(level);
+    if (player) {
+      font.print(player.name, context, 24, line1);
+      font.print(String(player.score).padStart(6, '0'), context, 24, line2);
 
-    font.print('MARIO', context, 16, line1);
-    font.print(String(score).padStart(6, '0'), context, 16, line2);
+      font.print('x' + String(player.coins).padStart(2, '0'), context, 88, line2);
+    }
 
-    font.print('@x' + String(coins).padStart(2, '0'), context, 96, line2);
+    font.print(`WORLD`, context, 136, line1);
+    font.print(level.name.toUpperCase(), context, 144, line2);
 
-    font.print('WORLD', context, 152, line1);
-    font.print('1-1', context, 160, line2);
-
-    font.print('TIME', context, 208, line1);
-    font.print(String(Math.floor(time)).padStart(3, '0'), context, 216, line2);
+    const timer = getTimerTrait(level);
+    if (timer) {
+      font.print('TIME', context, 200, line1);
+      font.print(String(Math.floor(timer.currentTime)).padStart(3, '0'), context, 208, line2);
+    }
   };
 }

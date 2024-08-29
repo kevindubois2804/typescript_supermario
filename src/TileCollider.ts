@@ -1,11 +1,11 @@
 import { Entity } from './Entity';
-import Level from './Level';
+import { GameContext } from './GameContext';
+import { Level } from './Level';
 import { TileResolver, TileResolverMatch, TileResolverMatrix } from './TileResolver';
 import { brick } from './tiles/brick';
+import { coin } from './tiles/coin';
 import { ground } from './tiles/ground';
-import { Dict, GameContext } from './types';
-
-export type TileColliderHandler = (context: TileColliderContext) => void;
+import { Dict } from './types';
 
 export type TileColliderContext = {
   entity: Entity;
@@ -15,9 +15,13 @@ export type TileColliderContext = {
   level: Level;
 };
 
+export type TileColliderHandler = (context: TileColliderContext) => void;
+
+// this might be better typed as Dict<[TileColliderHandler, TileColliderHandler]>
 const handlers: Dict<TileColliderHandler[]> = {
   ground,
   brick,
+  coin,
 };
 
 export class TileCollider {
