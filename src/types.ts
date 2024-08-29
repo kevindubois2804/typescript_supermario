@@ -42,6 +42,7 @@ export type LevelSpecTrigger = {
   type: string;
   name: string;
   pos: [number, number];
+  size: [number, number];
 };
 
 export type LevelSpecLayer = {

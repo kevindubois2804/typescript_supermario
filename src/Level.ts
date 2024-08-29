@@ -9,6 +9,7 @@ import { TileCollider } from './TileCollider';
 
 export class Level extends Scene {
   static EVENT_TRIGGER = Symbol('trigger');
+  static EVENT_GOTO_SCENE = Symbol('go to scene event');
 
   name = '';
 
@@ -22,6 +23,7 @@ export class Level extends Scene {
   totalTime = 0;
 
   update(gameContext: GameContext) {
+    console.log(this.entities);
     this.entities.forEach((entity) => {
       entity.update(gameContext, this);
     });

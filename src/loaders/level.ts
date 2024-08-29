@@ -2,13 +2,13 @@ import { EntityFactoryDict } from '../entities';
 import { Entity } from '../Entity';
 import { createBackgroundLayer } from '../layers/background';
 import { createSpriteLayer } from '../layers/sprites';
-
 import { Level } from '../Level';
 import { loadJSON } from '../loaders';
 import { Matrix } from '../math';
 import { SpriteSheet } from '../SpriteSheet';
 import { TileResolverMatrix } from '../TileResolver';
 import { LevelTimer } from '../traits/LevelTimer';
+import { Spawner } from '../traits/Spawner';
 import { Trigger } from '../traits/Trigger';
 import { LevelSpec, LevelSpecPatterns, LevelSpecTile, TileRange } from '../types';
 import { loadMusicSheet } from './music';
@@ -46,7 +46,24 @@ function setupBackground(levelSpec: LevelSpec, level: Level, backgroundSprites: 
   }
 }
 
+// function setupEntities(levelSpec: LevelSpec, level: Level, entityFactory: EntityFactoryDict) {
+//   levelSpec.entities.forEach(({ name, pos: [x, y] }) => {
+//     const createEntity = entityFactory[name];
+//     if (!createEntity) {
+//       throw new Error(`Could not find factory function for entity "${name}"`);
+//     }
+
+//     const entity = createEntity();
+//     entity.pos.set(x, y);
+//     level.entities.add(entity);
+//   });
+
+//   const spriteLayer = createSpriteLayer(level.entities);
+//   level.comp.layers.push(spriteLayer);
+// }
+
 function setupEntities(levelSpec: LevelSpec, level: Level, entityFactory: EntityFactoryDict) {
+  const spawner = new Spawner();
   levelSpec.entities.forEach(({ name, pos: [x, y] }) => {
     const createEntity = entityFactory[name];
     if (!createEntity) {
@@ -55,8 +72,12 @@ function setupEntities(levelSpec: LevelSpec, level: Level, entityFactory: Entity
 
     const entity = createEntity();
     entity.pos.set(x, y);
-    level.entities.add(entity);
+    spawner.addEntity(entity);
   });
+
+  const entityProxy = new Entity();
+  entityProxy.addTrait(spawner);
+  level.entities.add(entityProxy);
 
   const spriteLayer = createSpriteLayer(level.entities);
   level.comp.layers.push(spriteLayer);
@@ -75,7 +96,7 @@ export function setupTriggers(levelSpec: LevelSpec, level: Level) {
     const entity = new Entity();
     entity.addTrait(trigger);
     entity.pos.set(...triggerSpec.pos);
-    entity.size.set(64, 64);
+    entity.size.set(...triggerSpec.size);
 
     level.entities.add(entity);
   }

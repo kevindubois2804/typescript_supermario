@@ -2,6 +2,7 @@ import { loadEntities } from './entities';
 import { Entity } from './Entity';
 import { GameContext } from './GameContext';
 import { setupKeyboard } from './input';
+import { createCameraLayer } from './layers/camera';
 import { createCollisionLayer } from './layers/collision';
 import { createColorLayer } from './layers/color';
 import { createDashboardLayer } from './layers/dashboard';
@@ -79,6 +80,7 @@ async function main(canvas: HTMLCanvasElement) {
     sceneRunner.addScene(waitScreen);
 
     level.comp.layers.push(createCollisionLayer(level));
+    level.comp.layers.push(createCameraLayer(level.camera));
     level.comp.layers.push(dashboardLayer);
     sceneRunner.addScene(level);
 
@@ -101,7 +103,7 @@ async function main(canvas: HTMLCanvasElement) {
   };
 
   timer.start();
-  runLevel('debug-progression');
+  runLevel('debug-progression2');
 }
 
 const canvas = document.getElementById('screen');

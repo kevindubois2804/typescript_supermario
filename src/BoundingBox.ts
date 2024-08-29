@@ -35,6 +35,15 @@ export class BoundingBox {
     this.pos.x = x - (this.size.x + this.offset.x);
   }
 
+  getCenter() {
+    return new Vec2(this.pos.x + this.size.x / 2, this.pos.y + this.size.y / 2);
+  }
+
+  setCenter(vec2: Vec2) {
+    this.pos.x = vec2.x - this.size.x / 2;
+    this.pos.y = vec2.y - this.size.x / 2;
+  }
+
   overlaps(box: BoundingBox) {
     return this.bottom > box.top && this.top < box.bottom && this.left < box.right && this.right > box.left;
   }

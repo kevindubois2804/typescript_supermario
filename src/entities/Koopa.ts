@@ -127,7 +127,6 @@ export class Koopa extends Entity {
   wakeAnim: Animation;
 
   constructor(private sprites: SpriteSheet) {
-    console.log(sprites);
     super();
     this.size.set(16, 16);
     this.offset.set(0, 8);

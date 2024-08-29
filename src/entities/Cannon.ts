@@ -36,6 +36,7 @@ export async function loadCannon(audioContext: AudioContext) {
     bullet.vel.x = 80 * fireDirection;
 
     level.entities.add(bullet);
+
     cannon.sounds.add('shoot');
   }
 
