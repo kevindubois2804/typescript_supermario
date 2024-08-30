@@ -12,7 +12,7 @@ import { Level } from './Level';
 import { loadFont } from './loaders/font';
 import { createLevelLoader } from './loaders/level';
 
-import { createPlayerEnv, makePlayer } from './player';
+import { makePlayer } from './player';
 import { raise } from './raise';
 import { Scene } from './Scene';
 import { SceneRunner } from './SceneRunner';
@@ -66,12 +66,9 @@ async function main(canvas: HTMLCanvasElement) {
     const playerProgressLayer = createPlayerProgressLayer(font, level);
     const dashboardLayer = createDashboardLayer(font, level);
 
-    mario.pos.set(0, 0);
+    mario.pos.copy(level.checkpoints[0]);
     mario.vel.set(0, 0);
     level.entities.add(mario);
-
-    const playerEnv = createPlayerEnv(mario);
-    level.entities.add(playerEnv);
 
     const waitScreen = new TimedScene();
     waitScreen.comp.layers.push(createColorLayer('black'));
@@ -87,23 +84,27 @@ async function main(canvas: HTMLCanvasElement) {
     sceneRunner.runNext();
   }
 
+  const gameContext: GameContext = {
+    deltaTime: 0,
+    audioContext,
+    entityFactory,
+    videoContext,
+    tick: 0,
+  };
+
   const timer = new Timer();
 
   timer.update = function update(deltaTime) {
     if (!document.hasFocus()) return;
 
-    const gameContext: GameContext = {
-      deltaTime,
-      audioContext,
-      entityFactory,
-      videoContext,
-    };
+    gameContext.tick++;
+    gameContext.deltaTime = deltaTime;
 
     sceneRunner.update(gameContext);
   };
 
   timer.start();
-  runLevel('debug-progression2');
+  runLevel('debug-pipe');
 }
 
 const canvas = document.getElementById('screen');

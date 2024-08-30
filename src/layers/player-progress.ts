@@ -22,13 +22,12 @@ export function createPlayerProgressLayer(font: Font, level: Level) {
 
   return function drawPlayerProgress(context: CanvasRenderingContext2D) {
     const entity = getPlayer(level);
-    font.print(`WORLD ${level.name}`, context, size * 12, size * 12);
+    const player = entity.getTrait(Player)!;
+    font.print('WORLD ' + level.name, context, size * 12, size * 12);
 
+    font.print('×' + player.lives.toString().padStart(3, ' '), context, size * 16, size * 16);
     spriteBufferContext.clearRect(0, 0, spriteBuffer.width, spriteBuffer.height);
     entity.draw(spriteBufferContext);
-    context.drawImage(spriteBuffer, size * 12, size * 15);
-
-    const lifeCount = String(entity.getTrait(Player)?.lives).padStart(2, ' ');
-    font.print(`x ${lifeCount}`, context, size * 16, size * 16);
+    context.drawImage(spriteBuffer, size * 13, size * 15);
   };
 }

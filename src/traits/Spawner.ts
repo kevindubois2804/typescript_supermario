@@ -16,7 +16,6 @@ export class Spawner extends Trait {
     const cameraMaxX = level.camera.pos.x + level.camera.size.x + this.offsetX;
     while (this.entities[0]) {
       if (cameraMaxX > this.entities[0].pos.x && cameraMaxX < this.entities[0].pos.x + level.camera.size.x) {
-        console.log(cameraMaxX);
         level.entities.add(this.entities.shift() as Entity);
       } else {
         break;

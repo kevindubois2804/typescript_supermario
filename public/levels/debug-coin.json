@@ -1,31 +1,47 @@
 {
-  "spriteSheet": "overworld",
-  "musicSheet": "silent",
+    "spriteSheet": "overworld",
+    "musicSheet": "silent",
+    "patternSheet": "overworld-pattern",
+    "checkpoints": [
+        [40, 192]
+    ],
 
-  "layers": [
-    {
-      "tiles": [
+    "layers": [
         {
-          "name": "sky",
-          "ranges": [[0, 212, 0, 13]]
+            "tiles": [
+                {
+                    "name": "sky",
+                    "ranges": [
+                        [
+                            0, 212,
+                            0, 13
+                        ]
+                    ]
+                },
+                {
+                    "name": "ground",
+                    "type": "ground",
+                    "ranges": [
+                        [
+                            0, 212,
+                            13, 2
+                        ]
+                    ]
+                }
+            ]
         },
         {
-          "name": "ground",
-          "type": "ground",
-          "ranges": [[0, 212, 13, 2]]
+            "tiles": [
+                {
+                    "name": "coin",
+                    "type": "coin",
+                    "ranges": [
+                        [6, 100, 8, 5]
+                    ]
+                }
+            ]
         }
-      ]
-    },
-    {
-      "tiles": [
-        {
-          "name": "coin",
-          "type": "coin",
-          "ranges": [[6, 100, 8, 5]]
-        }
-      ]
-    }
-  ],
+    ],
 
-  "entities": []
+    "entities": []
 }

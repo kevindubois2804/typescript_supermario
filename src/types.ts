@@ -1,3 +1,5 @@
+import { DirectionKeys } from './math';
+
 export type Position = {
   x: number;
   y: number;
@@ -25,11 +27,19 @@ export type LevelSpec = {
   layers: LevelSpecLayer[];
   entities: LevelSpecEntity[];
   triggers?: LevelSpecTrigger[];
+  checkpoints: LevelCheckpoint[];
 };
 
 export type LevelSpecEntity = {
   name: string;
   pos: [number, number];
+  props?: EntityProps;
+};
+
+export type EntityProps = {
+  dir: DirectionKeys;
+  goesTo: { name: string };
+  bacTo: [number, number];
 };
 
 export type LevelSpecPatterns = {
@@ -55,6 +65,8 @@ export type LevelSpecTile = {
   pattern?: string;
   ranges: TileRange[];
 };
+
+export type LevelCheckpoint = [number, number];
 
 export type TileRange = number[];
 

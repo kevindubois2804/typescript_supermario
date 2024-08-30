@@ -1,38 +1,57 @@
-import { Mario } from './entities/Mario';
 import { Entity } from './Entity';
 import { InputRouter } from './InputRouter';
 import { Keyboard } from './Keyboard';
 import { Go } from './traits/Go';
 import { Jump } from './traits/Jump';
+import { PipeTraveller } from './traits/PipeTraveller';
+import { Turbo } from './traits/Turbo';
+
+enum KeyMap {
+  UP = 'ArrowUp',
+  DOWN = 'ArrowDown',
+  LEFT = 'ArrowLeft',
+  RIGHT = 'ArrowRight',
+  JUMP = 'Space',
+  TURBO = 'KeyO',
+}
 
 export function setupKeyboard(target: EventTarget) {
   const input = new Keyboard();
   const router = new InputRouter<Entity>();
 
-  let leftState = 0;
-  let rightState = 0;
-
   input.listenTo(target);
 
-  input.addListener('ArrowRight', (keyState) => {
-    rightState = keyState;
+  input.addListener(KeyMap.RIGHT, (keyState) => {
     router.route((entity) => {
       entity.useTrait(Go, (go) => {
-        go.dir = rightState - leftState;
+        go.dir += keyState ? 1 : -1;
       });
+      entity.getTrait(PipeTraveller)!.direction.x += keyState ? 1 : -1;
     });
   });
 
-  input.addListener('ArrowLeft', (keyState) => {
-    leftState = keyState;
+  input.addListener(KeyMap.UP, (keyState) => {
     router.route((entity) => {
-      entity.useTrait(Go, (go) => {
-        go.dir = rightState - leftState;
-      });
+      entity.getTrait(PipeTraveller)!.direction.y += keyState ? -1 : 1;
     });
   });
 
-  input.addListener('Space', (pressed) => {
+  input.addListener(KeyMap.DOWN, (keyState) => {
+    router.route((entity) => {
+      entity.getTrait(PipeTraveller)!.direction.y += keyState ? 1 : -1;
+    });
+  });
+
+  input.addListener(KeyMap.LEFT, (keyState) => {
+    router.route((entity) => {
+      entity.useTrait(Go, (go) => {
+        go.dir += keyState ? -1 : 1;
+      });
+      entity.getTrait(PipeTraveller)!.direction.x += keyState ? -1 : 1;
+    });
+  });
+
+  input.addListener(KeyMap.JUMP, (pressed) => {
     if (pressed) {
       router.route((entity) => {
         entity.useTrait(Jump, (jump) => jump.start());
@@ -44,12 +63,10 @@ export function setupKeyboard(target: EventTarget) {
     }
   });
 
-  input.addListener('KeyX', (keyState) => {
+  input.addListener(KeyMap.TURBO, (keyState) => {
     router.route((entity) => {
       // the turbo should probably be a separate trait
-      if (entity instanceof Mario) {
-        entity.setTurboState(keyState === 1);
-      }
+      entity.useTrait(Turbo, (it) => it.setTurboState(entity, keyState === 1));
     });
   });
 

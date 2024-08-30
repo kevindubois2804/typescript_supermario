@@ -7,13 +7,21 @@ export class LevelTimer extends Trait {
   static EVENT_TIMER_HURRY = Symbol('timer hurry');
   static EVENT_TIMER_OK = Symbol('timer ok');
 
-  totalTime = 300;
+  totalTime = 400;
   currentTime = this.totalTime;
   hurryTime = 100;
-  hurryEmitted?: boolean;
+  hurryEmitted?: boolean | null;
+
+  reset() {
+    this.currentTime = this.totalTime;
+  }
 
   update(entity: Entity, { deltaTime }: GameContext, level: Level) {
-    this.currentTime -= deltaTime * 2;
+    this.currentTime -= deltaTime * 2.5;
+
+    if (!level.getMarkSymbol()) {
+      this.hurryEmitted = null;
+    }
 
     if (this.hurryEmitted !== true && this.currentTime < this.hurryTime) {
       level.events.emit(LevelTimer.EVENT_TIMER_HURRY);
@@ -24,5 +32,7 @@ export class LevelTimer extends Trait {
       level.events.emit(LevelTimer.EVENT_TIMER_OK);
       this.hurryEmitted = false;
     }
+
+    level.setMarkSymbol(true);
   }
 }

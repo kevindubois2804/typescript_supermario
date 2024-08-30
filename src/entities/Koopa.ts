@@ -113,51 +113,50 @@ class KoopaBehavior extends Trait {
   }
 }
 
-export class Koopa extends Entity {
-  walk = this.addTrait(new PendulumMove());
-  behavior = this.addTrait(new KoopaBehavior());
-  killable = this.addTrait(new Killable());
-  solid = this.addTrait(new Solid());
-  physics = this.addTrait(new Physics());
+function createKoopaFactory(sprite: SpriteSheet) {
+  const walkAnim = sprite.animations.get('walk') as Animation;
+  const wakeAnim = sprite.animations.get('wake') as Animation;
 
-  // walkAnim = this.sprites.getAnimation('walk');
-  // wakeAnim = this.sprites.getAnimation('wake');
-
-  walkAnim: Animation;
-  wakeAnim: Animation;
-
-  constructor(private sprites: SpriteSheet) {
-    super();
-    this.size.set(16, 16);
-    this.offset.set(0, 8);
-    this.walkAnim = sprites.getAnimation('walk');
-    this.wakeAnim = sprites.getAnimation('wake');
-  }
-
-  draw(context: CanvasRenderingContext2D) {
-    this.sprites.draw(this.routeAnimation(), context, 0, 0, this.vel.x < 0);
-  }
-
-  private routeAnimation() {
-    if (this.behavior.state === KoopaState.hiding) {
-      if (this.behavior.hideTime > 3) {
-        return this.wakeAnim(this.behavior.hideTime);
+  function routeAnim(koopa: Entity) {
+    if (koopa.getTrait(KoopaBehavior)!.state === KoopaState.hiding) {
+      if (koopa.getTrait(KoopaBehavior)!.hideTime > 3) {
+        return wakeAnim(koopa.getTrait(KoopaBehavior)!.hideTime);
       }
       return 'hiding';
     }
 
-    if (this.behavior.state === KoopaState.panic) {
+    if (koopa.getTrait(KoopaBehavior)!.state === KoopaState.panic) {
       return 'hiding';
     }
 
-    return this.walkAnim(this.lifetime);
+    return walkAnim(koopa.lifetime);
   }
-}
 
-export async function loadKoopa() {
-  const sprites = await loadSpriteSheet('koopa');
+  function drawKoopa(context: CanvasRenderingContext2D) {
+    sprite.draw(routeAnim(this), context, 0, 0, this.vel.x < 0);
+  }
 
   return function createKoopa() {
-    return new Koopa(sprites);
+    const koopa = new Entity();
+    koopa.size.set(16, 16);
+    koopa.offset.y = 8;
+
+    koopa.addTrait(new Physics());
+    koopa.addTrait(new Solid());
+    koopa.addTrait(new PendulumMove());
+    koopa.addTrait(new Killable());
+    koopa.addTrait(new KoopaBehavior());
+
+    koopa.draw = drawKoopa;
+
+    return koopa;
   };
+}
+
+export function loadKoopaGreen() {
+  return loadSpriteSheet('koopa-green').then(createKoopaFactory);
+}
+
+export function loadKoopaBlue() {
+  return loadSpriteSheet('koopa-blue').then(createKoopaFactory);
 }

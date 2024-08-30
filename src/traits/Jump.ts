@@ -1,5 +1,6 @@
 import { Entity, Side } from '../Entity';
 import { GameContext } from '../GameContext';
+import { Level } from '../Level';
 import { Trait } from '../Trait';
 
 export class Jump extends Trait {
@@ -20,9 +21,10 @@ export class Jump extends Trait {
     this.requestTime = 0;
   }
 
-  update(entity: Entity, { deltaTime }: GameContext) {
+  update(entity: Entity, { deltaTime }: GameContext, level: Level) {
     if (this.requestTime > 0) {
       if (this.ready > 0) {
+        console.log(level.entities);
         entity.sounds.add('jump');
         this.engageTime = this.duration;
         this.requestTime = 0;

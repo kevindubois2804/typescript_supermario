@@ -1,3 +1,4 @@
+import { AudioBoard } from '../AudioBoard';
 import { Entity } from '../Entity';
 import { GameContext } from '../GameContext';
 import { Level } from '../Level';
@@ -7,37 +8,34 @@ import { Emitter } from '../traits/Emitter';
 
 const HOLD_FIRE_THRESHOLD = 30;
 
-export async function loadCannon(audioContext: AudioContext) {
-  const audio = await loadAudioBoard('cannon', audioContext);
+export function loadCannon(audioContext: AudioContext) {
+  return loadAudioBoard('cannon', audioContext).then((audio) => {
+    return createCannonFactory(audio);
+  });
+}
 
-  const getDiffX = (e1: Entity, e2: Entity) => Math.abs(e1.pos.x - e2.pos.x);
-
+function createCannonFactory(audio: AudioBoard) {
   function emitBullet(cannon: Entity, gameContext: GameContext, level: Level) {
+    let dir = 1;
+    for (const player of findPlayers(level.entities)) {
+      if (player.pos.x > cannon.pos.x - HOLD_FIRE_THRESHOLD && player.pos.x < cannon.pos.x + HOLD_FIRE_THRESHOLD) {
+        return;
+      }
+
+      if (player.pos.x < cannon.pos.x) {
+        dir = -1;
+      }
+    }
+
     const bullet = gameContext.entityFactory.bullet?.();
+
     if (!bullet) return;
 
-    const players = [...findPlayers(level.entities)];
-
-    const shouldHoldFire = players.some((player) => {
-      return getDiffX(player, cannon) <= HOLD_FIRE_THRESHOLD;
-    });
-    if (shouldHoldFire) return;
-
-    const closestPlayer = players.reduce((closest, current) => {
-      const closestDist = getDiffX(closest, cannon);
-      const currentDist = getDiffX(current, cannon);
-      return currentDist < closestDist ? current : closest;
-    });
-
-    // can't use Math.sign here, otherwise we might get 0
-    const fireDirection = closestPlayer.pos.x < cannon.pos.x ? -1 : 1;
-
     bullet.pos.copy(cannon.pos);
-    bullet.vel.x = 80 * fireDirection;
-
-    level.entities.add(bullet);
+    bullet.vel.set(80 * dir, 0);
 
     cannon.sounds.add('shoot');
+    level.entities.add(bullet);
   }
 
   return function createCannon() {
@@ -47,9 +45,7 @@ export async function loadCannon(audioContext: AudioContext) {
     const emitter = new Emitter();
     emitter.interval = 4;
     emitter.emitters.push(emitBullet);
-
     cannon.addTrait(emitter);
-
     return cannon;
   };
 }

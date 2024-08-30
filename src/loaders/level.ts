@@ -4,7 +4,7 @@ import { createBackgroundLayer } from '../layers/background';
 import { createSpriteLayer } from '../layers/sprites';
 import { Level } from '../Level';
 import { loadJSON } from '../loaders';
-import { Matrix } from '../math';
+import { Matrix, Vec2 } from '../math';
 import { SpriteSheet } from '../SpriteSheet';
 import { TileResolverMatrix } from '../TileResolver';
 import { LevelTimer } from '../traits/LevelTimer';
@@ -14,20 +14,11 @@ import { LevelSpec, LevelSpecPatterns, LevelSpecTile, TileRange } from '../types
 import { loadMusicSheet } from './music';
 import { loadSpriteSheet } from './sprite';
 
-function createTimer() {
-  const timer = new Entity();
-  timer.addTrait(new LevelTimer());
-  return timer;
-}
-
 function loadPattern(name: string) {
   return loadJSON<LevelSpecPatterns>(`/sprites/patterns/${name}.json`);
 }
 
 function setupBehavior(level: Level) {
-  const timer = createTimer();
-  level.entities.add(timer);
-
   level.events.listen(LevelTimer.EVENT_TIMER_OK, () => {
     level.music.playTheme();
   });
@@ -46,31 +37,37 @@ function setupBackground(levelSpec: LevelSpec, level: Level, backgroundSprites: 
   }
 }
 
-// function setupEntities(levelSpec: LevelSpec, level: Level, entityFactory: EntityFactoryDict) {
-//   levelSpec.entities.forEach(({ name, pos: [x, y] }) => {
-//     const createEntity = entityFactory[name];
-//     if (!createEntity) {
-//       throw new Error(`Could not find factory function for entity "${name}"`);
-//     }
+function setupCamera(level: Level) {
+  let maxX = 0;
+  let maxTileSize = 0;
+  for (const resolver of level.tileCollider.resolvers) {
+    if (resolver.tileSize > maxTileSize) {
+      maxTileSize = resolver.tileSize;
+    }
+    resolver.matrix.forEach((tile, x, y) => {
+      if (x > maxX) {
+        maxX = x;
+      }
+    });
+  }
+  level.camera.max.x = maxX * maxTileSize;
+}
 
-//     const entity = createEntity();
-//     entity.pos.set(x, y);
-//     level.entities.add(entity);
-//   });
-
-//   const spriteLayer = createSpriteLayer(level.entities);
-//   level.comp.layers.push(spriteLayer);
-// }
+function setupCheckpoints(levelSpec: LevelSpec, level: Level) {
+  levelSpec.checkpoints.forEach(([x, y]: [number, number]) => {
+    level.checkpoints.push(new Vec2(x, y));
+  });
+}
 
 function setupEntities(levelSpec: LevelSpec, level: Level, entityFactory: EntityFactoryDict) {
   const spawner = new Spawner();
-  levelSpec.entities.forEach(({ name, pos: [x, y] }) => {
+  levelSpec.entities.forEach(({ name, pos: [x, y], props }) => {
     const createEntity = entityFactory[name];
     if (!createEntity) {
       throw new Error(`Could not find factory function for entity "${name}"`);
     }
 
-    const entity = createEntity();
+    const entity = createEntity(props);
     entity.pos.set(x, y);
     spawner.addEntity(entity);
   });
@@ -115,7 +112,9 @@ export function createLevelLoader(entityFactory: EntityFactoryDict) {
     setupBackground(levelSpec, level, backgroundSprites, patterns);
     setupEntities(levelSpec, level, entityFactory);
     setupTriggers(levelSpec, level);
+    setupCheckpoints(levelSpec, level);
     setupBehavior(level);
+    setupCamera(level);
 
     return level;
   };

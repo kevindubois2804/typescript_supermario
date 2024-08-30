@@ -28,35 +28,41 @@ class GoombaBehavior extends Trait {
   }
 }
 
-export class Goomba extends Entity {
-  walk = this.addTrait(new PendulumMove());
-  behavior = this.addTrait(new GoombaBehavior());
-  killable = this.addTrait(new Killable());
-  solid = this.addTrait(new Solid());
-  physics = this.addTrait(new Physics());
+function createGoombaFactory(sprite: SpriteSheet) {
+  const walkAnim = sprite.animations.get('walk') as Animation;
 
-  constructor(private sprites: SpriteSheet, private walkAnim: Animation) {
-    super();
-    this.size.set(16, 16);
-  }
-
-  draw(context: CanvasRenderingContext2D) {
-    this.sprites.draw(this.routeAnim(), context, 0, 0);
-  }
-
-  private routeAnim() {
-    if (this.killable.dead) {
+  function routeAnim(goomba: Entity) {
+    if (goomba.getTrait(Killable)!.dead) {
       return 'flat';
     }
-    return this.walkAnim(this.lifetime);
-  }
-}
 
-export async function loadGoomba() {
-  const sprites = await loadSpriteSheet('goomba');
-  const walkAnim = sprites.getAnimation('walk');
+    return walkAnim(goomba.lifetime);
+  }
+
+  function drawGoomba(context: CanvasRenderingContext2D) {
+    sprite.draw(routeAnim(this), context, 0, 0);
+  }
 
   return function createGoomba() {
-    return new Goomba(sprites, walkAnim);
+    const goomba = new Entity();
+    goomba.size.set(16, 16);
+
+    goomba.addTrait(new Physics());
+    goomba.addTrait(new Solid());
+    goomba.addTrait(new PendulumMove());
+    goomba.addTrait(new GoombaBehavior());
+    goomba.addTrait(new Killable());
+
+    goomba.draw = drawGoomba;
+
+    return goomba;
   };
+}
+
+export function loadGoombaBrown() {
+  return loadSpriteSheet('goomba-brown').then(createGoombaFactory);
+}
+
+export function loadGoombaBlue() {
+  return loadSpriteSheet('goomba-blue').then(createGoombaFactory);
 }

@@ -8,61 +8,62 @@ import { Go } from '../traits/Go';
 import { Jump } from '../traits/Jump';
 import { Killable } from '../traits/Killable';
 import { Physics } from '../traits/Physics';
+import { PipeTraveller } from '../traits/PipeTraveller';
 import { Solid } from '../traits/Solid';
 import { Stomper } from '../traits/Stomper';
+import { Turbo } from '../traits/Turbo';
 
-const FAST_DRAG = 1 / 5000;
-const SLOW_DRAG = 1 / 1000;
+export function loadMario(audioContext: AudioContext) {
+  return Promise.all([loadSpriteSheet('mario'), loadAudioBoard('mario', audioContext)]).then(([sprite, audio]) => {
+    return createMarioFactory(sprite, audio);
+  });
+}
 
-export class Mario extends Entity {
-  jump = this.addTrait(new Jump());
-  go = this.addTrait(new Go());
-  stomper = this.addTrait(new Stomper());
-  killable = this.addTrait(new Killable());
-  solid = this.addTrait(new Solid());
-  physics = this.addTrait(new Physics());
+function createMarioFactory(sprite: SpriteSheet, audio: AudioBoard) {
+  const runAnim = sprite.animations.get('run') as Animation;
 
-  constructor(private sprites: SpriteSheet, public audio: AudioBoard, private runAnimation: Animation) {
-    super();
-
-    this.size.set(14, 16);
-
-    this.go.dragFactor = SLOW_DRAG;
-    this.killable.removeAfter = 0;
-
-    this.setTurboState(false);
-  }
-
-  resolveAnimationFrame() {
-    if (this.jump.falling) {
+  function routeFrame(mario: Entity) {
+    if (mario.getTrait(Jump)!.falling) {
       return 'jump';
     }
 
-    if (this.go.distance > 0) {
-      if ((this.vel.x > 0 && this.go.dir < 0) || (this.vel.x < 0 && this.go.dir > 0)) {
-        return 'brake';
+    const go = mario.getTrait(Go)!;
+    if (go.distance > 0) {
+      if ((mario.vel.x > 0 && go.dir < 0) || (mario.vel.x < 0 && go.dir > 0)) {
+        return 'break';
       }
 
-      return this.runAnimation(this.go.distance);
+      return runAnim(mario.getTrait(Go)!.distance);
     }
+
     return 'idle';
   }
 
-  draw(context: CanvasRenderingContext2D) {
-    this.sprites.draw(this.resolveAnimationFrame(), context, 0, 0, this.go.heading < 0);
+  function drawMario(context: CanvasRenderingContext2D) {
+    sprite.draw(routeFrame(this), context, 0, 0, this.traits.get(Go).heading < 0);
   }
-
-  setTurboState(turboState: boolean) {
-    this.go.dragFactor = turboState ? FAST_DRAG : SLOW_DRAG;
-  }
-}
-
-export async function loadMario(audioContext: AudioContext) {
-  const [marioSprites, audioBoard] = await Promise.all([loadSpriteSheet('mario'), loadAudioBoard('mario', audioContext)]);
-
-  const runAnimation = marioSprites.getAnimation('run');
 
   return function createMario() {
-    return new Mario(marioSprites, audioBoard, runAnimation);
+    const mario = new Entity();
+    mario.audio = audio;
+    mario.size.set(14, 16);
+
+    mario.addTrait(new Physics());
+    mario.addTrait(new Solid());
+    mario.addTrait(new Go());
+    mario.addTrait(new Jump());
+    mario.addTrait(new Killable());
+    mario.addTrait(new Stomper());
+    mario.addTrait(new PipeTraveller());
+    mario.addTrait(new Turbo());
+
+    mario.getTrait(Killable)!.removeAfter = Infinity;
+    mario.getTrait(Jump)!.velocity = 175;
+
+    mario.draw = drawMario;
+
+    mario.useTrait(Turbo, (it) => it.setTurboState(mario, false));
+
+    return mario;
   };
 }

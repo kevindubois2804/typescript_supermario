@@ -53,11 +53,11 @@ export class Matrix<T> {
   }
 
   forEach(callback: (value: T, x: number, y: number) => void) {
-    for (const [x, col] of this.grid.entries()) {
-      for (const [y, value] of col.entries()) {
+    this.grid.forEach((column, x) => {
+      column.forEach((value, y) => {
         callback(value, x, y);
-      }
-    }
+      });
+    });
   }
 }
 
@@ -70,3 +70,12 @@ export function clamp(value: number, min: number, max: number) {
   }
   return value;
 }
+
+export const Direction = {
+  UP: new Vec2(0, -1),
+  DOWN: new Vec2(0, 1),
+  RIGHT: new Vec2(1, 0),
+  LEFT: new Vec2(-1, 0),
+};
+
+export type DirectionKeys = keyof typeof Direction;

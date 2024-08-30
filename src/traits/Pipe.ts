@@ -1,0 +1,62 @@
+import { Entity } from '../Entity';
+import { GameContext } from '../GameContext';
+import { Level } from '../Level';
+import { Vec2 } from '../math';
+import { Trait } from '../Trait';
+import { PipeTraveller } from './PipeTraveller';
+
+export type TravellerState = {
+  time: number;
+  start: Vec2;
+  end: Vec2;
+};
+
+function createTravellerState(): TravellerState {
+  return {
+    time: 0,
+    start: new Vec2(),
+    end: new Vec2(),
+  };
+}
+
+export default class Pipe extends Trait {
+  duration: number = 1;
+  travellers = new Map<Entity, TravellerState>();
+  direction = new Vec2(0, 0);
+
+  collides(pipe: Entity, traveller: Entity) {
+    if (!traveller.traits.has(PipeTraveller)) {
+      return;
+    }
+
+    if (this.travellers.has(traveller)) {
+      return;
+    }
+
+    const pipeTraveller = traveller.getTrait(PipeTraveller)!;
+
+    if (pipeTraveller.direction.equals(this.direction)) {
+      console.log('Entering Pipe');
+      pipe.sounds.add('pipe');
+      const state = createTravellerState();
+      state.start.copy(traveller.pos);
+      state.end.copy(traveller.pos);
+      state.end.x += this.direction.x * pipe.size.x;
+      state.end.y += this.direction.y * pipe.size.y;
+      this.travellers.set(traveller, state);
+    }
+  }
+
+  update(pipe: Entity, gameContext: GameContext, level: Level) {
+    const { deltaTime } = gameContext;
+    for (const [traveller, state] of this.travellers.entries()) {
+      state.time += deltaTime;
+      const progress = state.time / this.duration;
+      traveller.pos.x = state.start.x + (state.end.x - state.start.x) * progress;
+      traveller.pos.y = state.start.y + (state.end.y - state.start.y) * progress;
+      if (state.time > this.duration) {
+        this.travellers.delete(traveller);
+      }
+    }
+  }
+}

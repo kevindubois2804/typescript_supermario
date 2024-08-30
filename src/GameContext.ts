@@ -6,4 +6,5 @@ export type GameContext = {
   deltaTime: number;
   entityFactory: Dict<EntityFactory>;
   videoContext: CanvasRenderingContext2D;
+  tick: number;
 };

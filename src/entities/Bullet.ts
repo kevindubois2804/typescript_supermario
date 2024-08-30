@@ -2,6 +2,7 @@ import { Entity } from '../Entity';
 import { GameContext } from '../GameContext';
 import { Level } from '../Level';
 import { loadSpriteSheet } from '../loaders/sprite';
+import { SpriteSheet } from '../SpriteSheet';
 import { Trait } from '../Trait';
 import { Gravity } from '../traits/Gravity';
 import { Killable } from '../traits/Killable';
@@ -34,22 +35,24 @@ class BulletBehavior extends Trait {
   }
 }
 
-export async function loadBullet() {
-  const sprites = await loadSpriteSheet('bullet');
+export function loadBullet() {
+  return loadSpriteSheet('bullet').then(createBulletFactory);
+}
+
+function createBulletFactory(sprite: SpriteSheet) {
+  function drawBullet(context: CanvasRenderingContext2D) {
+    sprite.draw('bullet', context, 0, 0, this.vel.x > 0);
+  }
 
   return function createBullet() {
     const bullet = new Entity();
-
     bullet.size.set(16, 14);
-    bullet.vel.set(80, 0);
 
+    bullet.addTrait(new Velocity());
     bullet.addTrait(new BulletBehavior());
     bullet.addTrait(new Killable());
-    bullet.addTrait(new Velocity());
 
-    bullet.draw = (context) => {
-      sprites.draw('bullet', context, 0, 0, bullet.vel.x < 0);
-    };
+    bullet.draw = drawBullet;
 
     return bullet;
   };
