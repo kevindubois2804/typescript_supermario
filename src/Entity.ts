@@ -6,6 +6,7 @@ import { Level } from './Level';
 import { Vec2 } from './math';
 import { TileResolverMatch } from './TileResolver';
 import { Trait } from './Trait';
+import { EntityProps } from './types';
 
 export enum Side {
   top,
@@ -18,6 +19,7 @@ type TraitConstructor<T extends Trait> = new (...args: unknown[]) => T;
 
 export class Entity {
   // audio = new AudioBoard()
+  id: number;
   audio?: AudioBoard;
   pos = new Vec2();
   vel = new Vec2();
@@ -28,6 +30,7 @@ export class Entity {
   lifetime = 0;
   sounds = new Set<string>();
   events = new EventBuffer();
+  props: EntityProps;
 
   addTrait<T extends Trait>(trait: T) {
     this.traits.set(trait.constructor, trait);

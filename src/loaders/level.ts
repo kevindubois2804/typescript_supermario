@@ -28,13 +28,24 @@ function setupBehavior(level: Level) {
   });
 }
 
-function setupBackground(levelSpec: LevelSpec, level: Level, backgroundSprites: SpriteSheet, patterns: LevelSpecPatterns) {
+function setupTileColliderResolvers(levelSpec: LevelSpec, level: Level, patterns: LevelSpecPatterns) {
   for (const layer of levelSpec.layers) {
     const grid = createGrid(layer.tiles, patterns);
-    const backgroundLayer = createBackgroundLayer(level, grid, backgroundSprites);
-    level.comp.layers.push(backgroundLayer);
+
     level.tileCollider.addGrid(grid);
   }
+}
+
+function setupBackgroundAndSpriteLayers(backgroundSprites: SpriteSheet, level: Level) {
+  for (const resolver of level.tileCollider.resolvers) {
+    const backgroundLayer = createBackgroundLayer(level, resolver.matrix, backgroundSprites);
+    level.comp.layers.push(backgroundLayer);
+  }
+
+  const spriteLayer = createSpriteLayer(level.entities);
+
+  // Paint sprites one layer below last layer
+  level.comp.layers.splice(level.comp.layers.length - 1, 0, spriteLayer);
 }
 
 function setupCamera(level: Level) {
@@ -54,6 +65,11 @@ function setupCamera(level: Level) {
 }
 
 function setupCheckpoints(levelSpec: LevelSpec, level: Level) {
+  if (!levelSpec.checkpoints) {
+    level.checkpoints.push(new Vec2(0, 0));
+    return;
+  }
+
   levelSpec.checkpoints.forEach(([x, y]: [number, number]) => {
     level.checkpoints.push(new Vec2(x, y));
   });
@@ -61,7 +77,7 @@ function setupCheckpoints(levelSpec: LevelSpec, level: Level) {
 
 function setupEntities(levelSpec: LevelSpec, level: Level, entityFactory: EntityFactoryDict) {
   const spawner = new Spawner();
-  levelSpec.entities.forEach(({ name, pos: [x, y], props }) => {
+  levelSpec.entities.forEach(({ id, name, pos: [x, y], props }) => {
     const createEntity = entityFactory[name];
     if (!createEntity) {
       throw new Error(`Could not find factory function for entity "${name}"`);
@@ -69,7 +85,13 @@ function setupEntities(levelSpec: LevelSpec, level: Level, entityFactory: Entity
 
     const entity = createEntity(props);
     entity.pos.set(x, y);
-    spawner.addEntity(entity);
+
+    if (id) {
+      entity.id = id;
+      level.entities.add(entity);
+    } else {
+      spawner.addEntity(entity);
+    }
   });
 
   const entityProxy = new Entity();
@@ -109,12 +131,13 @@ export function createLevelLoader(entityFactory: EntityFactoryDict) {
     level.name = name;
     level.music.setPlayer(musicPlayer);
 
-    setupBackground(levelSpec, level, backgroundSprites, patterns);
+    setupTileColliderResolvers(levelSpec, level, patterns);
     setupEntities(levelSpec, level, entityFactory);
     setupTriggers(levelSpec, level);
     setupCheckpoints(levelSpec, level);
     setupBehavior(level);
     setupCamera(level);
+    setupBackgroundAndSpriteLayers(backgroundSprites, level);
 
     return level;
   };

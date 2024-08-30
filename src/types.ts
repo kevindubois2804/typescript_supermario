@@ -31,6 +31,7 @@ export type LevelSpec = {
 };
 
 export type LevelSpecEntity = {
+  id?: number;
   name: string;
   pos: [number, number];
   props?: EntityProps;

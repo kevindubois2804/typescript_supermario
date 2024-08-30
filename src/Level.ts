@@ -1,5 +1,5 @@
 import Camera from './Camera';
-import { Entity } from './Entity';
+import { EntityCollection } from './EntityCollection';
 import { EntityCollider } from './EntityCollider';
 import { GameContext } from './GameContext';
 import { clamp, Vec2 } from './math';
@@ -15,6 +15,7 @@ const MARK: unique symbol = Symbol('level timer earmark');
 export class Level extends Scene {
   static EVENT_TRIGGER = Symbol('trigger');
   static EVENT_GOTO_SCENE = Symbol('go to scene event');
+  static EVENT_COMPLETE = Symbol('complete');
 
   [MARK]: boolean | null;
 
@@ -22,7 +23,7 @@ export class Level extends Scene {
 
   checkpoints: Vec2[] = [];
 
-  entities = new Set<Entity>();
+  entities = new EntityCollection();
   entityCollider = new EntityCollider(this.entities);
   tileCollider = new TileCollider();
   music = new MusicController();

@@ -17,7 +17,8 @@ function createPipePortalFactory(audio: AudioBoard) {
     pipe.direction.copy(Direction[props.dir]);
     const entity = new Entity();
     entity.audio = audio;
-    entity.size.set(24, 24);
+    entity.props = props;
+    entity.size.set(24, 30);
     entity.addTrait(pipe);
     return entity;
   };

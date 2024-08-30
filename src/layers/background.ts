@@ -17,7 +17,7 @@ export function createBackgroundLayer(level: Level, tiles: TileResolverMatrix, s
     context.clearRect(0, 0, buffer.width, buffer.height);
 
     const items = tiles.itemsInRange(startIndex, 0, endIndex, buffer.height / 16);
-
+    // iterate over the tiles instead of accessing the grid
     for (const [tile, x, y] of items) {
       if (!tile.name) continue;
       if (sprites.animations.has(tile.name)) {
@@ -31,6 +31,8 @@ export function createBackgroundLayer(level: Level, tiles: TileResolverMatrix, s
   return function drawBackgroundLayer(context: CanvasRenderingContext2D, camera: Camera) {
     const drawWidth = tileResolver.toIndex(camera.size.x);
     const drawFrom = tileResolver.toIndex(camera.pos.x);
+    // console.log('camero position x : ', camera.pos.x);
+    // console.log('minus camero position x : ', -camera.pos.x % 16);
     const drawTo = drawFrom + drawWidth;
     drawTiles(drawFrom, drawTo);
 

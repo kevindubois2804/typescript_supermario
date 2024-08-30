@@ -30,7 +30,8 @@
           "ranges": [
             [2, 11],
             [6, 11],
-            [22, 11]
+            [22, 11],
+            [26, 11]
           ]
         }
       ]
@@ -46,7 +47,22 @@
         "goesTo": {
           "name": "coin-room-1"
         },
-        "backTo": [64, 64]
+        "backTo": "outlet1"
+      }
+    },
+    {
+      "id": "outlet1",
+      "name": "pipe-portal",
+      "pos": [36, 176],
+      "props": {
+        "dir": "UP"
+      }
+    },
+    {
+      "name": "pipe-portal",
+      "pos": [415, 160],
+      "props": {
+        "dir": "RIGHT"
       }
     }
   ]

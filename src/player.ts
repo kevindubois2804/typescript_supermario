@@ -18,8 +18,13 @@ export function makePlayer(entity: Entity, name: string) {
   entity.addTrait(timer);
 }
 
-export function bootstrap(entity: Entity, level: Level) {
+export function resetPlayer(entity: Entity, worldName: string) {
   entity.getTrait(LevelTimer)!.reset();
+  entity.getTrait(Player)!.world = worldName;
+}
+
+export function bootstrapPlayer(entity: Entity, level: Level) {
+  entity.getTrait(LevelTimer)!.hurryEmitted = null;
   entity.pos.copy(level.checkpoints[0]);
   level.entities.add(entity);
 }

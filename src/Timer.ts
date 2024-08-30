@@ -15,9 +15,12 @@ export class Timer {
   }
 
   private updateProxy = (time: number) => {
-    if (this.lastTime != null) {
+    if (this.lastTime) {
       this.accumulatedTime += (time - this.lastTime) / 1000;
-      this.accumulatedTime = Math.min(this.accumulatedTime, 1);
+
+      if (this.accumulatedTime > 1) {
+        this.accumulatedTime = 1;
+      }
 
       while (this.accumulatedTime > this.deltaTime) {
         this.update(this.deltaTime);

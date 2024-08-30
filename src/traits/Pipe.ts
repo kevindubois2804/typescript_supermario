@@ -1,8 +1,9 @@
 import { Entity } from '../Entity';
 import { GameContext } from '../GameContext';
 import { Level } from '../Level';
-import { Vec2 } from '../math';
+import { Direction, Vec2 } from '../math';
 import { Trait } from '../Trait';
+import { Align } from '../utilities/Align';
 import { PipeTraveller } from './PipeTraveller';
 
 export type TravellerState = {
@@ -20,9 +21,23 @@ function createTravellerState(): TravellerState {
 }
 
 export default class Pipe extends Trait {
+  static EVENT_PIPE_COMPLETE = Symbol('pipe complete');
+
   duration: number = 1;
   travellers = new Map<Entity, TravellerState>();
   direction = new Vec2(0, 0);
+
+  addTraveller(pipe: Entity, traveller: Entity) {
+    pipe.sounds.add('pipe');
+    const pipeTraveller = traveller.getTrait(PipeTraveller)!;
+    pipeTraveller.distance.set(0, 0);
+    const state = createTravellerState();
+    state.start.copy(traveller.pos);
+    state.end.copy(traveller.pos);
+    state.end.x += this.direction.x * pipe.size.x;
+    state.end.y += this.direction.y * pipe.size.y;
+    this.travellers.set(traveller, state);
+  }
 
   collides(pipe: Entity, traveller: Entity) {
     if (!traveller.traits.has(PipeTraveller)) {
@@ -36,14 +51,7 @@ export default class Pipe extends Trait {
     const pipeTraveller = traveller.getTrait(PipeTraveller)!;
 
     if (pipeTraveller.direction.equals(this.direction)) {
-      console.log('Entering Pipe');
-      pipe.sounds.add('pipe');
-      const state = createTravellerState();
-      state.start.copy(traveller.pos);
-      state.end.copy(traveller.pos);
-      state.end.x += this.direction.x * pipe.size.x;
-      state.end.y += this.direction.y * pipe.size.y;
-      this.travellers.set(traveller, state);
+      this.addTraveller(pipe, traveller);
     }
   }
 
@@ -54,9 +62,37 @@ export default class Pipe extends Trait {
       const progress = state.time / this.duration;
       traveller.pos.x = state.start.x + (state.end.x - state.start.x) * progress;
       traveller.pos.y = state.start.y + (state.end.y - state.start.y) * progress;
+      traveller.vel.set(0, 0);
+
+      const pipeTraveller = traveller.getTrait(PipeTraveller)!;
+
+      pipeTraveller.movement.copy(this.direction);
+      pipeTraveller.distance.x = traveller.pos.x - state.start.x;
+      pipeTraveller.distance.y = traveller.pos.y - state.start.y;
+
       if (state.time > this.duration) {
         this.travellers.delete(traveller);
+
+        pipeTraveller.movement.set(0, 0);
+        pipeTraveller.distance.set(0, 0);
+
+        level.events.emit(Pipe.EVENT_PIPE_COMPLETE, pipe, traveller);
       }
     }
   }
+}
+
+export function connectEntity(pipeEntity: Entity, travellerEntity: Entity) {
+  const pipeTrait = pipeEntity.getTrait(Pipe)!;
+  Align.center(pipeEntity, travellerEntity);
+  if (pipeTrait.direction.equals(Direction.UP)) {
+    Align.bottom(pipeEntity, travellerEntity);
+  } else if (pipeTrait.direction.equals(Direction.DOWN)) {
+    Align.top(pipeEntity, travellerEntity);
+  } else if (pipeTrait.direction.equals(Direction.LEFT)) {
+    Align.right(pipeEntity, travellerEntity);
+  } else if (pipeTrait.direction.equals(Direction.RIGHT)) {
+    Align.left(pipeEntity, travellerEntity);
+  }
+  pipeTrait.addTraveller(pipeEntity, travellerEntity);
 }
