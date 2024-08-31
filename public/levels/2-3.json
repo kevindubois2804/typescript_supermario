@@ -10,14 +10,14 @@
         {
             "tiles": [
                 {
-                    "name": "sky",
+                    "style": "sky",
                     "ranges": [
                         [0, 237, 0, 15]
                     ]
                 },
                 {
-                    "name": "ground",
-                    "type": "ground",
+                    "style": "ground",
+                    "behavior": "ground",
                     "ranges": [
                         [0, 7, 13, 2],
                         [207, 30, 13, 2]
@@ -136,8 +136,8 @@
                     ]
                 },
                 {
-                    "name": "coin",
-                    "type": "coin",
+                    "style": "coin",
+                    "behavior": "coin",
                     "ranges": [
                         [36, 4, 5],
                         [55, 5],
@@ -156,14 +156,14 @@
                     ]
                 },
                 {
-                    "name": "chance",
-                    "type": "ground",
+                    "style": "chance",
+                    "behavior": "ground",
                     "ranges": [
                         [102, 5]
                     ]
                 },
                 {
-                    "name": "dirt",
+                    "style": "dirt",
                     "ranges": [
                         [9, 6, 13, 2],
                         [113, 6, 13, 2],

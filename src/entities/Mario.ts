@@ -9,6 +9,7 @@ import { Jump } from '../traits/Jump';
 import { Killable } from '../traits/Killable';
 import { Physics } from '../traits/Physics';
 import { PipeTraveller } from '../traits/PipeTraveller';
+import PoleTraveller from '../traits/PoleTraveller';
 import { Solid } from '../traits/Solid';
 import { Stomper } from '../traits/Stomper';
 import { Turbo } from '../traits/Turbo';
@@ -21,15 +22,32 @@ export function loadMario(audioContext: AudioContext) {
 
 function createMarioFactory(sprite: SpriteSheet, audio: AudioBoard) {
   const runAnim = sprite.animations.get('run') as Animation;
+  const climbAnim = sprite.animations.get('climb') as Animation;
+
+  function getHeading(mario: Entity) {
+    const poleTraveller = mario.getTrait(PoleTraveller)!;
+    if (poleTraveller.distance) {
+      return false;
+    }
+    return mario.getTrait(Go)!.heading < 0;
+  }
 
   function routeFrame(mario: Entity) {
-    if (mario.getTrait(Jump)!.falling) {
-      return 'jump';
-    }
-
     const pipeTraveller = mario.getTrait(PipeTraveller)!;
     if (pipeTraveller.movement.x != 0) {
       return runAnim(pipeTraveller.distance.x * 2);
+    }
+    if (pipeTraveller.movement.y != 0) {
+      return 'idle';
+    }
+
+    const poleTraveller = mario.getTrait(PoleTraveller)!;
+    if (poleTraveller.distance) {
+      return climbAnim(poleTraveller.distance);
+    }
+
+    if (mario.getTrait(Jump)!.falling) {
+      return 'jump';
     }
 
     const go = mario.getTrait(Go)!;
@@ -45,7 +63,7 @@ function createMarioFactory(sprite: SpriteSheet, audio: AudioBoard) {
   }
 
   function drawMario(context: CanvasRenderingContext2D) {
-    sprite.draw(routeFrame(this), context, 0, 0, this.traits.get(Go).heading < 0);
+    sprite.draw(routeFrame(this), context, 0, 0, getHeading(this));
   }
 
   return function createMario() {
@@ -60,6 +78,7 @@ function createMarioFactory(sprite: SpriteSheet, audio: AudioBoard) {
     mario.addTrait(new Killable());
     mario.addTrait(new Stomper());
     mario.addTrait(new PipeTraveller());
+    mario.addTrait(new PoleTraveller());
     mario.addTrait(new Turbo());
 
     mario.getTrait(Killable)!.removeAfter = Infinity;

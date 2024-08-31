@@ -6,13 +6,13 @@ import { Trait } from '../Trait';
 import { Align } from '../utilities/Align';
 import { PipeTraveller } from './PipeTraveller';
 
-export type TravellerState = {
+export type PipeTravellerState = {
   time: number;
   start: Vec2;
   end: Vec2;
 };
 
-function createTravellerState(): TravellerState {
+function createTravellerState(): PipeTravellerState {
   return {
     time: 0,
     start: new Vec2(),
@@ -24,11 +24,10 @@ export default class Pipe extends Trait {
   static EVENT_PIPE_COMPLETE = Symbol('pipe complete');
 
   duration: number = 1;
-  travellers = new Map<Entity, TravellerState>();
+  travellers = new Map<Entity, PipeTravellerState>();
   direction = new Vec2(0, 0);
 
   addTraveller(pipe: Entity, traveller: Entity) {
-    pipe.sounds.add('pipe');
     const pipeTraveller = traveller.getTrait(PipeTraveller)!;
     pipeTraveller.distance.set(0, 0);
     const state = createTravellerState();
@@ -48,9 +47,16 @@ export default class Pipe extends Trait {
       return;
     }
 
-    const pipeTraveller = traveller.getTrait(PipeTraveller)!;
+    if (traveller.getTrait(PipeTraveller)!.direction.equals(this.direction)) {
+      const tBounds = traveller.bounds;
+      const pBounds = pipe.bounds;
+      if (this.direction.x && (tBounds.top < pBounds.top || tBounds.bottom > pBounds.bottom)) {
+        return;
+      }
+      if (this.direction.y && (tBounds.left < pBounds.left || tBounds.right > pBounds.right)) {
+        return;
+      }
 
-    if (pipeTraveller.direction.equals(this.direction)) {
       this.addTraveller(pipe, traveller);
     }
   }

@@ -78,6 +78,6 @@ export class TileCollider {
       level,
     };
 
-    handlers[match.tile.type]?.[index]?.(tileCollisionContext);
+    handlers[match.tile.behavior]?.[index]?.(tileCollisionContext);
   }
 }

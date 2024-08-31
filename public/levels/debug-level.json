@@ -10,7 +10,7 @@
         {
             "tiles": [
                 {
-                    "name": "sky",
+                    "style": "sky",
                     "ranges": [
                         [
                             0, 212,
@@ -19,8 +19,8 @@
                     ]
                 },
                 {
-                    "name": "ground",
-                    "type": "ground",
+                    "style": "ground",
+                    "behavior": "ground",
                     "ranges": [
                         [
                             0, 212,
@@ -29,7 +29,7 @@
                     ]
                 },
                 {
-                    "name": "sky",
+                    "style": "sky",
                     "ranges": [
                         [
                             75, 2,
@@ -46,8 +46,8 @@
                     ]
                 },
                 {
-                    "name": "ground",
-                    "type": "ground",
+                    "style": "ground",
+                    "behavior": "ground",
                     "ranges": [
                         [
                             5, 3,
@@ -87,8 +87,8 @@
         {
             "tiles": [
                 {
-                    "name": "bricks",
-                    "type": "brick",
+                    "style": "bricks",
+                    "behavior": "brick",
                     "ranges": [
                         [
                             27, 5,
@@ -135,8 +135,8 @@
                     ]
                 },
                 {
-                    "name": "chance",
-                    "type": "ground",
+                    "style": "chance",
+                    "behavior": "ground",
                     "ranges": [
                         [2, 2],
 
@@ -159,8 +159,8 @@
                     ]
                 },
                 {
-                    "name": "chocolate",
-                    "type": "ground",
+                    "style": "chocolate",
+                    "behavior": "ground",
                     "ranges": [
                         [141, 1, 9],
                         [140, 2, 10],

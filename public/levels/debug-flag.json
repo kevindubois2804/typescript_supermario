@@ -2,6 +2,7 @@
   "spriteSheet": "overworld",
   "musicSheet": "overworld",
   "patternSheet": "overworld-pattern",
+  "checkpoints": [[160, 32]],
 
   "layers": [
     {
@@ -25,12 +26,12 @@
     {
       "tiles": [
         {
-          "pattern": "pipe-2h",
-          "ranges": [
-            [2, 11],
-            [6, 11],
-            [12, 11]
-          ]
+          "pattern": "chocolate-stairs-final",
+          "ranges": [[2, 5]]
+        },
+        {
+          "pattern": "flag-pole-green",
+          "ranges": [[12, 2]]
         }
       ]
     }
@@ -38,27 +39,8 @@
 
   "entities": [
     {
-      "name": "piranha-plant",
-      "pos": [104, 176]
-    },
-    {
-      "name": "pipe-portal",
-      "pos": [100, 174],
-      "props": {
-        "dir": "DOWN",
-        "goesTo": {
-          "name": "coin-room-1"
-        },
-        "backTo": "outlet1"
-      }
-    },
-    {
-      "id": "outlet1",
-      "name": "pipe-portal",
-      "pos": [196, 176],
-      "props": {
-        "dir": "UP"
-      }
+      "name": "flag-pole",
+      "pos": [192, 48]
     }
   ]
 }

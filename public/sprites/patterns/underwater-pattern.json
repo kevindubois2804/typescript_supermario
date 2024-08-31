@@ -1,37 +1,28 @@
 {
-    "water": {
-        "tiles": [
-            {
-                "name": "waves",
-                "ranges": [
-                    [0, 0]
-                ]
-            },
-            {
-                "name": "water",
-                "ranges": [
-                    [0, 1, 1, 12]
-                ]
-            }
-        ]
-    },
-    "pipe-cap-hor": {
-        "tiles": [
-            {
-                "name": "pipe-insert-hor-top",
-                "type": "ground",
-                "ranges": [
-                    [0, 0]
-                ]
-            },
-            {
-                "name": "pipe-insert-hor-bottom",
-                "type": "ground",
-                "ranges": [
-                    [0, 1]
-                ]
-            }
-        ]
-    }
-
+  "water": {
+    "tiles": [
+      {
+        "style": "waves",
+        "ranges": [[0, 0]]
+      },
+      {
+        "style": "water",
+        "ranges": [[0, 1, 1, 12]]
+      }
+    ]
+  },
+  "pipe-cap-hor": {
+    "tiles": [
+      {
+        "style": "pipe-insert-hor-top",
+        "behavior": "ground",
+        "ranges": [[0, 0]]
+      },
+      {
+        "style": "pipe-insert-hor-bottom",
+        "behavior": "ground",
+        "ranges": [[0, 1]]
+      }
+    ]
+  }
 }

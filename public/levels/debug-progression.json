@@ -10,7 +10,7 @@
         {
             "tiles": [
                 {
-                    "name": "sky",
+                    "style": "sky",
                     "ranges": [
                         [
                             0, 212,
@@ -19,8 +19,8 @@
                     ]
                 },
                 {
-                    "name": "ground",
-                    "type": "ground",
+                    "style": "ground",
+                    "behavior": "ground",
                     "ranges": [
                         [
                             0, 212,

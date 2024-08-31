@@ -19,11 +19,11 @@ export function createBackgroundLayer(level: Level, tiles: TileResolverMatrix, s
     const items = tiles.itemsInRange(startIndex, 0, endIndex, buffer.height / 16);
     // iterate over the tiles instead of accessing the grid
     for (const [tile, x, y] of items) {
-      if (!tile.name) continue;
-      if (sprites.animations.has(tile.name)) {
-        sprites.drawAnimation(tile.name, context, x - startIndex, y, level.totalTime);
+      if (!tile.style) continue;
+      if (sprites.animations.has(tile.style)) {
+        sprites.drawAnimation(tile.style, context, x - startIndex, y, level.totalTime);
       } else {
-        sprites.drawTile(tile.name, context, x - startIndex, y);
+        sprites.drawTile(tile.style, context, x - startIndex, y);
       }
     }
   }

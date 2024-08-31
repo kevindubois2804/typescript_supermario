@@ -10,14 +10,14 @@
         {
             "tiles": [
                 {
-                    "name": "sky",
+                    "style": "sky",
                     "ranges": [
                         [0, 214, 0, 15]
                     ]
                 },
                 {
-                    "name": "ground",
-                    "type": "ground",
+                    "style": "ground",
+                    "behavior": "ground",
                     "ranges": [
                         [0, 92, 13, 2],
                         [96, 10, 13, 2],
@@ -31,8 +31,8 @@
         {
             "tiles": [
                 {
-                    "name": "bricks-top",
-                    "type": "ground",
+                    "style": "bricks-top",
+                    "behavior": "ground",
                     "ranges": [
                         [15, 3, 9],
                         [28, 4, 5],
@@ -48,8 +48,8 @@
                     ]
                 },
                 {
-                    "name": "chance",
-                    "type": "ground",
+                    "style": "chance",
+                    "behavior": "ground",
                     "ranges": [
                         [53, 5, 5],
                         [53, 5, 9],
@@ -59,8 +59,8 @@
                     ]
                 },
                 {
-                    "name": "metal",
-                    "type": "ground",
+                    "style": "metal",
+                    "behavior": "ground",
                     "ranges": [
                         [17, 9],
                         [28, 5],
@@ -144,13 +144,13 @@
                     ]
                 },
                 {
-                    "name": "tree-large-top",
+                    "style": "tree-large-top",
                     "ranges": [
                         [21, 10]
                     ]
                 },
                 {
-                    "name": "fence",
+                    "style": "fence",
                     "ranges": [
                         [14, 4, 12],
                         [38, 2, 12],

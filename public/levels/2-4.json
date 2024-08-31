@@ -10,7 +10,7 @@
         {
             "tiles": [
                 {
-                    "name": "sky",
+                    "style": "sky",
                     "ranges": [
                         [0, 160, 0, 15]
                     ]
@@ -20,8 +20,8 @@
         {
             "tiles": [
                 {
-                    "name": "ground",
-                    "type": "ground",
+                    "style": "ground",
+                    "behavior": "ground",
                     "ranges": [
                         [0, 16, 2, 3],
                         [0, 16, 10, 5],
@@ -50,15 +50,15 @@
                     ]
                 },
                 {
-                    "name": "bricks",
-                    "type": "ground",
+                    "style": "bricks",
+                    "behavior": "ground",
                     "ranges": [
                         [128, 6, 5]
                     ]
                 },
                 {
-                    "name": "metal-alt",
-                    "type": "ground",
+                    "style": "metal-alt",
+                    "behavior": "ground",
                     "ranges": [
                         [23, 7],
                         [43, 13],
@@ -80,7 +80,7 @@
                     ]
                 },
                 {
-                    "name": "waves",
+                    "style": "waves",
                     "ranges": [
                         [16, 16, 13],
                         [109, 2, 13],
@@ -89,7 +89,7 @@
                     ]
                 },
                 {
-                    "name": "tile-red",
+                    "style": "tile-red",
                     "ranges": [
                         [16, 16, 14],
                         [109, 2, 14],
@@ -98,22 +98,22 @@
                     ]
                 },
                 {
-                    "name": "chance",
-                    "type": "ground",
+                    "style": "chance",
+                    "behavior": "ground",
                     "ranges": [
                         [23, 3]
                     ]
                 },
                 {
-                    "name": "coin",
-                    "type": "coin",
+                    "style": "coin",
+                    "behavior": "coin",
                     "ranges": [
                         [102, 3, 8, 1],
                         [102, 3, 12, 1]
                     ]
                 },
                 {
-                    "name": "beam-track",
+                    "style": "beam-track",
                     "ranges": [
                         [86, 1, 2, 13],
                         [89, 1, 2, 13]
@@ -121,7 +121,7 @@
                 },
                 {
                     "pattern": "bridge",
-                    "type": "ground",
+                    "behavior": "ground",
                     "ranges": [
                         [128, 9]
                     ]

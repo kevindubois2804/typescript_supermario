@@ -61,8 +61,8 @@ export type LevelSpecLayer = {
 };
 
 export type LevelSpecTile = {
-  type: string;
-  name: string;
+  behavior: string;
+  style: string;
   pattern?: string;
   ranges: TileRange[];
 };

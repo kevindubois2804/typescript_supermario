@@ -61,7 +61,7 @@ function setupCamera(level: Level) {
       }
     });
   }
-  level.camera.max.x = maxX * maxTileSize;
+  level.camera.max.x = (maxX + 1) * maxTileSize;
 }
 
 function setupCheckpoints(levelSpec: LevelSpec, level: Level) {
@@ -203,7 +203,7 @@ function* expandTiles(tiles: LevelSpecTile[], patterns: LevelSpecPatterns) {
           }
           const { tiles } = patterns[tile.pattern];
           yield* walkTiles(tiles, derivedX, derivedY);
-        } else if (tile.name) {
+        } else if (tile.style) {
           yield {
             tile,
             x: derivedX,

@@ -2,8 +2,8 @@
     "entrance-stairs": {
         "tiles": [
             {
-                "name": "ground",
-                "type": "ground",
+                "style": "ground",
+                "behavior": "ground",
                 "ranges": [
                     [0, 3, 1, 1],
                     [0, 4, 2, 1],
@@ -16,15 +16,15 @@
     "pipe-section-vert": {
         "tiles": [
             {
-                "name": "pipe-vert-left",
-                "type": "ground",
+                "style": "pipe-vert-left",
+                "behavior": "ground",
                 "ranges": [
                     [0, 0]
                 ]
             },
             {
-                "name": "pipe-vert-right",
-                "type": "ground",
+                "style": "pipe-vert-right",
+                "behavior": "ground",
                 "ranges": [
                     [1, 0]
                 ]
@@ -35,15 +35,15 @@
     "pipe-cap-vert": {
         "tiles": [
             {
-                "name": "pipe-insert-vert-left",
-                "type": "ground",
+                "style": "pipe-insert-vert-left",
+                "behavior": "ground",
                 "ranges": [
                     [0, 0]
                 ]
             },
             {
-                "name": "pipe-insert-vert-right",
-                "type": "ground",
+                "style": "pipe-insert-vert-right",
+                "behavior": "ground",
                 "ranges": [
                     [1, 0]
                 ]
@@ -114,14 +114,14 @@
     "bridge": {
         "tiles": [
             {
-                "name": "bridge",
-                "type": "ground",
+                "style": "bridge",
+                "behavior": "ground",
                 "ranges": [
                     [0, 13, 1]
                 ]
             },
             {
-                "name": "bridge-chain",
+                "style": "bridge-chain",
                 "ranges": [
                     [12, 0]
                 ]
@@ -132,13 +132,13 @@
     "toad": {
         "tiles": [
             {
-                "name": "toad-1",
+                "style": "toad-1",
                 "ranges": [
                     [0, 0]
                 ]
             },
             {
-                "name": "toad-2",
+                "style": "toad-2",
                 "ranges": [
                     [0, 1]
                 ]
