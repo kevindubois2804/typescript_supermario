@@ -9,7 +9,7 @@ export class Trigger extends Trait {
   touches = new Set<Entity>();
   conditions: TriggerCondition[] = [];
 
-  collides(_: Entity, them: Entity) {
+  collides(_: GameContext, __: Entity, them: Entity) {
     this.touches.add(them);
   }
 

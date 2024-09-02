@@ -1,5 +1,6 @@
 import Camera from './Camera';
 import { Entity } from './Entity';
+import { OFFSET_PLAYER_FROM_CAMERA } from './Level';
 import { Vec2 } from './math';
 
 const mouseEvents = ['mousedown', 'mousemove'];
@@ -12,7 +13,7 @@ export function setupMouseControlForDebugPurposes(canvas: HTMLCanvasElement, ent
       if (event instanceof MouseEvent) {
         if (event.buttons === 1) {
           entity.vel.set(0, 0);
-          entity.pos.set(event.offsetX - 100 + camera.pos.x, event.offsetY + camera.pos.y - 100);
+          entity.pos.set(event.offsetX - OFFSET_PLAYER_FROM_CAMERA + camera.pos.x, event.offsetY + camera.pos.y - OFFSET_PLAYER_FROM_CAMERA);
         } else if (event.buttons === 2 && lastEvent && lastEvent.buttons === 2 && lastEvent.type === 'mousemove') {
           camera.pos.x -= event.offsetX - lastEvent.offsetX;
         }

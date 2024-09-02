@@ -1,4 +1,4 @@
-import { Animation } from '../animation';
+import { AnimationResolver } from '../AnimationResolver';
 import { Entity } from '../Entity';
 import { GameContext } from '../GameContext';
 import { Level } from '../Level';
@@ -24,7 +24,7 @@ export function loadCheepFastWavy() {
 }
 
 class CheepCheepBehavior extends Trait {
-  collides(us: Entity, them: Entity) {
+  collides(_: GameContext, us: Entity, them: Entity) {
     if (them.traits.has(Killable)) {
       them.getTrait(Killable)!.kill();
     }
@@ -55,10 +55,10 @@ class Wavy extends Trait {
 }
 
 function createCheepSlowFactory(sprite: SpriteSheet) {
-  const swimAnim = sprite.animations.get('swim') as Animation;
+  const swimAnimationresolver = sprite.animations.get('swim') as AnimationResolver;
 
   function routeAnim(entity: Entity) {
-    return swimAnim(entity.lifetime);
+    return swimAnimationresolver.resolveFrame(entity.lifetime);
   }
 
   function drawCheepSlow(context: CanvasRenderingContext2D) {
@@ -77,10 +77,10 @@ function createCheepSlowFactory(sprite: SpriteSheet) {
 }
 
 function createCheepSlowWavyFactory(sprite: SpriteSheet) {
-  const swimAnim = sprite.animations.get('swim') as Animation;
+  const swimAnimationResolver = sprite.animations.get('swim') as AnimationResolver;
 
   function routeAnim(entity: Entity) {
-    return swimAnim(entity.lifetime);
+    return swimAnimationResolver.resolveFrame(entity.lifetime);
   }
 
   function drawCheepSlowWavy(context: CanvasRenderingContext2D) {
@@ -102,10 +102,10 @@ function createCheepSlowWavyFactory(sprite: SpriteSheet) {
 }
 
 function createCheepFastFactory(sprite: SpriteSheet) {
-  const swimAnim = sprite.animations.get('swim') as Animation;
+  const swimAnimationResolver = sprite.animations.get('swim') as AnimationResolver;
 
   function routeAnim(entity: Entity) {
-    return swimAnim(entity.lifetime);
+    return swimAnimationResolver.resolveFrame(entity.lifetime);
   }
 
   function drawCheepFast(context: CanvasRenderingContext2D) {
@@ -124,10 +124,10 @@ function createCheepFastFactory(sprite: SpriteSheet) {
 }
 
 function createCheepFastWavyFactory(sprite: SpriteSheet) {
-  const swimAnim = sprite.animations.get('swim') as Animation;
+  const swimAnimationResolver = sprite.animations.get('swim') as AnimationResolver;
 
   function routeAnim(entity: Entity) {
-    return swimAnim(entity.lifetime);
+    return swimAnimationResolver.resolveFrame(entity.lifetime);
   }
 
   function drawCheepFastWavy(context: CanvasRenderingContext2D) {

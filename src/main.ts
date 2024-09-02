@@ -2,7 +2,7 @@ import { setupMouseControlForDebugPurposes } from './debug';
 import { loadEntities } from './entities';
 import { Entity } from './Entity';
 import { GameContext } from './GameContext';
-import { setupKeyboard } from './input';
+import { setupKeyboard } from './setupkeyboard';
 import { createCameraLayer } from './layers/camera';
 import { createCollisionLayer } from './layers/collision';
 import { createColorLayer } from './layers/color';
@@ -38,7 +38,7 @@ async function main(canvas: HTMLCanvasElement) {
   const mario = entityFactory.mario?.() || raise('where mario tho');
   makePlayer(mario, 'MARIO');
 
-  const inputRouter = setupKeyboard(window);
+  const { inputRouter, inputHandler } = setupKeyboard(window);
   inputRouter.addReceiver(mario);
 
   const mouseDebugCameraUpdater = setupMouseControlForDebugPurposes(canvas, mario);
@@ -75,7 +75,6 @@ async function main(canvas: HTMLCanvasElement) {
         sceneRunner.addScene(nextLevel);
         sceneRunner.runNext();
         if (pipe.props.backTo) {
-          console.log(pipe.props);
           nextLevel.events.listen(Level.EVENT_COMPLETE, async () => {
             const level = await setupLevel(name);
             const exitPipe = level.entities.get(pipe.props.backTo) as Entity;
@@ -106,7 +105,7 @@ async function main(canvas: HTMLCanvasElement) {
     const dashboardLayer = createDashboardLayer(font, mario);
 
     const waitScreen = new TimedScene();
-    waitScreen.countDown = 0;
+    waitScreen.countDown = 1;
     waitScreen.comp.layers.push(createColorLayer('#000'));
     waitScreen.comp.layers.push(dashboardLayer);
     waitScreen.comp.layers.push(playerProgressLayer);
@@ -122,6 +121,8 @@ async function main(canvas: HTMLCanvasElement) {
     entityFactory,
     videoContext,
     tick: 0,
+    inputRouter,
+    inputHandler,
   };
 
   const timer = new Timer(1 / 60);
@@ -136,7 +137,7 @@ async function main(canvas: HTMLCanvasElement) {
   };
 
   timer.start();
-  startWorld('2-2');
+  startWorld('1-1');
 }
 
 const canvas = document.getElementById('screen');

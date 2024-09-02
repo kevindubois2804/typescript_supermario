@@ -1,6 +1,7 @@
 import { Entity } from '../Entity';
 import { GameContext } from '../GameContext';
 import { Trait } from '../Trait';
+import { InputNotifier } from './InputNotifier';
 import { Jump } from './Jump';
 
 export class Go extends Trait {
@@ -10,6 +11,16 @@ export class Go extends Trait {
   heading = 1;
   dragFactor = 1 / 5000;
   deceleration = 300;
+
+  constructor() {
+    super();
+    this.listen(InputNotifier.KEYBORD_KEY_RIGHT_PRESSED, (keyState: 0 | 1) => {
+      this.dir += keyState ? 1 : -1;
+    });
+    this.listen(InputNotifier.KEYBORD_KEY_LEFT_PRESSED, (keyState: 0 | 1) => {
+      this.dir += keyState ? -1 : 1;
+    });
+  }
 
   update(entity: Entity, { deltaTime }: GameContext) {
     const absX = Math.abs(entity.vel.x);

@@ -37,7 +37,7 @@ export default class Pole extends Trait {
     this.travellers.set(traveller, state);
   }
 
-  collides(pole: Entity, traveller: Entity) {
+  collides(_: GameContext, pole: Entity, traveller: Entity) {
     if (!traveller.traits.has(PoleTraveller)) {
       return;
     }

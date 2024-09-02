@@ -1,6 +1,6 @@
 export type KeyListener = (keyState: number) => void;
 
-export class Keyboard {
+export class InputHandler {
   /** current pressed state per key */
   keyStates = new Map<string, number>();
 
@@ -10,6 +10,11 @@ export class Keyboard {
   addListener(code: string, callback: KeyListener) {
     this.keyListeners.set(code, callback);
     this.keyStates.set(code, 0);
+  }
+
+  removeListener(code: string) {
+    this.keyListeners.delete(code);
+    this.keyStates.delete(code);
   }
 
   listenTo(target: EventTarget) {

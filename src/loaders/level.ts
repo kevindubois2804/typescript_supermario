@@ -129,6 +129,7 @@ export function createLevelLoader(entityFactory: EntityFactoryDict) {
 
     const level = new Level();
     level.name = name;
+    level.backgroundSprites = backgroundSprites;
     level.music.setPlayer(musicPlayer);
 
     setupTileColliderResolvers(levelSpec, level, patterns);

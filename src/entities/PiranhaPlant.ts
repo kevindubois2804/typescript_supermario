@@ -1,3 +1,4 @@
+import { AnimationResolver } from '../AnimationResolver';
 import { Entity } from '../Entity';
 import { GameContext } from '../GameContext';
 import { Level } from '../Level';
@@ -73,10 +74,10 @@ class PiranhaPlantBehavior extends Trait {
 }
 
 function createPiranhaPlantFactory(sprite: SpriteSheet) {
-  const chewAnim = sprite.animations.get('chew')!;
+  const chewAnimationResolver = sprite.animations.get('chew') as AnimationResolver;
 
   function routeAnim(entity: Entity) {
-    return chewAnim(entity.lifetime);
+    return chewAnimationResolver.resolveFrame(entity.lifetime);
   }
 
   function drawPiranhaPlant(context: CanvasRenderingContext2D) {

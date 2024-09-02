@@ -1,4 +1,5 @@
-import { Animation } from '../animation';
+
+import { AnimationResolver } from '../AnimationResolver';
 import { Entity } from '../Entity';
 import { GameContext } from '../GameContext';
 import { loadSpriteSheet } from '../loaders/sprite';
@@ -24,7 +25,7 @@ class KoopaBehavior extends Trait {
   panicSpeed = 300;
   walkSpeed?: number;
 
-  collides(us: Entity, them: Entity) {
+  collides(_: GameContext, us: Entity, them: Entity) {
     if (us.getTrait(Killable)?.dead) {
       return;
     }
@@ -114,13 +115,13 @@ class KoopaBehavior extends Trait {
 }
 
 function createKoopaFactory(sprite: SpriteSheet) {
-  const walkAnim = sprite.animations.get('walk') as Animation;
-  const wakeAnim = sprite.animations.get('wake') as Animation;
+  const walkAnimationResolver = sprite.animations.get('walk') as AnimationResolver;
+  const wakeAnimationresolver = sprite.animations.get('wake') as AnimationResolver;
 
   function routeAnim(koopa: Entity) {
     if (koopa.getTrait(KoopaBehavior)!.state === KoopaState.hiding) {
       if (koopa.getTrait(KoopaBehavior)!.hideTime > 3) {
-        return wakeAnim(koopa.getTrait(KoopaBehavior)!.hideTime);
+        return wakeAnimationresolver.resolveFrame(koopa.getTrait(KoopaBehavior)!.hideTime);
       }
       return 'hiding';
     }
@@ -129,7 +130,7 @@ function createKoopaFactory(sprite: SpriteSheet) {
       return 'hiding';
     }
 
-    return walkAnim(koopa.lifetime);
+    return walkAnimationResolver.resolveFrame(koopa.lifetime);
   }
 
   function drawKoopa(context: CanvasRenderingContext2D) {

@@ -75,6 +75,7 @@ export type AnimationSpec = {
   name: string;
   frameLen: number;
   frames: string[];
+  loop?: boolean;
 };
 
 export type FrameSpec = {

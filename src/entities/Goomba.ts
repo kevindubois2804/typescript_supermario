@@ -1,8 +1,8 @@
-import { Animation } from '../animation';
+import { AnimationResolver } from '../AnimationResolver';
 import { Entity } from '../Entity';
+import { GameContext } from '../GameContext';
 import { loadSpriteSheet } from '../loaders/sprite';
 import { SpriteSheet } from '../SpriteSheet';
-
 import { Trait } from '../Trait';
 import { Killable } from '../traits/Killable';
 import { PendulumMove } from '../traits/PendulumMove';
@@ -11,7 +11,7 @@ import { Solid } from '../traits/Solid';
 import { Stomper } from '../traits/Stomper';
 
 class GoombaBehavior extends Trait {
-  collides(us: Entity, them: Entity) {
+  collides(_: GameContext, us: Entity, them: Entity) {
     if (us.getTrait(Killable)?.dead) {
       return;
     }
@@ -29,14 +29,14 @@ class GoombaBehavior extends Trait {
 }
 
 function createGoombaFactory(sprite: SpriteSheet) {
-  const walkAnim = sprite.animations.get('walk') as Animation;
+  const walkAnimationresolver = sprite.animations.get('walk') as AnimationResolver;
 
   function routeAnim(goomba: Entity) {
     if (goomba.getTrait(Killable)!.dead) {
       return 'flat';
     }
 
-    return walkAnim(goomba.lifetime);
+    return walkAnimationresolver.resolveFrame(goomba.lifetime);
   }
 
   function drawGoomba(context: CanvasRenderingContext2D) {

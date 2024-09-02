@@ -6,9 +6,10 @@ import { clamp, Vec2 } from './math';
 import { MusicController } from './MusicController';
 import { findPlayers } from './player';
 import { Scene } from './Scene';
+import { SpriteSheet } from './SpriteSheet';
 import { TileCollider } from './TileCollider';
 
-const OFFSET_PLAYER_FROM_CAMERA = 100;
+export const OFFSET_PLAYER_FROM_CAMERA = 100;
 
 const MARK: unique symbol = Symbol('level timer earmark');
 
@@ -22,6 +23,8 @@ export class Level extends Scene {
   name = '';
 
   checkpoints: Vec2[] = [];
+
+  backgroundSprites: SpriteSheet;
 
   entities = new EntityCollection();
   entityCollider = new EntityCollider(this.entities);
@@ -38,7 +41,7 @@ export class Level extends Scene {
     });
 
     this.entities.forEach((entity) => {
-      this.entityCollider.check(entity);
+      this.entityCollider.check(gameContext, entity);
     });
 
     this.entities.forEach((entity) => {

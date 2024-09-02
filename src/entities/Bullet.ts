@@ -12,7 +12,7 @@ import { Velocity } from '../traits/Velocity';
 class BulletBehavior extends Trait {
   gravity = new Gravity();
 
-  collides(us: Entity, them: Entity) {
+  collides(_: GameContext, us: Entity, them: Entity) {
     if (us.getTrait(Killable)?.dead) {
       return;
     }

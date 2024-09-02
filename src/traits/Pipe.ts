@@ -38,7 +38,7 @@ export default class Pipe extends Trait {
     this.travellers.set(traveller, state);
   }
 
-  collides(pipe: Entity, traveller: Entity) {
+  collides(_: GameContext, pipe: Entity, traveller: Entity) {
     if (!traveller.traits.has(PipeTraveller)) {
       return;
     }

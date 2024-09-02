@@ -16,7 +16,7 @@ export abstract class Trait {
 
   private listeners: TraitListener[] = [];
 
-  protected listen(name: string | symbol, callback: () => void, count = Infinity) {
+  protected listen(name: string | symbol, callback: (...args: any[]) => void, count = Infinity) {
     this.listeners.push({ name, callback, count });
   }
 
@@ -35,5 +35,5 @@ export abstract class Trait {
 
   update(entity: Entity, gameContext: GameContext, level: Level) {}
   obstruct(entity: Entity, side: Side, match: TileResolverMatch) {}
-  collides(us: Entity, them: Entity) {}
+  collides(gameContext: GameContext, us: Entity, them: Entity) {}
 }

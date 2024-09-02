@@ -1,4 +1,4 @@
-import { Animation } from '../animation';
+import { AnimationResolver } from '../AnimationResolver';
 import { AudioBoard } from '../AudioBoard';
 import { Entity } from '../Entity';
 import { loadAudioBoard } from '../loaders/audio';
@@ -15,14 +15,15 @@ export function loadBrickShrapnel(audioContext: AudioContext) {
 }
 
 function createBrickShrapnelFactory(sprite: SpriteSheet, audio: AudioBoard) {
-  const spinBrick = sprite.animations.get('spinning-brick') as Animation;
+  const spinBrickAnimationResolver = sprite.animations.get('spinning-brick') as AnimationResolver;
 
   function draw(context: CanvasRenderingContext2D) {
-    sprite.draw(spinBrick(this.lifetime), context, 0, 0);
+    sprite.draw(spinBrickAnimationResolver.resolveFrame(this.lifetime), context, 0, 0);
   }
 
   return function createBrickShrapnel() {
     const shrapnel = new Entity();
+    shrapnel.sprite = sprite;
     shrapnel.audio = audio;
     shrapnel.size.set(8, 8);
     shrapnel.addTrait(new Gravity());

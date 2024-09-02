@@ -1,5 +1,8 @@
 import { Entity } from '../Entity';
+import { GameContext } from '../GameContext';
+
 import { Trait } from '../Trait';
+
 import { Killable } from './Killable';
 
 export class Stomper extends Trait {
@@ -12,7 +15,7 @@ export class Stomper extends Trait {
     us.vel.y = -this.bounceSpeed;
   }
 
-  collides(us: Entity, them: Entity) {
+  collides(gc: GameContext, us: Entity, them: Entity) {
     const killable = them.getTrait(Killable);
     if (!killable || killable.dead) {
       return;
