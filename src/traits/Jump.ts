@@ -2,6 +2,7 @@ import { Entity, Side } from '../Entity';
 import { GameContext } from '../GameContext';
 import { Level } from '../Level';
 import { Trait } from '../Trait';
+import { InputController } from './InputController';
 
 export class Jump extends Trait {
   duration = 0.3;
@@ -11,6 +12,15 @@ export class Jump extends Trait {
   requestTime = 0;
   gracePeriod = 0.1;
   speedBoost = 0.3;
+
+  constructor() {
+    super();
+
+    this.listen(InputController.KEYBORD_KEY_SPACE_PRESSED, (pressed) => {
+      if (pressed) this.start();
+      else this.cancel();
+    });
+  }
 
   start() {
     this.requestTime = this.gracePeriod;

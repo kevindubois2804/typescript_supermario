@@ -1,7 +1,7 @@
 import { Entity } from '../Entity';
 import { GameContext } from '../GameContext';
 import { Trait } from '../Trait';
-import { InputNotifier } from './InputNotifier';
+import { InputController } from './InputController';
 import { Jump } from './Jump';
 
 export class Go extends Trait {
@@ -14,10 +14,10 @@ export class Go extends Trait {
 
   constructor() {
     super();
-    this.listen(InputNotifier.KEYBORD_KEY_RIGHT_PRESSED, (keyState: 0 | 1) => {
+    this.listen(InputController.KEYBORD_KEY_RIGHT_PRESSED, (keyState: 0 | 1) => {
       this.dir += keyState ? 1 : -1;
     });
-    this.listen(InputNotifier.KEYBORD_KEY_LEFT_PRESSED, (keyState: 0 | 1) => {
+    this.listen(InputController.KEYBORD_KEY_LEFT_PRESSED, (keyState: 0 | 1) => {
       this.dir += keyState ? -1 : 1;
     });
   }

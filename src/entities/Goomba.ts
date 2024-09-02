@@ -4,7 +4,6 @@ import { GameContext } from '../GameContext';
 import { loadSpriteSheet } from '../loaders/sprite';
 import { SpriteSheet } from '../SpriteSheet';
 import { Trait } from '../Trait';
-import { InputNotifier } from '../traits/InputNotifier';
 import { Killable } from '../traits/Killable';
 import { PendulumMove } from '../traits/PendulumMove';
 import { Physics } from '../traits/Physics';
@@ -24,9 +23,6 @@ class GoombaBehavior extends Trait {
         us.useTrait(Killable, (k) => k.kill());
       } else {
         them.getTrait(Killable)?.kill();
-        if (them.getTrait(InputNotifier)) {
-          them.sprite.animations.get('run')?.setAnimationLoop(false);
-        }
       }
     }
   }

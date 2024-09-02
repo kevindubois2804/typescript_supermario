@@ -5,7 +5,7 @@ import { loadAudioBoard } from '../loaders/audio';
 import { loadSpriteSheet } from '../loaders/sprite';
 import { SpriteSheet } from '../SpriteSheet';
 import { Go } from '../traits/Go';
-import { InputNotifier } from '../traits/InputNotifier';
+import { InputController } from '../traits/InputController';
 import { Jump } from '../traits/Jump';
 import { Killable } from '../traits/Killable';
 import { Physics } from '../traits/Physics';
@@ -154,7 +154,7 @@ function createMarioFactory(sprite: SpriteSheet, audio: AudioBoard) {
     mario.addTrait(new Jump());
     mario.addTrait(new Killable());
     mario.addTrait(new Stomper());
-    mario.addTrait(new InputNotifier());
+    mario.addTrait(new InputController());
     mario.addTrait(new PipeTraveller());
     mario.addTrait(new PoleTraveller());
     mario.addTrait(new Turbo());

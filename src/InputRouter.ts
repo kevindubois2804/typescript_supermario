@@ -1,21 +1,21 @@
 import { Entity } from './Entity';
 import { Trait } from './Trait';
-import { InputNotifier } from './traits/InputNotifier';
+import { InputController } from './traits/InputController';
 
 type Receiver = Entity;
 
 export class InputRouter {
-  inputNotifierTrait: Trait = new InputNotifier();
+  InputControllerTrait: Trait = new InputController();
 
   receivers = new Set<Receiver>();
 
   addReceiver(receiver: Receiver) {
-    receiver.addTrait(this.inputNotifierTrait);
+    receiver.addTrait(this.InputControllerTrait);
     this.receivers.add(receiver);
   }
 
   dropReceiver(receiver: Receiver) {
-    receiver.removeTrait(InputNotifier);
+    receiver.removeTrait(InputController);
     this.receivers.delete(receiver);
   }
 
