@@ -28,23 +28,28 @@ class GoombaBehavior extends Trait {
   }
 }
 
-function createGoombaFactory(sprite: SpriteSheet) {
-  const walkAnimationresolver = sprite.animations.get('walk') as AnimationResolver;
-
-  function routeAnim(goomba: Entity) {
-    if (goomba.getTrait(Killable)!.dead) {
-      return 'flat';
-    }
-
-    return walkAnimationresolver.resolveFrame(goomba.lifetime);
+function flattenedRouteAnim(entity: Entity): void | string {
+  if (entity.getTrait(Killable)!.dead) {
+    return 'flat';
   }
+}
+
+function walkRouteAnim(entity: Entity): void | string {
+  const walkAnimationresolver = entity.sprite.animationManager.resolvers.get('walk') as AnimationResolver;
+  return walkAnimationresolver.resolveFrame(entity.lifetime);
+}
+
+function createGoombaFactory(sprite: SpriteSheet) {
+  sprite.animationManager.addRoute('flat', flattenedRouteAnim);
+  sprite.animationManager.addRoute('walk', walkRouteAnim);
 
   function drawGoomba(context: CanvasRenderingContext2D) {
-    sprite.draw(routeAnim(this), context, 0, 0);
+    sprite.draw(sprite.animationManager.routeFrame(this), context, 0, 0);
   }
 
   return function createGoomba() {
     const goomba = new Entity();
+    goomba.sprite = sprite;
     goomba.size.set(16, 16);
 
     goomba.addTrait(new Physics());

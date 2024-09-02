@@ -34,6 +34,8 @@ export class AnimationResolver {
     return this.frames[this.frameIndex];
   }
 
+  
+
   setAnimationLoop(isLooping: boolean) {
     this.loop = isLooping;
   }

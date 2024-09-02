@@ -112,31 +112,36 @@ class KoopaBehavior extends Trait {
   }
 }
 
-function createKoopaFactory(sprite: SpriteSheet) {
-  const walkAnimationResolver = sprite.animations.get('walk') as AnimationResolver;
-  const wakeAnimationresolver = sprite.animations.get('wake') as AnimationResolver;
+function walkRouteAnim(entity: Entity): void | string {
+  const walkAnimationResolver = entity.sprite.animationManager.resolvers.get('walk') as AnimationResolver;
+  return walkAnimationResolver.resolveFrame(entity.lifetime);
+}
 
-  function routeAnim(koopa: Entity) {
-    if (koopa.getTrait(KoopaBehavior)!.state === KoopaState.hiding) {
-      if (koopa.getTrait(KoopaBehavior)!.hideTime > 3) {
-        return wakeAnimationresolver.resolveFrame(koopa.getTrait(KoopaBehavior)!.hideTime);
-      }
-      return 'hiding';
+function wakeRouteAnim(entity: Entity): void | string {
+  const wakeAnimationResolver = entity.sprite.animationManager.resolvers.get('wake') as AnimationResolver;
+  if (entity.getTrait(KoopaBehavior)!.state === KoopaState.hiding) {
+    if (entity.getTrait(KoopaBehavior)!.hideTime > 3) {
+      return wakeAnimationResolver.resolveFrame(entity.getTrait(KoopaBehavior)!.hideTime);
     }
-
-    if (koopa.getTrait(KoopaBehavior)!.state === KoopaState.panic) {
-      return 'hiding';
-    }
-
-    return walkAnimationResolver.resolveFrame(koopa.lifetime);
+    return 'hiding';
   }
 
+  if (entity.getTrait(KoopaBehavior)!.state === KoopaState.panic) {
+    return 'hiding';
+  }
+}
+
+function createKoopaFactory(sprite: SpriteSheet) {
+  sprite.animationManager.addRoute('wake', wakeRouteAnim);
+  sprite.animationManager.addRoute('walk', walkRouteAnim);
+
   function drawKoopa(context: CanvasRenderingContext2D) {
-    sprite.draw(routeAnim(this), context, 0, 0, this.vel.x < 0);
+    sprite.draw(sprite.animationManager.routeFrame(this), context, 0, 0, this.vel.x < 0);
   }
 
   return function createKoopa() {
     const koopa = new Entity();
+    koopa.sprite = sprite;
     koopa.size.set(16, 16);
     koopa.offset.y = 8;
 

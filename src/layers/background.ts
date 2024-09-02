@@ -20,7 +20,7 @@ export function createBackgroundLayer(level: Level, tiles: TileResolverMatrix, s
     // iterate over the tiles instead of accessing the grid
     for (const [tile, x, y] of items) {
       if (!tile.style) continue;
-      if (sprites.animations.has(tile.style)) {
+      if (sprites.animationManager.resolvers.has(tile.style)) {
         sprites.drawAnimation(tile.style, context, x - startIndex, y, level.totalTime);
       } else {
         sprites.drawTile(tile.style, context, x - startIndex, y);

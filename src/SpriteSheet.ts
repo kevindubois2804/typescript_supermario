@@ -1,10 +1,11 @@
+import { AnimationManager } from './AnimationManager';
 import { AnimationResolver } from './AnimationResolver';
 import { raise } from './raise';
 
 export class SpriteSheet {
   tiles = new Map<string, HTMLCanvasElement[]>();
-  // animations = new Map<string, Animation>();
-  animations = new Map<string, AnimationResolver>();
+  // animations = new Map<string, AnimationResolver>();
+  animationManager = new AnimationManager();
 
   constructor(public image: HTMLImageElement, public tileWidth: number, public tileHeight: number) {}
 
@@ -38,7 +39,7 @@ export class SpriteSheet {
   // }
 
   defineAnimation(name: string, animationResolver: AnimationResolver) {
-    this.animations.set(name, animationResolver);
+    this.animationManager.addResolver(name, animationResolver);
   }
 
   draw(name: string, context: CanvasRenderingContext2D, x: number, y: number, flip = false) {
@@ -54,18 +55,15 @@ export class SpriteSheet {
   }
 
   drawAnimation(name: string, context: CanvasRenderingContext2D, x: number, y: number, distance: number) {
-    const animationResolver = this.animations.get(name);
-    if (!animationResolver) {
-      throw new Error(`Animation resolver not found: ${name}`);
-    }
+    const animationResolver = this.getAnimationResolver(name);
     this.drawTile(animationResolver.resolveFrame(distance), context, x, y);
   }
 
-  getAnimation(name: string) {
-    const anim = this.animations.get(name);
-    if (!anim) {
-      throw new Error(`Animation not found: ${name}`);
+  getAnimationResolver(name: string) {
+    const animationResolver = this.animationManager.resolvers.get(name);
+    if (!animationResolver) {
+      throw new Error(`Animation resolver not found: ${name}`);
     }
-    return anim;
+    return animationResolver;
   }
 }

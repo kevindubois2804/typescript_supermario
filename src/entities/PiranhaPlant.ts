@@ -73,25 +73,28 @@ class PiranhaPlantBehavior extends Trait {
   }
 }
 
-function createPiranhaPlantFactory(sprite: SpriteSheet) {
-  const chewAnimationResolver = sprite.animations.get('chew') as AnimationResolver;
+function chewRouteAnim(entity: Entity): void | string {
+  const chewAnimationResolver = entity.sprite.animationManager.resolvers.get('chew') as AnimationResolver;
+  return chewAnimationResolver.resolveFrame(entity.lifetime);
+}
 
-  function routeAnim(entity: Entity) {
-    return chewAnimationResolver.resolveFrame(entity.lifetime);
-  }
+function createPiranhaPlantFactory(sprite: SpriteSheet) {
+  sprite.animationManager.addRoute('chew', chewRouteAnim);
 
   function drawPiranhaPlant(context: CanvasRenderingContext2D) {
-    sprite.draw(routeAnim(this), context, 0, 0);
+    sprite.draw(sprite.animationManager.routeFrame(this), context, 0, 0);
   }
 
   return function createPiranhaPlant() {
-    const entity = new Entity();
-    entity.size.set(16, 24);
+    const piranha = new Entity();
+    piranha.sprite = sprite;
 
-    entity.addTrait(new PiranhaPlantBehavior());
+    piranha.size.set(16, 24);
 
-    entity.draw = drawPiranhaPlant;
+    piranha.addTrait(new PiranhaPlantBehavior());
 
-    return entity;
+    piranha.draw = drawPiranhaPlant;
+
+    return piranha;
   };
 }

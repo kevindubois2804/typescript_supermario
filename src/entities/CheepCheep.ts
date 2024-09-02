@@ -55,18 +55,15 @@ class Wavy extends Trait {
 }
 
 function createCheepSlowFactory(sprite: SpriteSheet) {
-  const swimAnimationresolver = sprite.animations.get('swim') as AnimationResolver;
-
-  function routeAnim(entity: Entity) {
-    return swimAnimationresolver.resolveFrame(entity.lifetime);
-  }
+  sprite.animationManager.addRoute('swim', swimRouteAnim);
 
   function drawCheepSlow(context: CanvasRenderingContext2D) {
-    sprite.draw(routeAnim(this), context, 0, 0, true);
+    sprite.draw(sprite.animationManager.routeFrame(this), context, 0, 0, true);
   }
 
   return function createCheepSlow() {
     const entity = new Entity();
+    entity.sprite = sprite;
     entity.size.set(16, 16);
     entity.vel.x = -16;
     entity.addTrait(new CheepCheepBehavior());
@@ -76,19 +73,21 @@ function createCheepSlowFactory(sprite: SpriteSheet) {
   };
 }
 
-function createCheepSlowWavyFactory(sprite: SpriteSheet) {
-  const swimAnimationResolver = sprite.animations.get('swim') as AnimationResolver;
+function swimRouteAnim(entity: Entity): void | string {
+  const swimAnimationResolver = entity.sprite.animationManager.resolvers.get('swim') as AnimationResolver;
+  return swimAnimationResolver.resolveFrame(entity.lifetime);
+}
 
-  function routeAnim(entity: Entity) {
-    return swimAnimationResolver.resolveFrame(entity.lifetime);
-  }
+function createCheepSlowWavyFactory(sprite: SpriteSheet) {
+  sprite.animationManager.addRoute('swim', swimRouteAnim);
 
   function drawCheepSlowWavy(context: CanvasRenderingContext2D) {
-    sprite.draw(routeAnim(this), context, 0, 0, true);
+    sprite.draw(sprite.animationManager.routeFrame(this), context, 0, 0, true);
   }
 
   return function createCheepSlowWavy() {
     const entity = new Entity();
+    entity.sprite = sprite;
     entity.size.set(16, 16);
     entity.vel.x = -16;
 
@@ -102,18 +101,15 @@ function createCheepSlowWavyFactory(sprite: SpriteSheet) {
 }
 
 function createCheepFastFactory(sprite: SpriteSheet) {
-  const swimAnimationResolver = sprite.animations.get('swim') as AnimationResolver;
-
-  function routeAnim(entity: Entity) {
-    return swimAnimationResolver.resolveFrame(entity.lifetime);
-  }
+  sprite.animationManager.addRoute('swim', swimRouteAnim);
 
   function drawCheepFast(context: CanvasRenderingContext2D) {
-    sprite.draw(routeAnim(this), context, 0, 0, true);
+    sprite.draw(sprite.animationManager.routeFrame(this), context, 0, 0, true);
   }
 
   return function createCheepFast() {
     const entity = new Entity();
+    entity.sprite = sprite;
     entity.size.set(16, 16);
     entity.vel.x = -32;
     entity.addTrait(new CheepCheepBehavior());
@@ -124,18 +120,15 @@ function createCheepFastFactory(sprite: SpriteSheet) {
 }
 
 function createCheepFastWavyFactory(sprite: SpriteSheet) {
-  const swimAnimationResolver = sprite.animations.get('swim') as AnimationResolver;
-
-  function routeAnim(entity: Entity) {
-    return swimAnimationResolver.resolveFrame(entity.lifetime);
-  }
+  sprite.animationManager.addRoute('swim', swimRouteAnim);
 
   function drawCheepFastWavy(context: CanvasRenderingContext2D) {
-    sprite.draw(routeAnim(this), context, 0, 0, true);
+    sprite.draw(sprite.animationManager.routeFrame(this), context, 0, 0, true);
   }
 
   return function createCheepFastWavy() {
     const entity = new Entity();
+    entity.sprite = sprite;
     entity.size.set(16, 16);
     entity.vel.x = -32;
 

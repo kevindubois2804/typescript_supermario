@@ -14,11 +14,16 @@ export function loadBrickShrapnel(audioContext: AudioContext) {
   });
 }
 
+function spinningBrickRouteAnim(entity: Entity): void | string {
+  const spinBrickAnimationResolver = entity.sprite.animationManager.resolvers.get('spinning-brick') as AnimationResolver;
+  return spinBrickAnimationResolver.resolveFrame(entity.lifetime);
+}
+
 function createBrickShrapnelFactory(sprite: SpriteSheet, audio: AudioBoard) {
-  const spinBrickAnimationResolver = sprite.animations.get('spinning-brick') as AnimationResolver;
+  sprite.animationManager.addRoute('spinning-brick', spinningBrickRouteAnim);
 
   function draw(context: CanvasRenderingContext2D) {
-    sprite.draw(spinBrickAnimationResolver.resolveFrame(this.lifetime), context, 0, 0);
+    sprite.draw(sprite.animationManager.routeFrame(this), context, 0, 0);
   }
 
   return function createBrickShrapnel() {
