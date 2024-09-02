@@ -15,7 +15,7 @@
   "animations": [
     {
       "name": "chew",
-      "frameLen": 0.15,
+      "frameBuffer": 0.15,
       "frames": ["close", "open"]
     }
   ]

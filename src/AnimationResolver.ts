@@ -1,17 +1,37 @@
 export class AnimationResolver {
   frames: string[] = [];
-  frameLength: number;
+  frameBuffer: number;
   loop: boolean;
+  frameEnd: string;
+  frameStart: string;
+  frameIndex: number;
+  framesLength: number;
+  currentFrameIndex: number;
 
-  constructor(frames: string[], frameLength: number, loop: boolean = true) {
+  constructor(frames: string[], frameBuffer: number, loop: boolean = true) {
     this.frames = frames;
-    this.frameLength = frameLength;
+    this.frameBuffer = frameBuffer;
     this.loop = loop;
+    this.frameEnd = this.frames[frames.length - 1];
+    this.frameStart = this.frames[0];
+    this.framesLength = this.frames.length;
+    this.currentFrameIndex = 0;
   }
 
   resolveFrame(time: number): string {
-    const frameIndex = Math.floor((time / this.frameLength) % this.frames.length);
-    return this.frames[frameIndex];
+    this.frameIndex = Math.floor((time / this.frameBuffer) % this.frames.length);
+
+    if (!this.loop) {
+      if (this.currentFrameIndex < this.framesLength) {
+        this.currentFrameIndex++;
+        return this.frames[this.frameIndex];
+      } else {
+        this.currentFrameIndex = this.framesLength;
+        return this.frameEnd;
+      }
+    }
+
+    return this.frames[this.frameIndex];
   }
 
   setAnimationLoop(isLooping: boolean) {

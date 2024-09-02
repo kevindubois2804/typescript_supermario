@@ -73,7 +73,7 @@ export type TileRange = number[];
 
 export type AnimationSpec = {
   name: string;
-  frameLen: number;
+  frameBuffer: number;
   frames: string[];
   loop?: boolean;
 };

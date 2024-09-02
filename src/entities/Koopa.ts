@@ -1,10 +1,8 @@
-
 import { AnimationResolver } from '../AnimationResolver';
 import { Entity } from '../Entity';
 import { GameContext } from '../GameContext';
 import { loadSpriteSheet } from '../loaders/sprite';
 import { SpriteSheet } from '../SpriteSheet';
-
 import { Trait } from '../Trait';
 import { Killable } from '../traits/Killable';
 import { PendulumMove } from '../traits/PendulumMove';

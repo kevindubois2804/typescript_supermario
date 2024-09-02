@@ -26,7 +26,7 @@ import { SpriteSheetSpec } from '../types';
 
 //   if (sheetSpec.animations) {
 //     sheetSpec.animations.forEach((animSpec) => {
-//       const animation = createAnimation(animSpec.frames, animSpec.frameLen);
+//       const animation = createAnimation(animSpec.frames, animSpec.frameBuffer);
 //       sprites.defineAnimation(animSpec.name, animation);
 //     });
 //   }
@@ -57,8 +57,8 @@ export async function loadSpriteSheet(name: string) {
 
   if (sheetSpec.animations) {
     sheetSpec.animations.forEach((animSpec) => {
-      // const animation = createAnimation(animSpec.frames, animSpec.frameLen);
-      const animationResolver = new AnimationResolver(animSpec.frames, animSpec.frameLen, animSpec?.loop);
+      // const animation = createAnimation(animSpec.frames, animSpec.frameBuffer);
+      const animationResolver = new AnimationResolver(animSpec.frames, animSpec.frameBuffer, animSpec?.loop);
       sprites.defineAnimation(animSpec.name, animationResolver);
     });
   }

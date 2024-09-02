@@ -15,7 +15,7 @@
   "animations": [
     {
       "name": "swim",
-      "frameLen": 0.13,
+      "frameBuffer": 0.13,
       "frames": ["swim-1", "swim-2"]
     }
   ]
