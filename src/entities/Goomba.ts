@@ -4,6 +4,7 @@ import { GameContext } from '../GameContext';
 import { loadSpriteSheet } from '../loaders/sprite';
 import { SpriteSheet } from '../SpriteSheet';
 import { Trait } from '../Trait';
+
 import { Killable } from '../traits/Killable';
 import { PendulumMove } from '../traits/PendulumMove';
 import { Physics } from '../traits/Physics';
@@ -54,8 +55,10 @@ function createGoombaFactory(sprite: SpriteSheet) {
 
     goomba.addTrait(new Physics());
     goomba.addTrait(new Solid());
+
     goomba.addTrait(new PendulumMove());
     goomba.addTrait(new GoombaBehavior());
+
     goomba.addTrait(new Killable());
 
     goomba.draw = drawGoomba;

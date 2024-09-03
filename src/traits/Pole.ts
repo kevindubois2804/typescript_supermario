@@ -38,7 +38,7 @@ export default class Pole extends Trait {
   }
 
   collides(_: GameContext, pole: Entity, traveller: Entity) {
-    if (!traveller.traits.has(PoleTraveller)) {
+    if (!traveller.getTrait(PoleTraveller)) {
       return;
     }
 

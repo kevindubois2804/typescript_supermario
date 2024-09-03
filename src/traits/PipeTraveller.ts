@@ -1,3 +1,6 @@
+import { Entity } from '../Entity';
+import { GameContext } from '../GameContext';
+import { Level } from '../Level';
 import { Vec2 } from '../math';
 import { Trait } from '../Trait';
 import { InputController } from './InputController';

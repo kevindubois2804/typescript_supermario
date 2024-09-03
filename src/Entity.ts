@@ -1,5 +1,6 @@
 import { AudioBoard } from './AudioBoard';
 import { BoundingBox } from './BoundingBox';
+import { CollectionTrait } from './CollectionTrait';
 import { EventBuffer } from './EventBuffer';
 import { GameContext } from './GameContext';
 import { Level } from './Level';
@@ -44,20 +45,36 @@ export class Entity {
     if (trait instanceof TraitClass) {
       return trait;
     }
+
+    for (let trait of this.traits.values()) {
+      if (trait instanceof CollectionTrait) return trait.getTrait(TraitClass);
+    }
   }
 
   removeTrait<T extends Trait>(TraitClass: TraitConstructor<T>): void {
     if (this.traits.has(TraitClass)) this.traits.delete(TraitClass);
+
+    this.traits.forEach((trait) => {
+      if (trait instanceof CollectionTrait) trait.removeTrait(TraitClass);
+    });
   }
 
   useTrait<T extends Trait>(TraitClass: TraitConstructor<T>, fn: (trait: T) => void): void {
     const trait = this.getTrait(TraitClass);
     if (trait) fn(trait);
+    if (!trait)
+      this.traits.forEach((trait) => {
+        if (trait instanceof CollectionTrait) trait.useTrait(TraitClass, fn);
+      });
   }
 
   update(gameContext: GameContext, level: Level) {
     this.traits.forEach((trait) => {
       trait.update(this, gameContext, level);
+
+      if (trait instanceof CollectionTrait) {
+        trait.traits.forEach((trait) => trait.update(this, gameContext, level));
+      }
     });
 
     if (this.audio) this.playSounds(this.audio, gameContext.audioContext);
@@ -72,6 +89,10 @@ export class Entity {
 
     this.traits.forEach((trait) => {
       trait.finalize(this);
+
+      if (trait instanceof CollectionTrait) {
+        trait.traits.forEach((trait) => trait.finalize(this));
+      }
     });
 
     this.events.clear();
@@ -80,12 +101,20 @@ export class Entity {
   obstruct(side: Side, match: TileResolverMatch) {
     this.traits.forEach((trait) => {
       trait.obstruct(this, side, match);
+
+      if (trait instanceof CollectionTrait) {
+        trait.traits.forEach((trait) => trait.obstruct(this, side, match));
+      }
     });
   }
 
   collides(gameContext: GameContext, candidate: Entity) {
     this.traits.forEach((trait) => {
       trait.collides(gameContext, this, candidate);
+
+      if (trait instanceof CollectionTrait) {
+        trait.traits.forEach((trait) => trait.collides(gameContext, this, candidate));
+      }
     });
   }
 

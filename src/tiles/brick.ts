@@ -53,7 +53,7 @@ const handleY: TileColliderHandler = ({ entity, match, resolver, gameContext, le
       entity.obstruct(Side.bottom, match);
     }
   } else if (entity.vel.y < 0) {
-    if (entity.traits.has(Player)) {
+    if (entity.getTrait(Player)) {
       const grid = resolver.matrix;
       grid.delete(match.indexX, match.indexY);
       addShrapnel(level, gameContext, match);

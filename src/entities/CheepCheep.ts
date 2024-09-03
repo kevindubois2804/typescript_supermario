@@ -25,7 +25,7 @@ export function loadCheepFastWavy() {
 
 class CheepCheepBehavior extends Trait {
   collides(_: GameContext, us: Entity, them: Entity) {
-    if (them.traits.has(Killable)) {
+    if (them.getTrait(Killable)) {
       them.getTrait(Killable)!.kill();
     }
   }

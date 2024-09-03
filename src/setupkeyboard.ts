@@ -28,14 +28,14 @@ export function setupKeyboard(target: EventTarget) {
   inputHandler.addListener(KeyMap.UP, (keyState) => {
     inputRouter.route((entity) => {
       if (!entity.getTrait(InputController)) return;
-      entity.events.emit(InputController.KEYBORD_KEY_RIGHT_PRESSED, keyState);
+      entity.events.emit(InputController.KEYBORD_KEY_UP_PRESSED, keyState);
     });
   });
 
   inputHandler.addListener(KeyMap.DOWN, (keyState) => {
     inputRouter.route((entity) => {
       if (!entity.getTrait(InputController)) return;
-      entity.events.emit(InputController.KEYBORD_KEY_RIGHT_PRESSED, keyState);
+      entity.events.emit(InputController.KEYBORD_KEY_DOWN_PRESSED, keyState);
     });
   });
 

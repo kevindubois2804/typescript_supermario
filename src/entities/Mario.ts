@@ -1,5 +1,6 @@
 import { AnimationResolver } from '../AnimationResolver';
 import { AudioBoard } from '../AudioBoard';
+import { CollectionTrait } from '../CollectionTrait';
 import { Entity } from '../Entity';
 import { loadAudioBoard } from '../loaders/audio';
 import { loadSpriteSheet } from '../loaders/sprite';
@@ -8,10 +9,12 @@ import { Go } from '../traits/Go';
 import { InputController } from '../traits/InputController';
 import { Jump } from '../traits/Jump';
 import { Killable } from '../traits/Killable';
+import { MarioCollectionTrait } from '../traits/MarioCollectionTrait';
 import { Physics } from '../traits/Physics';
 import { PipeTraveller } from '../traits/PipeTraveller';
 import PoleTraveller from '../traits/PoleTraveller';
 import { Solid } from '../traits/Solid';
+import SpawnBrickTile from '../traits/SpawnBrickTile';
 import { Stomper } from '../traits/Stomper';
 import { Turbo } from '../traits/Turbo';
 
@@ -125,6 +128,7 @@ function JumpRouteAnim(entity: Entity): void | string {
 
 function MovingRouteAnim(entity: Entity): void | string {
   const runAnimationResolver = entity.sprite.animationManager.resolvers.get('run') as AnimationResolver;
+
   const go = entity.getTrait(Go);
   if (go && go.distance > 0) {
     if ((entity.vel.x > 0 && go.dir < 0) || (entity.vel.x < 0 && go.dir > 0)) {
@@ -137,13 +141,14 @@ function MovingRouteAnim(entity: Entity): void | string {
 
 function createMarioFactory(sprite: SpriteSheet, audio: AudioBoard) {
   function getHeading(mario: Entity) {
-    const poleTraveller = mario.getTrait(PoleTraveller)!;
-    if (poleTraveller.distance) {
+    const poleTraveller = mario.getTrait(PoleTraveller);
+    if (poleTraveller && poleTraveller.distance) {
       return false;
     }
     if (!mario.getTrait(Go)) {
       return false;
     }
+
     return mario.getTrait(Go)!.heading < 0;
   }
 
@@ -163,16 +168,19 @@ function createMarioFactory(sprite: SpriteSheet, audio: AudioBoard) {
     mario.audio = audio;
     mario.size.set(14, 16);
 
-    mario.addTrait(new Physics());
-    mario.addTrait(new Solid());
-    mario.addTrait(new Go());
-    mario.addTrait(new Jump());
-    mario.addTrait(new Killable());
-    mario.addTrait(new Stomper());
-    mario.addTrait(new InputController());
-    mario.addTrait(new PipeTraveller());
-    mario.addTrait(new PoleTraveller());
-    mario.addTrait(new Turbo());
+    // mario.addTrait(new Physics());
+    // mario.addTrait(new Solid());
+    // mario.addTrait(new Go());
+    // mario.addTrait(new Jump());
+    // mario.addTrait(new Killable());
+    // mario.addTrait(new Stomper());
+    // mario.addTrait(new PipeTraveller());
+    // mario.addTrait(new PoleTraveller());
+    // mario.addTrait(new Turbo());
+
+    const marioCollectionTrait = new CollectionTrait(new Physics(), new Solid(), new Go(), new Turbo(), new Jump(), new Turbo(), new Stomper(), new PipeTraveller(), new PoleTraveller(), new Killable());
+
+    mario.addTrait(marioCollectionTrait);
 
     mario.getTrait(Killable)!.removeAfter = Infinity;
     mario.getTrait(Jump)!.velocity = 175;
@@ -180,6 +188,8 @@ function createMarioFactory(sprite: SpriteSheet, audio: AudioBoard) {
     mario.draw = drawMario;
 
     mario.useTrait(Turbo, (it) => it.setTurboState(mario, false));
+
+    console.log(mario);
 
     return mario;
   };

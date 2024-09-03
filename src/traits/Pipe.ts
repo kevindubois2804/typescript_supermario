@@ -39,7 +39,7 @@ export default class Pipe extends Trait {
   }
 
   collides(_: GameContext, pipe: Entity, traveller: Entity) {
-    if (!traveller.traits.has(PipeTraveller)) {
+    if (!traveller.getTrait(PipeTraveller)) {
       return;
     }
 
@@ -56,7 +56,7 @@ export default class Pipe extends Trait {
       if (this.direction.y && (tBounds.left < pBounds.left || tBounds.right > pBounds.right)) {
         return;
       }
-
+      pipe.sounds.add('pipe');
       this.addTraveller(pipe, traveller);
     }
   }
