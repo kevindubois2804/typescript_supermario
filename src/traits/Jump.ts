@@ -13,12 +13,18 @@ export class Jump extends Trait {
   gracePeriod = 0.1;
   speedBoost = 0.3;
 
+  static TRAIT_ACTIVE = Symbol('jump trait active flag');
+
   constructor() {
     super();
 
     this.listen(InputController.KEYBORD_KEY_SPACE_PRESSED, (pressed) => {
       if (pressed) this.start();
       else this.cancel();
+    });
+
+    this.listen(Jump.TRAIT_ACTIVE, (flag) => {
+      this.isActive = flag;
     });
   }
 
@@ -32,6 +38,8 @@ export class Jump extends Trait {
   }
 
   update(entity: Entity, { deltaTime }: GameContext, level: Level) {
+    if (!this.isActive) return;
+
     if (this.requestTime > 0) {
       if (this.ready > 0) {
         console.log(level.entities);

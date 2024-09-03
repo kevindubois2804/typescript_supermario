@@ -137,7 +137,7 @@ async function main(canvas: HTMLCanvasElement) {
   };
 
   timer.start();
-  startWorld('debug-pipe');
+  startWorld('2-2');
 }
 
 const canvas = document.getElementById('screen');

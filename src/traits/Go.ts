@@ -12,13 +12,17 @@ export class Go extends Trait {
   dragFactor = 1 / 5000;
   deceleration = 300;
 
+  static TRAIT_ACTIVE = Symbol('go trait active flag');
+
   constructor() {
     super();
-    this.listen(InputController.KEYBORD_KEY_RIGHT_PRESSED, (keyState: 0 | 1) => {
-      this.dir += keyState ? 1 : -1;
+    this.listen(InputController.KEYBORD_KEY_RIGHT_PRESSED, (leftState, rightState) => {
+      if (!this.isActive) return;
+      this.dir = rightState - leftState;
     });
-    this.listen(InputController.KEYBORD_KEY_LEFT_PRESSED, (keyState: 0 | 1) => {
-      this.dir += keyState ? -1 : 1;
+    this.listen(InputController.KEYBORD_KEY_LEFT_PRESSED, (leftState, rightState) => {
+      if (!this.isActive) return;
+      this.dir = rightState - leftState;
     });
   }
 
