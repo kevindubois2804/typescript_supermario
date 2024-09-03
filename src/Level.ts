@@ -36,6 +36,7 @@ export class Level extends Scene {
   totalTime = 0;
 
   update(gameContext: GameContext) {
+    // if ([...this.entities][3]) console.log([...this.entities][3].pos.x);
     this.entities.forEach((entity) => {
       entity.update(gameContext, this);
     });

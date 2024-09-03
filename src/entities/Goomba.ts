@@ -41,8 +41,8 @@ function walkRouteAnim(entity: Entity): void | string {
 }
 
 function createGoombaFactory(sprite: SpriteSheet) {
-  sprite.animationManager.addRoute('flat', flattenedRouteAnim);
-  sprite.animationManager.addRoute('walk', walkRouteAnim);
+  sprite.animationManager.addAnimationRoute('flat', flattenedRouteAnim);
+  sprite.animationManager.addAnimationRoute('walk', walkRouteAnim);
 
   function drawGoomba(context: CanvasRenderingContext2D) {
     sprite.draw(sprite.animationManager.routeFrame(this), context, 0, 0);

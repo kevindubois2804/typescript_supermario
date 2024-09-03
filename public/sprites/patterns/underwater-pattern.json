@@ -3,10 +3,12 @@
     "tiles": [
       {
         "style": "waves",
+        "behavior": "water",
         "ranges": [[0, 0]]
       },
       {
         "style": "water",
+        "behavior": "water",
         "ranges": [[0, 1, 1, 12]]
       }
     ]

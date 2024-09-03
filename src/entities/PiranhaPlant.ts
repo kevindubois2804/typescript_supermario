@@ -79,7 +79,7 @@ function chewRouteAnim(entity: Entity): void | string {
 }
 
 function createPiranhaPlantFactory(sprite: SpriteSheet) {
-  sprite.animationManager.addRoute('chew', chewRouteAnim);
+  sprite.animationManager.addAnimationRoute('chew', chewRouteAnim);
 
   function drawPiranhaPlant(context: CanvasRenderingContext2D) {
     sprite.draw(sprite.animationManager.routeFrame(this), context, 0, 0);

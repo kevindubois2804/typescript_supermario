@@ -20,7 +20,7 @@ function spinningBrickRouteAnim(entity: Entity): void | string {
 }
 
 function createBrickShrapnelFactory(sprite: SpriteSheet, audio: AudioBoard) {
-  sprite.animationManager.addRoute('spinning-brick', spinningBrickRouteAnim);
+  sprite.animationManager.addAnimationRoute('spinning-brick', spinningBrickRouteAnim);
 
   function draw(context: CanvasRenderingContext2D) {
     sprite.draw(sprite.animationManager.routeFrame(this), context, 0, 0);

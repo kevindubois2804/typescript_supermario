@@ -45,11 +45,24 @@ function SwimRouteAnim(entity: Entity): void | string {
   }
 }
 
+function SwimRouteHead(entity: Entity): void | boolean {
+  if (entity.getTrait(Swim) && entity.getTrait(Swim)?.isSwimming) {
+    return entity.getTrait(Swim)!.heading < 0;
+  }
+}
+
 function PoleTravellingRouteAnim(entity: Entity): void | string {
   const climbAnimationResolver = entity.sprite.animationManager.resolvers.get('climb') as AnimationResolver;
   const poleTraveller = entity.getTrait(PoleTraveller)!;
   if (poleTraveller.distance) {
     return climbAnimationResolver.resolveFrame(poleTraveller.distance);
+  }
+}
+
+function PoleTravellingRouteHead(entity: Entity): void | boolean {
+  const poleTraveller = entity.getTrait(PoleTraveller);
+  if (poleTraveller && poleTraveller.distance) {
+    return false;
   }
 }
 
@@ -76,32 +89,26 @@ function MovingRouteAnim(entity: Entity): void | string {
   }
 }
 
+function MovingRouteHead(entity: Entity): void | boolean {
+  const go = entity.getTrait(Go);
+  if (go) return entity.getTrait(Go)!.heading < 0;
+}
+
 function createMarioFactory(sprite: SpriteSheet, audio: AudioBoard) {
-  function getHeading(mario: Entity) {
-    const poleTraveller = mario.getTrait(PoleTraveller);
-    if (poleTraveller && poleTraveller.distance) {
-      return false;
-    }
-    if (mario.getTrait(Swim) && mario.getTrait(Swim)?.isSwimming) {
-      return mario.getTrait(Swim)!.heading < 0;
-    }
-    if (!mario.getTrait(Go)) {
-      return false;
-    }
+  sprite.animationManager.addAnimationRoute('pole-anim', PoleTravellingRouteAnim);
+  sprite.animationManager.addAnimationRoute('pipe-anim', PipeTravellingRouteAnim);
+  sprite.animationManager.addAnimationRoute('swimming-anim', SwimRouteAnim);
+  sprite.animationManager.addAnimationRoute('jumping-anim', JumpRouteAnim);
+  sprite.animationManager.addAnimationRoute('moving-anim', MovingRouteAnim);
 
-    return mario.getTrait(Go)!.heading < 0;
-  }
-
-  sprite.animationManager.addRoute('pole-travelling', PoleTravellingRouteAnim);
-  sprite.animationManager.addRoute('pipe-travelling', PipeTravellingRouteAnim);
-  sprite.animationManager.addRoute('swimming', SwimRouteAnim);
-  sprite.animationManager.addRoute('jumping', JumpRouteAnim);
-  sprite.animationManager.addRoute('moving', MovingRouteAnim);
+  sprite.animationManager.addHeadingRoute('pole-head', PoleTravellingRouteHead);
+  sprite.animationManager.addHeadingRoute('swim-head', SwimRouteHead);
+  sprite.animationManager.addHeadingRoute('moving-head', MovingRouteHead);
 
   sprite.animationManager.setDefaultAnimName('idle');
 
   function drawMario(context: CanvasRenderingContext2D) {
-    sprite.draw(sprite.animationManager.routeFrame(this), context, 0, 0, getHeading(this));
+    sprite.draw(sprite.animationManager.routeFrame(this), context, 0, 0, sprite.animationManager.routeHeading(this));
   }
 
   return function createMario() {

@@ -11,6 +11,7 @@ import { LevelTimer } from '../traits/LevelTimer';
 import { Spawner } from '../traits/Spawner';
 import { Trigger } from '../traits/Trigger';
 import { LevelSpec, LevelSpecPatterns, LevelSpecTile, TileRange } from '../types';
+import { Utils } from '../utilities/Utils';
 import { loadMusicSheet } from './music';
 import { loadSpriteSheet } from './sprite';
 
@@ -88,10 +89,11 @@ function setupEntities(levelSpec: LevelSpec, level: Level, entityFactory: Entity
 
     if (id) {
       entity.id = id;
-      level.entities.add(entity);
     } else {
-      spawner.addEntity(entity);
+      entity.id = Utils.generateId();
     }
+
+    level.entities.add(entity);
   });
 
   const entityProxy = new Entity();

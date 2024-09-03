@@ -9,7 +9,6 @@
       "tiles": [
         {
           "style": "sky",
-          "behavior": "sky",
           "ranges": [[0, 192, 0, 3]]
         }
       ]
@@ -17,9 +16,8 @@
     {
       "tiles": [
         {
-          "style": "water",
-          "behavior": "water",
-          "ranges": [[0, 190, 3, 10]]
+          "pattern": "water",
+          "ranges": [[0, 190, 2]]
         }
       ]
     },

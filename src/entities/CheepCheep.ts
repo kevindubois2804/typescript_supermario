@@ -55,7 +55,7 @@ class Wavy extends Trait {
 }
 
 function createCheepSlowFactory(sprite: SpriteSheet) {
-  sprite.animationManager.addRoute('swim', swimRouteAnim);
+  sprite.animationManager.addAnimationRoute('swim', swimRouteAnim);
 
   function drawCheepSlow(context: CanvasRenderingContext2D) {
     sprite.draw(sprite.animationManager.routeFrame(this), context, 0, 0, true);
@@ -79,7 +79,7 @@ function swimRouteAnim(entity: Entity): void | string {
 }
 
 function createCheepSlowWavyFactory(sprite: SpriteSheet) {
-  sprite.animationManager.addRoute('swim', swimRouteAnim);
+  sprite.animationManager.addAnimationRoute('swim', swimRouteAnim);
 
   function drawCheepSlowWavy(context: CanvasRenderingContext2D) {
     sprite.draw(sprite.animationManager.routeFrame(this), context, 0, 0, true);
@@ -101,7 +101,7 @@ function createCheepSlowWavyFactory(sprite: SpriteSheet) {
 }
 
 function createCheepFastFactory(sprite: SpriteSheet) {
-  sprite.animationManager.addRoute('swim', swimRouteAnim);
+  sprite.animationManager.addAnimationRoute('swim', swimRouteAnim);
 
   function drawCheepFast(context: CanvasRenderingContext2D) {
     sprite.draw(sprite.animationManager.routeFrame(this), context, 0, 0, true);
@@ -120,7 +120,7 @@ function createCheepFastFactory(sprite: SpriteSheet) {
 }
 
 function createCheepFastWavyFactory(sprite: SpriteSheet) {
-  sprite.animationManager.addRoute('swim', swimRouteAnim);
+  sprite.animationManager.addAnimationRoute('swim', swimRouteAnim);
 
   function drawCheepFastWavy(context: CanvasRenderingContext2D) {
     sprite.draw(sprite.animationManager.routeFrame(this), context, 0, 0, true);

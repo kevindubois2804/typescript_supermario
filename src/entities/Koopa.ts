@@ -132,8 +132,8 @@ function wakeRouteAnim(entity: Entity): void | string {
 }
 
 function createKoopaFactory(sprite: SpriteSheet) {
-  sprite.animationManager.addRoute('wake', wakeRouteAnim);
-  sprite.animationManager.addRoute('walk', walkRouteAnim);
+  sprite.animationManager.addAnimationRoute('wake', wakeRouteAnim);
+  sprite.animationManager.addAnimationRoute('walk', walkRouteAnim);
 
   function drawKoopa(context: CanvasRenderingContext2D) {
     sprite.draw(sprite.animationManager.routeFrame(this), context, 0, 0, this.vel.x < 0);

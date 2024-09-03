@@ -10,11 +10,11 @@ import { Jump } from './Jump';
 
 export class Swim extends Trait {
   dir = 0;
-  acceleration = new Vec2(800, 200);
+  acceleration = new Vec2(200, 200);
   distance = 0;
   heading = 1;
   dragFactor = 1 / 5000;
-  deceleration = new Vec2(100, 800);
+  deceleration = new Vec2(300, 800);
   static ENTITY_SWIMMING = Symbol('entity is swimming');
 
   isSwimming: boolean = false;
@@ -75,6 +75,6 @@ export class Swim extends Trait {
     entity.vel.x -= dragX;
     entity.vel.y -= dragY;
 
-    this.distance += absX * deltaTime;
+    this.distance += ((absX + absY) * deltaTime) / 2;
   }
 }
