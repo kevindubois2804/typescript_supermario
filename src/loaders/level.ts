@@ -10,6 +10,7 @@ import { TileResolverMatrix } from '../TileResolver';
 import { LevelTimer } from '../traits/LevelTimer';
 import { Spawner } from '../traits/Spawner';
 import { Trigger } from '../traits/Trigger';
+import { UpdateScheduler } from '../traits/UpdateScheduler';
 import { LevelSpec, LevelSpecPatterns, LevelSpecTile, TileRange } from '../types';
 import { Utils } from '../utilities/Utils';
 import { loadMusicSheet } from './music';
@@ -78,6 +79,7 @@ function setupCheckpoints(levelSpec: LevelSpec, level: Level) {
 
 function setupEntities(levelSpec: LevelSpec, level: Level, entityFactory: EntityFactoryDict) {
   const spawner = new Spawner();
+  const updateScheduler = new UpdateScheduler();
   levelSpec.entities.forEach(({ id, name, pos: [x, y], props }) => {
     const createEntity = entityFactory[name];
     if (!createEntity) {
@@ -98,7 +100,10 @@ function setupEntities(levelSpec: LevelSpec, level: Level, entityFactory: Entity
 
   const entityProxy = new Entity();
   entityProxy.addTrait(spawner);
+  const entityProxy2 = new Entity();
+  entityProxy2.addTrait(updateScheduler);
   level.entities.add(entityProxy);
+  level.entities.add(entityProxy2);
 
   const spriteLayer = createSpriteLayer(level.entities);
   level.comp.layers.push(spriteLayer);

@@ -45,18 +45,6 @@ export abstract class Trait {
   obstruct(entity: Entity, side: Side, match: TileResolverMatch) {}
   collides(gameContext: GameContext, us: Entity, them: Entity) {}
 
-  // observe<T extends Trait>(entity: Entity, ...TraitsClasses: TraitConstructor<T>[]) {
-  //   for (let TraitClass of TraitsClasses) {
-  //     const trait = entity.getTrait(TraitClass) as Trait;
-  //     if (!trait) {
-  //       continue;
-  //     } else {
-  //       // @ts-ignore
-  //       entity.events.emit(TraitClass.TRAIT_ACTIVE, this.flag);
-  //     }
-  //   }
-  // }
-
   observe(entity: Entity) {
     for (let TraitClass of this.observers) {
       const trait = entity.getTrait(TraitClass) as Trait;

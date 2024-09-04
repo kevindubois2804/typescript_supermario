@@ -1,13 +1,16 @@
-import { Entity } from '../Entity';
+import { Entity, TraitConstructor } from '../Entity';
 import { EntityCollection } from '../EntityCollection';
 import { GameContext } from '../GameContext';
 import { Level } from '../Level';
 import { Trait } from '../Trait';
 import { Trigger } from './Trigger';
+import { UpdateScheduler } from './UpdateScheduler';
 
 export class Spawner extends Trait {
   entities = new EntityCollection();
   offsetX = 64;
+
+  static SHOULD_UPDATE: boolean = true;
 
   addEntityToSpawner(entity: Entity) {
     this.entities.add(entity);
@@ -28,13 +31,15 @@ export class Spawner extends Trait {
   }
 
   update(entity: Entity, gameContext: GameContext, level: Level) {
+    if (!Spawner.SHOULD_UPDATE) return;
+
+    console.log("i'm updating !!");
+
     const cameraMaxX = level.camera.pos.x + level.camera.size.x + this.offsetX;
     const cameraMinX = level.camera.pos.x - this.offsetX;
 
-    for (let entity of level.entities) {
-      if (entity.getTrait(Spawner) || entity.getTrait(Trigger)) {
-        continue;
-      }
+    label: for (let entity of level.entities) {
+      for (let TraitClass of TRAITS_TO_IGNORE_BY_SPAWNER) if (entity.getTrait(TraitClass)) continue label;
       if (cameraMaxX < entity.pos.x || cameraMinX > entity.pos.x) {
         this.removeEntityFromLevel(level, entity.id);
       } else {
@@ -51,3 +56,8 @@ export class Spawner extends Trait {
     }
   }
 }
+
+type TraitsToIgnore = Spawner | Trigger | UpdateScheduler;
+
+// ts-ignore
+const TRAITS_TO_IGNORE_BY_SPAWNER = new Set<TraitConstructor<TraitsToIgnore>>([Spawner, Trigger, UpdateScheduler]);
