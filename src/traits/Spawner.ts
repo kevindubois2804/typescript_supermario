@@ -16,20 +16,6 @@ export class Spawner extends Trait {
     this.entities.add(entity);
   }
 
-  addEntityToLevel(level: Level, entityID: number) {
-    const entityToAddToLevel = this.entities.get(entityID);
-    if (!entityToAddToLevel) return;
-    level.entities.add(entityToAddToLevel);
-    this.entities.delete(entityToAddToLevel);
-  }
-
-  removeEntityFromLevel(level: Level, entityID: number) {
-    const entityToRemoveFromLevel = level.entities.get(entityID);
-    if (!entityToRemoveFromLevel) return;
-    this.entities.add(entityToRemoveFromLevel);
-    level.entities.delete(entityToRemoveFromLevel);
-  }
-
   update(entity: Entity, gameContext: GameContext, level: Level) {
     if (!Spawner.SHOULD_UPDATE) return;
 
@@ -41,17 +27,17 @@ export class Spawner extends Trait {
     label: for (let entity of level.entities) {
       for (let TraitClass of TRAITS_TO_IGNORE_BY_SPAWNER) if (entity.getTrait(TraitClass)) continue label;
       if (cameraMaxX < entity.pos.x || cameraMinX > entity.pos.x) {
-        this.removeEntityFromLevel(level, entity.id);
+        moveEntityCollectionSetElementToAnother(entity.id, level.entities, this.entities);
       } else {
-        this.addEntityToLevel(level, entity.id);
+        moveEntityCollectionSetElementToAnother(entity.id, this.entities, level.entities);
       }
     }
 
     for (let entity of this.entities) {
       if (cameraMaxX < entity.pos.x || cameraMinX > entity.pos.x) {
-        this.removeEntityFromLevel(level, entity.id);
+        moveEntityCollectionSetElementToAnother(entity.id, level.entities, this.entities);
       } else {
-        this.addEntityToLevel(level, entity.id);
+        moveEntityCollectionSetElementToAnother(entity.id, this.entities, level.entities);
       }
     }
   }
@@ -61,3 +47,10 @@ type TraitsToIgnore = Spawner | Trigger | UpdateScheduler;
 
 // ts-ignore
 const TRAITS_TO_IGNORE_BY_SPAWNER = new Set<TraitConstructor<TraitsToIgnore>>([Spawner, Trigger, UpdateScheduler]);
+
+function moveEntityCollectionSetElementToAnother(entityId: number, from: EntityCollection, to: EntityCollection) {
+  const entityToAddToTheOtherSet = from.get(entityId);
+  if (!entityToAddToTheOtherSet) return;
+  to.add(entityToAddToTheOtherSet);
+  from.delete(entityToAddToTheOtherSet);
+}
