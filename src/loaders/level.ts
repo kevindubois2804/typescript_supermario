@@ -1,5 +1,6 @@
 import { EntityFactoryDict } from '../entities';
 import { Entity } from '../Entity';
+import { GameContext } from '../GameContext';
 import { createBackgroundLayer } from '../layers/background';
 import { createSpriteLayer } from '../layers/sprites';
 import { Level } from '../Level';
@@ -128,7 +129,7 @@ export function setupTriggers(levelSpec: LevelSpec, level: Level) {
   }
 }
 
-export function createLevelLoader(entityFactory: EntityFactoryDict) {
+export function createLevelLoader(gameContext: GameContext) {
   return async function loadLevel(name: string) {
     const levelSpec = await loadJSON<LevelSpec>(`levels/${name}.json`);
 
@@ -140,7 +141,7 @@ export function createLevelLoader(entityFactory: EntityFactoryDict) {
     level.music.setPlayer(musicPlayer);
 
     setupTileColliderResolvers(levelSpec, level, patterns);
-    setupEntities(levelSpec, level, entityFactory);
+    setupEntities(levelSpec, level, gameContext.entityFactory);
     setupTriggers(levelSpec, level);
     setupCheckpoints(levelSpec, level);
     setupBehavior(level);

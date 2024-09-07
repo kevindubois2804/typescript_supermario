@@ -15,14 +15,19 @@ type ScheduleFrequency = number;
 export class UpdateScheduler extends Trait {
   constructor() {
     super();
-    this.addTraitToBeScheduled(Spawner, 20);
-    this.addTraitToBeScheduled(Trigger, 20);
+    this.addTraitToBeScheduled(Spawner, 50);
+    this.addTraitToBeScheduled(Trigger, 100);
   }
 
   traitsToBeScheduled = new Map<TraitConstructor<ScheduledTraitsType>, ScheduleFrequency>();
 
   addTraitToBeScheduled(TraitClass: TraitConstructor<ScheduledTraitsType>, frequency: ScheduleFrequency) {
     this.traitsToBeScheduled.set(TraitClass, frequency);
+  }
+
+  updateFrequencyForScheduledTrait(TraitClass: TraitConstructor<ScheduledTraitsType>, newFrequency: ScheduleFrequency) {
+    if (!this.traitsToBeScheduled.has(TraitClass)) throw new Error(`There isn't a ${TraitClass} reg`);
+    this.traitsToBeScheduled.set(TraitClass, newFrequency);
   }
 
   stopTraitFromBeingScheduled(TraitClass: TraitConstructor<ScheduledTraitsType>) {

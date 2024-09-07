@@ -1,6 +1,6 @@
 import { AnimationResolver } from '../AnimationResolver';
 import { AudioBoard } from '../AudioBoard';
-import { CollectionTrait } from '../CollectionTrait';
+
 import { Entity } from '../Entity';
 import { loadAudioBoard } from '../loaders/audio';
 import { loadSpriteSheet } from '../loaders/sprite';
@@ -11,6 +11,7 @@ import { Gravity } from '../traits/Gravity';
 
 import { Jump } from '../traits/Jump';
 import { Killable } from '../traits/Killable';
+import { MarioSpawnsGoombaWhileJumping } from '../traits/MarioSpawnsGoombaWhileJumping';
 
 import { PipeTraveller } from '../traits/PipeTraveller';
 import PoleTraveller from '../traits/PoleTraveller';
@@ -117,9 +118,20 @@ function createMarioFactory(sprite: SpriteSheet, audio: AudioBoard) {
     mario.audio = audio;
     mario.size.set(14, 16);
 
-    const marioCollectionTrait = new CollectionTrait(new Collidable(), new Gravity(), new Solid(), new Go(), new Turbo(), new Jump(), new Turbo(), new Stomper(), new PipeTraveller(), new PoleTraveller(), new Killable(), new Swim());
+    // const marioCollectionTrait = new CollectionTrait(new Collidable(), new Gravity(), new Solid(), new Go(), new Turbo(), new Jump(), new Turbo(), new Stomper(), new PipeTraveller(), new PoleTraveller(), new Killable(), new Swim());
 
-    mario.addTrait(marioCollectionTrait);
+    mario.addTrait(new Collidable());
+    mario.addTrait(new Gravity());
+    mario.addTrait(new Solid());
+    mario.addTrait(new Go());
+    mario.addTrait(new Turbo());
+    mario.addTrait(new Jump());
+    mario.addTrait(new Stomper());
+    mario.addTrait(new PipeTraveller());
+    mario.addTrait(new PoleTraveller());
+    mario.addTrait(new Killable());
+    mario.addTrait(new Swim());
+    mario.addTrait(new MarioSpawnsGoombaWhileJumping());
 
     mario.getTrait(Killable)!.removeAfter = Infinity;
     mario.getTrait(Jump)!.velocity = 175;

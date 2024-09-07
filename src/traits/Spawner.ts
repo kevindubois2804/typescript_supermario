@@ -19,8 +19,6 @@ export class Spawner extends Trait {
   update(entity: Entity, gameContext: GameContext, level: Level) {
     if (!Spawner.SHOULD_UPDATE) return;
 
-    console.log("i'm updating !!");
-
     const cameraMaxX = level.camera.pos.x + level.camera.size.x + this.offsetX;
     const cameraMinX = level.camera.pos.x - this.offsetX;
 

@@ -9,6 +9,7 @@
       "tiles": [
         {
           "style": "sky",
+          "behavior": "sky",
           "ranges": [[0, 192, 0, 3]]
         }
       ]

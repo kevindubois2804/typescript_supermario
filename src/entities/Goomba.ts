@@ -11,7 +11,7 @@ import { Physics } from '../traits/Physics';
 import { Solid } from '../traits/Solid';
 import { Stomper } from '../traits/Stomper';
 
-class GoombaBehavior extends Trait {
+export class GoombaBehavior extends Trait {
   collides(_: GameContext, us: Entity, them: Entity) {
     if (us.getTrait(Killable)?.dead) {
       return;

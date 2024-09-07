@@ -31,15 +31,26 @@ async function main(canvas: HTMLCanvasElement) {
 
   const [entityFactory, font] = await Promise.all([loadEntities(audioContext), loadFont()]);
 
-  const loadLevel = createLevelLoader(entityFactory);
-
-  const sceneRunner = new SceneRunner();
-
   const mario = entityFactory.mario?.() || raise('where mario tho');
   makePlayer(mario, 'MARIO');
 
   const { inputRouter, inputHandler } = setupKeyboard(window);
   inputRouter.addReceiver(mario);
+
+  const gameContext: GameContext = {
+    deltaTime: 0,
+    audioContext,
+    entityFactory,
+    videoContext,
+    tick: 0,
+    inputRouter,
+    inputHandler,
+  };
+
+  // const loadLevel = createLevelLoader(entityFactory);
+  const loadLevel = createLevelLoader(gameContext);
+
+  const sceneRunner = new SceneRunner();
 
   const mouseDebugCameraUpdater = setupMouseControlForDebugPurposes(canvas, mario);
 
@@ -115,16 +126,6 @@ async function main(canvas: HTMLCanvasElement) {
     sceneRunner.runNext();
   }
 
-  const gameContext: GameContext = {
-    deltaTime: 0,
-    audioContext,
-    entityFactory,
-    videoContext,
-    tick: 0,
-    inputRouter,
-    inputHandler,
-  };
-
   const timer = new Timer(1 / 60);
 
   timer.update = function update(deltaTime) {
@@ -137,7 +138,7 @@ async function main(canvas: HTMLCanvasElement) {
   };
 
   timer.start();
-  startWorld('1-1');
+  startWorld('1-1-high-number-entities');
 }
 
 const canvas = document.getElementById('screen');
