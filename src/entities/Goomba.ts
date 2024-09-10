@@ -1,6 +1,7 @@
 import { AnimationResolver } from '../AnimationResolver';
 import { Entity } from '../Entity';
 import { GameContext } from '../GameContext';
+import { Level } from '../Level';
 import { loadSpriteSheet } from '../loaders/sprite';
 import { SpriteSheet } from '../SpriteSheet';
 import { Trait } from '../Trait';
@@ -12,6 +13,8 @@ import { Solid } from '../traits/Solid';
 import { Stomper } from '../traits/Stomper';
 
 export class GoombaBehavior extends Trait {
+  update(entity: Entity, gameContext: GameContext, level: Level): void {}
+
   collides(_: GameContext, us: Entity, them: Entity) {
     if (us.getTrait(Killable)?.dead) {
       return;

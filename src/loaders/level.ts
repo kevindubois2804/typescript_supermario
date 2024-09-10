@@ -53,6 +53,7 @@ function setupBackgroundAndSpriteLayers(backgroundSprites: SpriteSheet, level: L
 
 function setupCamera(level: Level) {
   let maxX = 0;
+  let maxY = 0;
   let maxTileSize = 0;
   for (const resolver of level.tileCollider.resolvers) {
     if (resolver.tileSize > maxTileSize) {
@@ -62,9 +63,14 @@ function setupCamera(level: Level) {
       if (x > maxX) {
         maxX = x;
       }
+      if (y > maxY) {
+        maxY = x;
+      }
     });
   }
+
   level.camera.max.x = (maxX + 1) * maxTileSize;
+  level.camera.max.y = (maxY + 1) * maxTileSize;
 }
 
 function setupCheckpoints(levelSpec: LevelSpec, level: Level) {

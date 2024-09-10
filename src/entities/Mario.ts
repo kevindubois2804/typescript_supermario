@@ -11,7 +11,6 @@ import { Gravity } from '../traits/Gravity';
 
 import { Jump } from '../traits/Jump';
 import { Killable } from '../traits/Killable';
-import { MarioSpawnsGoombaWhileJumping } from '../traits/MarioSpawnsGoombaWhileJumping';
 
 import { PipeTraveller } from '../traits/PipeTraveller';
 import PoleTraveller from '../traits/PoleTraveller';
@@ -131,7 +130,6 @@ function createMarioFactory(sprite: SpriteSheet, audio: AudioBoard) {
     mario.addTrait(new PoleTraveller());
     mario.addTrait(new Killable());
     mario.addTrait(new Swim());
-    mario.addTrait(new MarioSpawnsGoombaWhileJumping());
 
     mario.getTrait(Killable)!.removeAfter = Infinity;
     mario.getTrait(Jump)!.velocity = 175;

@@ -138,7 +138,7 @@ async function main(canvas: HTMLCanvasElement) {
   };
 
   timer.start();
-  startWorld('1-1-high-number-entities');
+  startWorld('1-1');
 }
 
 const canvas = document.getElementById('screen');

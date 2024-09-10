@@ -59,8 +59,6 @@ export function createBackgroundLayer(level: Level, tiles: TileResolverMatrix, s
   const bufferContext = buffer.getContext('2d') || raise('Canvas not supported');
 
   function drawTiles(drawFrom: Vec2, drawTo: Vec2) {
-    // console.log('drawTo : ', drawTo, ' endIndex : ', endIndex);
-    // console.log('drawFrom : ', drawFrom, ' startIndex : ', startIndex);
     if (shouldNotRedrawFlag && drawFrom.x === startIndex.x && drawTo.x && drawTo.x === endIndex.x && drawFrom.y === startIndex.y && drawTo.y === endIndex.y) {
       return;
     }
@@ -81,7 +79,7 @@ export function createBackgroundLayer(level: Level, tiles: TileResolverMatrix, s
     // iterate over the tiles instead of accessing the grid
     for (const [tile, x, y] of items) {
       if (!tile.style) continue;
-      if (tile.style === 'chance') shouldNotRedrawFlag = false;
+      if (tile.animated === true) shouldNotRedrawFlag = false;
       if (sprites.animationManager.resolvers.has(tile.style)) {
         sprites.drawAnimation(tile.style, bufferContext, x - startIndex.x, y - startIndex.y, level.totalTime);
       } else {
@@ -95,8 +93,7 @@ export function createBackgroundLayer(level: Level, tiles: TileResolverMatrix, s
     drawWidth.y = tileResolver.toIndex(camera.size.y);
     drawFrom.x = tileResolver.toIndex(camera.pos.x);
     drawFrom.y = tileResolver.toIndex(camera.pos.y);
-    // console.log('camero position x : ', camera.pos.x);
-    // console.log('minus camero position x : ', -camera.pos.x % 16);
+
     drawTo.x = drawFrom.x + drawWidth.x;
     drawTo.y = drawFrom.y + drawWidth.y;
     drawTiles(drawFrom, drawTo);

@@ -6,6 +6,8 @@ import { TileColliderHandler } from '../TileCollider';
 import { TileResolverMatch } from '../TileResolver';
 import Player from '../traits/Player';
 
+export const PLAYER_BREAK_BRICK: unique symbol = Symbol('player breaks a brick');
+
 function centerEntity(entity: Entity, pos: Vec2) {
   entity.pos.x = pos.x - entity.size.x / 2;
   entity.pos.y = pos.y - entity.size.y / 2;
@@ -36,7 +38,7 @@ function addShrapnel(level: Level, gameContext: GameContext, match: TileResolver
   bricks[3].vel.set(spreadH, -spreadV);
 }
 
-const handleX: TileColliderHandler = ({ entity, match }) => {
+const handleX: TileColliderHandler = ({ entity, match, level }) => {
   if (entity.vel.x > 0) {
     if (entity.bounds.right > match.x1) {
       entity.obstruct(Side.right, match);
@@ -47,6 +49,7 @@ const handleX: TileColliderHandler = ({ entity, match }) => {
     }
   }
 };
+
 const handleY: TileColliderHandler = ({ entity, match, resolver, gameContext, level }) => {
   if (entity.vel.y > 0) {
     if (entity.bounds.bottom > match.y1) {
@@ -64,4 +67,5 @@ const handleY: TileColliderHandler = ({ entity, match, resolver, gameContext, le
     }
   }
 };
+
 export const brick = [handleX, handleY];

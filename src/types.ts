@@ -65,6 +65,7 @@ export type LevelSpecTile = {
   style: string;
   pattern?: string;
   ranges: TileRange[];
+  animated?: boolean;
 };
 
 export type LevelCheckpoint = [number, number];

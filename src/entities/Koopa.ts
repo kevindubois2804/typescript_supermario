@@ -9,6 +9,7 @@ import { PendulumMove } from '../traits/PendulumMove';
 import { Physics } from '../traits/Physics';
 import { Solid } from '../traits/Solid';
 import { Stomper } from '../traits/Stomper';
+import { GoombaBehavior } from './Goomba';
 
 enum KoopaState {
   walking,
@@ -26,6 +27,14 @@ class KoopaBehavior extends Trait {
   collides(_: GameContext, us: Entity, them: Entity) {
     if (us.getTrait(Killable)?.dead) {
       return;
+    }
+
+    if (us.getTrait(KoopaBehavior)!.state === KoopaState.panic) {
+      if (them.getTrait(GoombaBehavior)) {
+        them.useTrait(Killable, (it) => it.kill());
+        them.vel.set(100, -200);
+        them.useTrait(Solid, (s) => (s.obstructs = false));
+      }
     }
 
     const stomper = them.getTrait(Stomper);

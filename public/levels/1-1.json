@@ -147,7 +147,8 @@
             [112, 9],
             [129, 2, 5],
             [170, 9]
-          ]
+          ],
+          "animated": true
         },
         {
           "pattern": "chocolate-stairs-4h",
@@ -205,7 +206,7 @@
   "entities": [
     {
       "name": "goomba-brown",
-      "pos": [352, 192]
+      "pos": [320, 128]
     },
     {
       "name": "goomba-brown",
